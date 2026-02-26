@@ -1,773 +1,942 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sila Kitchen and More — Good Food, Good Life</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --gold: #C9932A;
-      --gold-light: #E8B84B;
-      --cream: #FDF6EC;
-      --dark: #1A1008;
-      --brown: #3D1F00;
-      --text: #2C1A00;
-      --muted: #7A5C3A;
-      --red: #C0392B;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sila's Kitchen and More — Quality Service Is Our Benchmark</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#C9932A; --gold-light:#E8B84B; --gold-pale:#F5D278;
+  --dark:#1C0F04; --dark-mid:#2A1800;
+  --cream:#FDF6EC; --cream2:#FFF9F0;
+  --muted:#7A5C3A; --text:#2C1A00;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+/* ─── INLINE LOGO SVG SHARED STYLE ─── */
+.logo-svg{display:block;width:100%;height:100%;}
 
-    html { scroll-behavior: smooth; }
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:88px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 3.5rem;
+  background:rgba(253,246,236,0.97);
+  backdrop-filter:blur(20px);
+  border-bottom:2px solid rgba(201,147,42,0.3);
+  box-shadow:0 2px 20px rgba(28,15,4,0.08);
+}
+.nav-logo-wrap{display:flex;align-items:center;gap:16px;text-decoration:none;}
+.nav-logo-circle{
+  width:68px;height:68px;flex-shrink:0;
+  filter:drop-shadow(0 2px 8px rgba(201,147,42,0.3));
+  transition:filter 0.3s, transform 0.3s;
+}
+.nav-logo-wrap:hover .nav-logo-circle{
+  filter:drop-shadow(0 4px 16px rgba(201,147,42,0.5));
+  transform:scale(1.04);
+}
+.nav-logo-text{display:flex;flex-direction:column;}
+.nav-brand{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.25rem;font-weight:700;
+  color:var(--dark);letter-spacing:0.02em;line-height:1.1;
+}
+.nav-brand span{color:var(--gold);}
+.nav-slogan{
+  font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--gold);margin-top:2px;
+}
+.nav-links{display:flex;gap:1.8rem;list-style:none;}
+.nav-links a{
+  color:var(--muted);text-decoration:none;
+  font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;
+  transition:color 0.2s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-2px;left:0;right:0;
+  height:1.5px;background:var(--gold);transform:scaleX(0);transition:transform 0.2s;
+}
+.nav-links a:hover{color:var(--dark);}
+.nav-links a:hover::after{transform:scaleX(1);}
+.nav-cta{
+  background:var(--dark);color:#fff;
+  padding:0.6rem 1.5rem;border-radius:2px;
+  font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;
+  text-decoration:none;transition:background 0.2s;
+}
+.nav-cta:hover{background:var(--gold);}
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--cream);
-      color: var(--text);
-      overflow-x: hidden;
-    }
+/* ─── HERO ─── */
+#hero{
+  min-height:100vh;
+  background:linear-gradient(135deg,var(--dark) 0%,#2A1800 50%,#1C0F04 100%);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;padding-top:88px;
+}
+.hero-bg-pattern{
+  position:absolute;inset:0;
+  background-image:radial-gradient(circle at 25% 40%,rgba(201,147,42,0.18) 0%,transparent 50%),
+    radial-gradient(circle at 75% 70%,rgba(139,94,16,0.12) 0%,transparent 45%);
+}
+.hero-inner{
+  position:relative;z-index:2;
+  max-width:1100px;width:100%;margin:0 auto;padding:4rem 4rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;
+}
+.hero-text{color:#fff;}
+.hero-eyebrow{
+  display:inline-block;
+  background:rgba(201,147,42,0.15);border:1px solid rgba(201,147,42,0.4);
+  color:var(--gold-light);padding:0.35rem 1rem;
+  font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;
+  border-radius:1px;margin-bottom:1.5rem;
+  animation:fadeUp 0.8s ease both;
+}
+.hero-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.8rem,4.5vw,5rem);line-height:1.05;
+  margin-bottom:1.4rem;animation:fadeUp 0.9s 0.1s ease both;
+}
+.hero-title em{color:var(--gold-light);font-style:italic;}
+.hero-desc{
+  font-size:0.98rem;color:rgba(255,255,255,0.55);line-height:1.8;
+  margin-bottom:2.5rem;animation:fadeUp 1s 0.2s ease both;
+}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;animation:fadeUp 1s 0.3s ease both;}
+.btn-gold{
+  background:var(--gold);color:var(--dark);
+  padding:0.85rem 2rem;font-size:0.85rem;letter-spacing:0.06em;
+  text-decoration:none;border-radius:2px;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-weight:500;
+  transition:all 0.2s;display:inline-block;
+}
+.btn-gold:hover{background:var(--gold-light);transform:translateY(-2px);}
+.btn-outline-w{
+  background:transparent;color:rgba(255,255,255,0.8);
+  padding:0.85rem 2rem;font-size:0.85rem;letter-spacing:0.06em;
+  text-decoration:none;border-radius:2px;
+  border:1px solid rgba(255,255,255,0.25);transition:all 0.2s;display:inline-block;
+}
+.btn-outline-w:hover{border-color:var(--gold-light);color:var(--gold-light);}
+/* Hero right: since badge + stats */
+.hero-right{display:flex;flex-direction:column;gap:2rem;align-items:flex-start;}
+.hero-since{
+  border:1px solid rgba(201,147,42,0.35);padding:1.5rem 2rem;
+  background:rgba(201,147,42,0.06);
+}
+.hero-since .year{
+  font-family:'Cormorant Garamond',serif;font-size:3rem;
+  color:var(--gold-light);line-height:1;
+}
+.hero-since .label{font-size:0.72rem;letter-spacing:0.18em;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-top:4px;}
+.hero-stats{display:flex;gap:2rem;}
+.stat .num{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold-light);}
+.stat .lbl{font-size:0.7rem;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;}
 
-    /* ─── NAV ─── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.2rem 4rem;
-      background: rgba(26,16,8,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(201,147,42,0.3);
-      transition: all 0.3s;
-    }
-    .nav-logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.4rem; color: var(--gold-light);
-      letter-spacing: 0.02em;
-    }
-    .nav-logo span { color: #fff; font-weight: 400; font-style: italic; }
-    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-    .nav-links a {
-      color: rgba(255,255,255,0.75);
-      text-decoration: none; font-size: 0.85rem;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--gold-light); }
-    .nav-cta {
-      background: var(--gold); color: var(--dark);
-      padding: 0.6rem 1.5rem; border-radius: 2px;
-      font-weight: 500; font-size: 0.85rem;
-      letter-spacing: 0.05em; text-decoration: none;
-      transition: background 0.2s;
-    }
-    .nav-cta:hover { background: var(--gold-light); }
+/* ─── SECTIONS ─── */
+section{padding:6rem 4rem;}
+.container{max-width:1100px;margin:0 auto;}
+.sec-tag{display:block;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,3vw,2.8rem);line-height:1.15;margin-bottom:0.8rem;}
+.sec-sub{color:var(--muted);font-size:0.93rem;line-height:1.75;max-width:520px;}
 
-    /* ─── HERO ─── */
-    #hero {
-      min-height: 100vh;
-      background: var(--dark);
-      display: flex; align-items: center;
-      position: relative; overflow: hidden;
-      padding: 0 4rem;
-    }
-    .hero-bg {
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 70% 50%, rgba(201,147,42,0.18) 0%, transparent 70%),
-                  radial-gradient(ellipse at 20% 80%, rgba(192,57,43,0.12) 0%, transparent 60%);
-    }
-    .hero-pattern {
-      position: absolute; inset: 0; opacity: 0.04;
-      background-image: repeating-linear-gradient(45deg, var(--gold) 0, var(--gold) 1px, transparent 0, transparent 50%);
-      background-size: 24px 24px;
-    }
-    .hero-content { position: relative; z-index: 2; max-width: 680px; }
-    .hero-badge {
-      display: inline-block;
-      background: rgba(201,147,42,0.15); border: 1px solid rgba(201,147,42,0.4);
-      color: var(--gold-light); padding: 0.4rem 1rem;
-      font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
-      margin-bottom: 1.5rem; border-radius: 2px;
-      animation: fadeUp 0.8s ease forwards;
-    }
-    .hero-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(3rem, 6vw, 5.5rem);
-      line-height: 1.05; color: #fff;
-      margin-bottom: 1.2rem;
-      animation: fadeUp 0.9s 0.1s ease both;
-    }
-    .hero-title em { color: var(--gold-light); font-style: italic; display: block; }
-    .hero-slogan {
-      font-size: 1.15rem; color: rgba(255,255,255,0.55);
-      letter-spacing: 0.08em; margin-bottom: 2.5rem;
-      animation: fadeUp 1s 0.2s ease both;
-    }
-    .hero-actions {
-      display: flex; gap: 1rem; flex-wrap: wrap;
-      animation: fadeUp 1s 0.3s ease both;
-    }
-    .btn-primary {
-      background: var(--gold); color: var(--dark);
-      padding: 0.9rem 2rem; font-weight: 500;
-      font-size: 0.9rem; letter-spacing: 0.05em;
-      text-decoration: none; border-radius: 2px;
-      transition: all 0.2s; border: none; cursor: pointer;
-      display: inline-block;
-    }
-    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
-    .btn-outline {
-      background: transparent; color: rgba(255,255,255,0.8);
-      padding: 0.9rem 2rem; font-weight: 400;
-      font-size: 0.9rem; letter-spacing: 0.05em;
-      text-decoration: none; border-radius: 2px;
-      border: 1px solid rgba(255,255,255,0.25);
-      transition: all 0.2s; display: inline-block;
-    }
-    .btn-outline:hover { border-color: var(--gold-light); color: var(--gold-light); }
+/* ─── HOW IT WORKS ─── */
+#how{background:var(--dark-mid);}
+#how .sec-title{color:#fff;}
+#how .sec-sub{color:rgba(255,255,255,0.45);}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3.5rem;}
+.step{border-top:2px solid rgba(201,147,42,0.35);padding-top:1.4rem;}
+.step-n{font-family:'Cormorant Garamond',serif;font-size:3rem;color:rgba(201,147,42,0.2);line-height:1;margin-bottom:0.7rem;}
+.step h3{font-size:0.9rem;font-weight:500;color:var(--gold-light);margin-bottom:0.5rem;}
+.step p{font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.65;}
 
-    .hero-floating {
-      position: absolute; right: 6%; top: 50%; transform: translateY(-50%);
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
-      animation: fadeUp 1s 0.4s ease both;
-    }
-    .hero-chip {
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(201,147,42,0.2);
-      backdrop-filter: blur(8px); padding: 1rem 1.2rem;
-      border-radius: 4px; text-align: center; min-width: 120px;
-    }
-    .hero-chip .emoji { font-size: 1.8rem; display: block; margin-bottom: 0.3rem; }
-    .hero-chip .label { font-size: 0.72rem; color: rgba(255,255,255,0.5); letter-spacing: 0.08em; text-transform: uppercase; }
+/* ─── MENU ─── */
+#menu{background:var(--cream2);}
+.menu-tabs{display:flex;gap:0.4rem;margin-bottom:3rem;flex-wrap:wrap;}
+.menu-tab{
+  background:#fff;border:1.5px solid rgba(201,147,42,0.3);
+  color:var(--muted);padding:0.6rem 1.4rem;
+  font-size:0.78rem;letter-spacing:0.08em;border-radius:2px;
+  cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif;
+}
+.menu-tab.active,.menu-tab:hover{
+  background:var(--dark);color:var(--gold-light);border-color:var(--dark);
+}
+.menu-panel{display:none;}
+.menu-panel.active{display:block;}
+/* Sub-section label */
+.menu-subsection{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.35rem;font-weight:600;color:var(--dark);
+  border-bottom:2px solid rgba(201,147,42,0.3);
+  padding-bottom:0.5rem;margin:2.5rem 0 1.2rem;
+  display:flex;align-items:center;gap:0.8rem;
+}
+.menu-subsection span{font-size:1.1rem;}
+.menu-subsection:first-child{margin-top:0;}
+/* Cards grid */
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.menu-card{
+  background:#fff;border-radius:3px;
+  border:1px solid rgba(201,147,42,0.15);
+  overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;
+}
+.menu-card:hover{transform:translateY(-5px);box-shadow:0 12px 35px rgba(28,15,4,0.1);}
+.card-icon{
+  height:90px;display:flex;align-items:center;justify-content:center;
+  font-size:2.8rem;
+}
+.bg-green{background:linear-gradient(135deg,#e8f5e9,#c8e6c9);}
+.bg-amber{background:linear-gradient(135deg,#fff8e1,#ffecb3);}
+.bg-orange{background:linear-gradient(135deg,#fff3e0,#ffe0b2);}
+.bg-red{background:linear-gradient(135deg,#fce4ec,#f8bbd0);}
+.bg-brown{background:linear-gradient(135deg,#efebe9,#d7ccc8);}
+.bg-yellow{background:linear-gradient(135deg,#fffde7,#fff9c4);}
+.bg-teal{background:linear-gradient(135deg,#e0f2f1,#b2dfdb);}
+.bg-pink{background:linear-gradient(135deg,#fce4ec,#f48fb1,#e91e63);}
+.bg-caramel{background:linear-gradient(135deg,#fff8e1,#ffcc80);}
+.card-body{padding:1rem 1.2rem 0.6rem;}
+.card-body h3{font-size:0.9rem;font-weight:500;color:var(--dark);margin-bottom:0.3rem;line-height:1.3;}
+.card-body p{font-size:0.78rem;color:var(--muted);line-height:1.5;}
+.card-footer{
+  padding:0.6rem 1.2rem;border-top:1px solid rgba(201,147,42,0.12);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.price{font-weight:500;color:var(--gold);font-size:0.85rem;}
+.order-btn{
+  background:var(--dark);color:#fff;border:none;
+  padding:0.35rem 0.9rem;font-size:0.72rem;border-radius:2px;
+  cursor:pointer;letter-spacing:0.05em;font-family:'DM Sans',sans-serif;
+  transition:background 0.2s;
+}
+.order-btn:hover{background:var(--gold);}
+/* Note box */
+.menu-note{
+  background:rgba(201,147,42,0.08);border:1px solid rgba(201,147,42,0.25);
+  border-left:3px solid var(--gold);
+  padding:0.9rem 1.2rem;border-radius:2px;margin-top:1.2rem;
+  font-size:0.82rem;color:var(--muted);line-height:1.6;
+}
+.menu-note strong{color:var(--dark);}
 
-    /* ─── SECTION BASE ─── */
-    section { padding: 6rem 4rem; }
-    .section-tag {
-      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 0.8rem; display: block;
-    }
-    .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      line-height: 1.15; margin-bottom: 1rem;
-    }
-    .section-sub {
-      color: var(--muted); font-size: 1rem; line-height: 1.7;
-      max-width: 520px;
-    }
+/* ─── ABOUT ─── */
+#about{background:#fff;}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.about-img-wrap{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.about-img-wrap::before{
+  content:'';position:absolute;
+  width:85%;height:85%;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,147,42,0.08) 0%,transparent 70%);
+}
+.about-img-wrap svg{width:88%;height:88%;filter:drop-shadow(0 6px 30px rgba(201,147,42,0.18));}
+.about-text p{color:var(--muted);line-height:1.85;margin-bottom:1rem;font-size:0.95rem;}
+.about-nums{display:flex;gap:2.5rem;margin-top:2rem;}
+.about-num .n{font-family:'Cormorant Garamond',serif;font-size:2.4rem;color:var(--gold);font-weight:700;}
+.about-num .l{font-size:0.68rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;}
 
-    /* ─── HOW IT WORKS ─── */
-    #how {
-      background: var(--brown);
-      color: #fff;
-    }
-    #how .section-title { color: #fff; }
-    #how .section-sub { color: rgba(255,255,255,0.55); }
-    .steps {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 2rem; margin-top: 3.5rem;
-    }
-    .step {
-      padding: 2rem; border-top: 2px solid rgba(201,147,42,0.4);
-      position: relative;
-    }
-    .step-num {
-      font-family: 'Playfair Display', serif;
-      font-size: 3.5rem; color: rgba(201,147,42,0.2);
-      line-height: 1; margin-bottom: 1rem;
-    }
-    .step h3 { font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--gold-light); }
-    .step p { font-size: 0.88rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
+/* ─── GALLERY ─── */
+#gallery{background:var(--dark);}
+#gallery .sec-title{color:#fff;}
+.gal-tabs{display:flex;gap:0.5rem;margin-bottom:2.5rem;}
+.gal-tab{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(201,147,42,0.25);
+  color:rgba(255,255,255,0.55);padding:0.5rem 1.2rem;
+  font-size:0.78rem;letter-spacing:0.08em;border-radius:2px;
+  cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif;
+}
+.gal-tab.active,.gal-tab:hover{background:var(--gold);color:var(--dark);border-color:var(--gold);}
+.gal-panel{display:none;}
+.gal-panel.active{display:grid;}
+/* Photos */
+.gal-photos{grid-template-columns:2fr 1fr 1fr;grid-template-rows:200px 200px;gap:0.75rem;}
+.g-item{
+  border-radius:3px;display:flex;align-items:center;justify-content:center;
+  font-size:4rem;position:relative;overflow:hidden;cursor:pointer;
+  transition:transform 0.3s;
+}
+.g-item:hover{transform:scale(1.03);}
+.g-item:nth-child(1){grid-row:span 2;background:linear-gradient(160deg,#8B4513,#3D1F00);}
+.g-item:nth-child(2){background:linear-gradient(160deg,#C9932A,#8B5E10);}
+.g-item:nth-child(3){background:linear-gradient(160deg,#4CAF50,#2E7D32);}
+.g-item:nth-child(4){background:linear-gradient(160deg,#F44336,#B71C1C);}
+.g-item:nth-child(5){background:linear-gradient(160deg,#FF9800,#E65100);}
+.g-label{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,rgba(0,0,0,0.65),transparent);
+  color:#fff;padding:0.7rem 0.9rem;font-size:0.74rem;
+  letter-spacing:0.08em;text-transform:uppercase;
+  opacity:0;transition:opacity 0.3s;
+}
+.g-item:hover .g-label{opacity:1;}
+/* Videos */
+.gal-videos{grid-template-columns:1fr 1fr;gap:1rem;}
+.vid-card{
+  aspect-ratio:16/9;border-radius:3px;overflow:hidden;
+  border:1px solid rgba(201,147,42,0.2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#1C0F04,#2A1800);
+  flex-direction:column;gap:1rem;transition:border-color 0.2s;
+  position:relative;
+}
+.vid-card:hover{border-color:var(--gold);}
+.vid-card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.play-btn{
+  width:60px;height:60px;border-radius:50%;
+  background:rgba(201,147,42,0.15);border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.3s;position:relative;z-index:1;
+}
+.play-btn svg{width:22px;height:22px;fill:var(--gold-light);margin-left:4px;}
+.vid-card:hover .play-btn{background:var(--gold);}
+.vid-card:hover .play-btn svg{fill:var(--dark);}
+.vid-title{color:rgba(255,255,255,0.8);font-size:0.85rem;position:relative;z-index:1;}
+.vid-sub{color:rgba(201,147,42,0.7);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;position:relative;z-index:1;}
+.vid-hint{
+  grid-column:1/-1;
+  background:rgba(201,147,42,0.07);border:1px solid rgba(201,147,42,0.18);
+  padding:0.85rem 1.2rem;border-radius:3px;
+  color:rgba(255,255,255,0.45);font-size:0.8rem;
+}
 
-    /* ─── MENU ─── */
-    #menu { background: var(--cream); }
-    .menu-header {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      margin-bottom: 3rem;
-    }
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-    .menu-card {
-      background: #fff; border-radius: 4px;
-      overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
-    }
-    .menu-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
-    .menu-card-img {
-      height: 180px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 5rem;
-      position: relative; overflow: hidden;
-    }
-    .menu-card-img.puff { background: linear-gradient(135deg, #F5A623 0%, #F8D37A 100%); }
-    .menu-card-img.spring { background: linear-gradient(135deg, #5cb85c 0%, #a8d8a8 100%); }
-    .menu-card-img.samosa { background: linear-gradient(135deg, #D4AC0D 0%, #F7DC6F 100%); }
-    .menu-card-img.wings { background: linear-gradient(135deg, #C0392B 0%, #E8695A 100%); }
-    .menu-card-img.gizzard { background: linear-gradient(135deg, #8B4513 0%, #CD853F 100%); }
-    .menu-card-img.more { background: linear-gradient(135deg, #2C3E50 0%, #4A6274 100%); }
-    .menu-card-body { padding: 1.3rem 1.5rem; }
-    .menu-card-body h3 { font-size: 1rem; font-weight: 500; margin-bottom: 0.3rem; }
-    .menu-card-body p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
-    .menu-card-footer {
-      padding: 0.8rem 1.5rem;
-      border-top: 1px solid #f0ebe3;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .price { font-weight: 500; color: var(--gold); font-size: 0.9rem; }
-    .order-btn {
-      background: var(--dark); color: #fff;
-      border: none; padding: 0.4rem 1rem;
-      font-size: 0.78rem; border-radius: 2px;
-      cursor: pointer; letter-spacing: 0.05em;
-      transition: background 0.2s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .order-btn:hover { background: var(--gold); }
+/* ─── CONSULTATION ─── */
+#consultation{background:var(--cream);}
+.consult-grid{display:grid;grid-template-columns:1fr 1fr;gap:4.5rem;align-items:start;}
+.consult-info p{color:var(--muted);line-height:1.8;margin-bottom:1rem;font-size:0.93rem;}
+.consult-list{list-style:none;margin-top:1.5rem;}
+.consult-list li{
+  padding:0.65rem 0;border-bottom:1px solid rgba(0,0,0,0.06);
+  font-size:0.86rem;display:flex;align-items:center;gap:0.7rem;
+}
+.consult-list li::before{content:'✓';color:var(--gold);font-weight:700;}
+.consult-form{background:#fff;padding:2.2rem;border-radius:3px;box-shadow:0 4px 30px rgba(0,0,0,0.07);}
+.consult-form h3{font-family:'Cormorant Garamond',serif;font-size:1.35rem;margin-bottom:1.5rem;}
+.fg{margin-bottom:1rem;}
+.fg label{display:block;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem;}
+.fg input,.fg select,.fg textarea{
+  width:100%;padding:0.65rem 0.9rem;border:1px solid #e8e0d4;border-radius:2px;
+  font-family:'DM Sans',sans-serif;font-size:0.86rem;background:#fdfaf6;
+  color:var(--text);outline:none;transition:border-color 0.2s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);}
+.fg textarea{height:80px;resize:vertical;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 
-    /* ─── ABOUT ─── */
-    #about {
-      background: #fff;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;
-    }
-    .about-visual {
-      position: relative; height: 500px;
-    }
-    .about-box {
-      position: absolute;
-      background: var(--dark); border-radius: 4px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 5rem;
-    }
-    .about-box-1 { width: 65%; height: 65%; top: 0; left: 0; }
-    .about-box-2 { width: 50%; height: 50%; bottom: 0; right: 0; background: var(--gold); }
-    .about-box-3 {
-      width: 35%; height: 35%; bottom: 0; left: 10%;
-      background: var(--cream); border: 2px solid var(--gold);
-      font-size: 1rem; font-family: 'Playfair Display', serif;
-      font-style: italic; color: var(--text); padding: 1rem; text-align: center;
-      justify-content: center; flex-direction: column;
-    }
-    .about-box-3 strong { font-size: 2rem; display: block; font-style: normal; color: var(--gold); }
-    .about-text .section-title { margin-bottom: 1.5rem; }
-    .about-text p { color: var(--muted); line-height: 1.8; margin-bottom: 1rem; font-size: 0.95rem; }
-    .about-highlights { display: flex; gap: 2rem; margin-top: 2rem; }
-    .highlight { text-align: center; }
-    .highlight .num {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.2rem; color: var(--gold); font-weight: 700;
-    }
-    .highlight .lbl { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+/* ─── CONTACT ─── */
+#contact{background:var(--dark-mid);color:#fff;}
+#contact .sec-title{color:#fff;}
+.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3rem;margin-top:3rem;}
+.contact-card h3{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light);margin-bottom:1rem;}
+.contact-card p{color:rgba(255,255,255,0.55);line-height:1.9;font-size:0.86rem;}
+.contact-card a{color:var(--gold-light);text-decoration:none;}
+.contact-card a:hover{text-decoration:underline;}
+.hr-row{display:flex;justify-content:space-between;margin-bottom:0.4rem;}
+.hr-row .d{color:rgba(255,255,255,0.55);font-size:0.84rem;}
+.hr-row .t{color:#fff;font-size:0.84rem;}
+.notice{
+  background:rgba(201,147,42,0.1);border:1px solid rgba(201,147,42,0.25);
+  padding:1rem 1.5rem;border-radius:3px;margin-top:3rem;
+  color:rgba(255,255,255,0.65);font-size:0.84rem;text-align:center;
+}
+.notice strong{color:var(--gold-light);}
 
-    /* ─── GALLERY ─── */
-    #gallery { background: var(--dark); }
-    #gallery .section-title { color: #fff; }
-    #gallery .section-tag { color: var(--gold-light); }
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      grid-template-rows: 220px 220px;
-      gap: 1rem; margin-top: 3rem;
-    }
-    .gallery-item {
-      border-radius: 4px; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 5rem;
-      transition: transform 0.3s;
-    }
-    .gallery-item:hover { transform: scale(1.02); }
-    .gallery-item:nth-child(1) { grid-row: span 2; background: linear-gradient(160deg, #8B4513, #3D1F00); }
-    .gallery-item:nth-child(2) { background: linear-gradient(160deg, #F5A623, #C8860A); }
-    .gallery-item:nth-child(3) { background: linear-gradient(160deg, #5cb85c, #2d6a2d); }
-    .gallery-item:nth-child(4) { background: linear-gradient(160deg, #C0392B, #7B241C); }
-    .gallery-item:nth-child(5) { background: linear-gradient(160deg, #D4AC0D, #8A6D00); }
+/* ─── FOOTER ─── */
+footer{
+  background:var(--dark);padding:2rem 3.5rem;
+  border-top:1px solid rgba(201,147,42,0.2);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1.2rem;
+}
+.footer-left{display:flex;align-items:center;gap:14px;}
+.footer-logo-circle{width:52px;height:52px;}
+.footer-brand{display:flex;flex-direction:column;}
+.footer-brand-name{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold-light);}
+.footer-brand-slogan{font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:rgba(201,147,42,0.5);margin-top:1px;}
+.footer-copy{font-size:0.74rem;color:rgba(255,255,255,0.25);}
+.footer-links{display:flex;gap:1.5rem;}
+.footer-links a{font-size:0.74rem;color:rgba(255,255,255,0.35);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--gold-light);}
 
-    /* ─── CONSULTATION ─── */
-    #consultation {
-      background: var(--cream);
-    }
-    .consult-wrapper {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start;
-    }
-    .consult-info h2 { margin-bottom: 1.5rem; }
-    .consult-info p { color: var(--muted); line-height: 1.8; margin-bottom: 1.5rem; font-size: 0.95rem; }
-    .consult-features { list-style: none; }
-    .consult-features li {
-      padding: 0.8rem 0; border-bottom: 1px solid rgba(0,0,0,0.07);
-      display: flex; align-items: center; gap: 0.8rem;
-      font-size: 0.9rem; color: var(--text);
-    }
-    .consult-features li::before {
-      content: '✓'; color: var(--gold);
-      font-weight: 700; font-size: 0.9rem;
-    }
-    .consult-form {
-      background: #fff; padding: 2.5rem; border-radius: 4px;
-      box-shadow: 0 4px 30px rgba(0,0,0,0.08);
-    }
-    .consult-form h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.4rem; margin-bottom: 1.5rem;
-    }
-    .form-group { margin-bottom: 1.2rem; }
-    .form-group label {
-      display: block; font-size: 0.78rem; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem;
-    }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 0.75rem 1rem;
-      border: 1px solid #e8e0d4; border-radius: 2px;
-      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
-      background: #fdfaf6; color: var(--text);
-      transition: border-color 0.2s;
-      outline: none;
-    }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      border-color: var(--gold);
-    }
-    .form-group textarea { height: 100px; resize: vertical; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+/* ─── MODAL ─── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);
+  z-index:300;display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.modal-overlay.active{display:flex;}
+.modal{
+  background:#fff;border-radius:4px;padding:2.2rem;
+  max-width:440px;width:92%;position:relative;animation:fadeUp 0.3s ease;
+}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;margin-bottom:0.3rem;}
+.modal p{color:var(--muted);font-size:0.84rem;margin-bottom:1.3rem;}
+.modal-close{position:absolute;top:0.9rem;right:1.1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);}
 
-    /* ─── CONTACT ─── */
-    #contact { background: var(--brown); color: #fff; }
-    #contact .section-title { color: #fff; }
-    .contact-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 3rem; margin-top: 3rem;
-    }
-    .contact-card h3 {
-      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--gold-light); margin-bottom: 1rem;
-    }
-    .contact-card p { color: rgba(255,255,255,0.65); line-height: 1.8; font-size: 0.9rem; }
-    .contact-card a { color: var(--gold-light); text-decoration: none; }
-    .contact-card a:hover { text-decoration: underline; }
-    .hours-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; }
-    .hours-row .day { color: rgba(255,255,255,0.65); font-size: 0.88rem; }
-    .hours-row .time { color: #fff; font-size: 0.88rem; }
-    .notice {
-      background: rgba(201,147,42,0.15); border: 1px solid rgba(201,147,42,0.3);
-      padding: 1rem 1.5rem; border-radius: 4px; margin-top: 3rem;
-      color: rgba(255,255,255,0.75); font-size: 0.88rem; text-align: center;
-    }
-    .notice strong { color: var(--gold-light); }
+/* ─── REVEAL ─── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s,transform 0.7s;}
+.reveal.visible{opacity:1;transform:none;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
 
-    /* ─── ORDER MODAL ─── */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
-      z-index: 200; display: none; align-items: center; justify-content: center;
-      backdrop-filter: blur(4px);
-    }
-    .modal-overlay.active { display: flex; }
-    .modal {
-      background: #fff; border-radius: 6px;
-      padding: 2.5rem; max-width: 480px; width: 90%;
-      position: relative; animation: fadeUp 0.3s ease;
-    }
-    .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .modal p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
-    .modal-close {
-      position: absolute; top: 1rem; right: 1.2rem;
-      background: none; border: none; font-size: 1.5rem;
-      cursor: pointer; color: var(--muted);
-    }
-
-    /* ─── FOOTER ─── */
-    footer {
-      background: var(--dark); color: rgba(255,255,255,0.4);
-      text-align: center; padding: 2rem;
-      font-size: 0.82rem; letter-spacing: 0.05em;
-    }
-    footer span { color: var(--gold-light); }
-
-    /* ─── ANIMATIONS ─── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .reveal {
-      opacity: 0; transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible { opacity: 1; transform: none; }
-
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 1024px) {
-      nav { padding: 1rem 2rem; }
-      .hero-floating { display: none; }
-      section { padding: 4rem 2rem; }
-      .steps { grid-template-columns: 1fr 1fr; }
-      .menu-grid { grid-template-columns: 1fr 1fr; }
-      #about { grid-template-columns: 1fr; }
-      .about-visual { height: 300px; }
-      .consult-wrapper { grid-template-columns: 1fr; }
-      .contact-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 640px) {
-      .nav-links { display: none; }
-      .steps { grid-template-columns: 1fr; }
-      .menu-grid { grid-template-columns: 1fr; }
-      .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-      .gallery-item:nth-child(1) { grid-row: span 1; }
-      .contact-grid { grid-template-columns: 1fr; }
-      #hero { padding: 0 2rem; }
-    }
-  </style>
+/* ─── RESPONSIVE ─── */
+@media(max-width:1024px){
+  nav{padding:0 2rem;}
+  .hero-inner{grid-template-columns:1fr;padding:3rem 2rem;text-align:center;}
+  .hero-btns{justify-content:center;}
+  section{padding:4rem 2rem;}
+  .steps{grid-template-columns:1fr 1fr;}
+  .about-grid,.consult-grid{grid-template-columns:1fr;}
+  .contact-grid{grid-template-columns:1fr 1fr;}
+  .menu-grid{grid-template-columns:1fr 1fr;}
+  .gal-photos{grid-template-columns:1fr 1fr;grid-template-rows:auto;}
+  .g-item:nth-child(1){grid-row:span 1;}
+}
+@media(max-width:640px){
+  .nav-links{display:none;}
+  .steps{grid-template-columns:1fr;}
+  .menu-grid{grid-template-columns:1fr;}
+  .gal-videos{grid-template-columns:1fr;}
+  .contact-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;text-align:center;}
+}
+</style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ════════════ SHARED LOGO SVG SNIPPET (referenced in nav + footer) ════════════ -->
+<!-- Light circular logo — inline SVG used in two places -->
+
+<!-- ═══ NAV ═══ -->
 <nav>
-  <div class="nav-logo">Sila <span>Kitchen & More</span></div>
+  <a href="#hero" class="nav-logo-wrap">
+    <svg class="nav-logo-circle" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#F5D278"/><stop offset="50%" stop-color="#C9932A"/><stop offset="100%" stop-color="#8B5E10"/>
+        </linearGradient>
+        <linearGradient id="ns" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#F5D5A8"/><stop offset="100%" stop-color="#E0B88A"/>
+        </linearGradient>
+        <linearGradient id="nc" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#F5D278"/><stop offset="100%" stop-color="#A67A10"/>
+        </linearGradient>
+        <clipPath id="nclip"><circle cx="250" cy="250" r="198"/></clipPath>
+        <path id="nta" d="M250,250 m-188,0 a188,188 0 1,1 376,0" fill="none"/>
+        <path id="nba" d="M250,250 m-170,0 a170,170 0 0,0 340,0" fill="none"/>
+      </defs>
+      <circle cx="250" cy="250" r="250" fill="#FFFDF7"/>
+      <circle cx="250" cy="250" r="220" fill="#FDF0D0"/>
+      <circle cx="250" cy="250" r="245" fill="none" stroke="url(#ng)" stroke-width="5"/>
+      <circle cx="250" cy="250" r="224" fill="none" stroke="#C9932A" stroke-width="1.5" opacity="0.6"/>
+      <circle cx="250" cy="250" r="200" fill="none" stroke="#C9932A" stroke-width="1" opacity="0.4"/>
+      <polygon points="250,14 257,23 250,32 243,23" fill="#C9932A"/>
+      <polygon points="250,468 257,477 250,486 243,477" fill="#C9932A"/>
+      <polygon points="14,250 23,243 32,250 23,257" fill="#C9932A"/>
+      <polygon points="468,250 477,243 486,250 477,257" fill="#C9932A"/>
+      <text font-family="Georgia,serif" font-size="22" font-weight="bold" letter-spacing="5.5" fill="#1A1008"><textPath href="#nta" startOffset="7%">SILA'S  KITCHEN  AND  MORE</textPath></text>
+      <text font-family="Georgia,serif" font-size="14.5" letter-spacing="3.5" fill="#C9932A"><textPath href="#nba" startOffset="3%">QUALITY  SERVICE  IS  OUR  BENCHMARK</textPath></text>
+      <g clip-path="url(#nclip)">
+        <g transform="translate(316,168)"><ellipse cx="0" cy="26" rx="30" ry="6" fill="url(#nc)"/><ellipse cx="0" cy="23" rx="27" ry="4.5" fill="#FDF0D0"/><path d="M-28,23 Q-28,-12 0,-18 Q28,-12 28,23 Z" fill="url(#nc)" stroke="#A67A10" stroke-width="1.2"/><rect x="-4" y="-26" width="8" height="10" rx="4" fill="url(#nc)"/><ellipse cx="0" cy="-28" rx="7" ry="4.5" fill="url(#nc)"/></g>
+        <path d="M252,232 C265,210 282,183 302,168 C310,162 320,158 322,165 C325,172 315,178 308,185 C292,200 278,220 268,238 Z" fill="url(#ns)"/>
+        <path d="M210,250 C205,260 200,310 202,360 C204,380 220,395 250,398 C280,398 296,380 298,360 C300,310 295,260 290,250 Z" fill="#2A1800"/>
+        <path d="M225,255 C222,265 218,310 220,355 C221,368 232,378 250,380 C268,378 279,368 280,355 C282,310 278,265 275,255 Z" fill="#3D2200"/>
+        <ellipse cx="250" cy="235" rx="14" ry="10" fill="url(#ns)"/>
+        <ellipse cx="250" cy="200" rx="38" ry="42" fill="url(#ns)"/>
+        <path d="M213,200 C213,170 220,152 250,150 C280,152 287,170 287,200 L280,200 C280,174 268,162 250,161 C232,162 220,174 220,200 Z" fill="#1A1008"/>
+        <rect x="215" y="193" width="70" height="10" rx="4" fill="#1A1008"/>
+        <ellipse cx="250" cy="163" rx="30" ry="20" fill="#1A1008"/>
+        <ellipse cx="239" cy="200" rx="4" ry="4.5" fill="#1A1008"/>
+        <ellipse cx="261" cy="200" rx="4" ry="4.5" fill="#1A1008"/>
+        <circle cx="241" cy="198" r="1.3" fill="#fff"/>
+        <circle cx="263" cy="198" r="1.3" fill="#fff"/>
+        <path d="M241,213 Q250,220 259,213" fill="none" stroke="#1A1008" stroke-width="1.8" stroke-linecap="round"/>
+        <ellipse cx="232" cy="210" rx="7" ry="4" fill="#E8A080" opacity="0.35"/>
+        <ellipse cx="268" cy="210" rx="7" ry="4" fill="#E8A080" opacity="0.35"/>
+        <path d="M218,245 C210,260 206,290 208,315 C209,325 215,330 220,328 C225,326 226,318 225,308 C224,285 228,262 232,248 Z" fill="url(#ns)"/>
+        <ellipse cx="215" cy="330" rx="9" ry="7" fill="url(#ns)"/>
+        <ellipse cx="310" cy="185" rx="9" ry="7" fill="url(#ns)" transform="rotate(-30 310 185)"/>
+        <path d="M202,360 C198,380 194,400 192,418 L308,418 C306,400 302,380 298,360 Z" fill="#2A1800"/>
+        <path d="M236,242 L250,255 L264,242 L258,235 L250,240 L242,235 Z" fill="#1A1008"/>
+        <circle cx="250" cy="268" r="3" fill="#C9932A" opacity="0.8"/>
+        <circle cx="250" cy="282" r="3" fill="#C9932A" opacity="0.8"/>
+        <circle cx="250" cy="296" r="3" fill="#C9932A" opacity="0.8"/>
+      </g>
+    </svg>
+     </a>
   <ul class="nav-links">
     <li><a href="#how">How It Works</a></li>
     <li><a href="#menu">Menu</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#consultation">Consultation</a></li>
+    <li><a href="#consultation">Consult</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <a href="#menu" class="nav-cta">Order Now</a>
 </nav>
 
-<!-- HERO -->
+<!-- ═══ HERO ═══ -->
 <section id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-pattern"></div>
-  <div class="hero-content">
-    <div class="hero-badge">🎉 Small Chops · Party Snacks · Events</div>
-    <h1 class="hero-title">
-      Bite-sized<br>
-      <em>perfection,</em>
-      delivered.
-    </h1>
-    <p class="hero-slogan">Good Food, Good Life.</p>
-    <div class="hero-actions">
-      <a href="#menu" class="btn-primary">Browse the Menu</a>
-      <a href="#how" class="btn-outline">How to Order</a>
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow">🎉 Small Chops · Pastries · Events</div>
+      <h1 class="hero-title">Handcrafted<br><em>bites</em> for every<br>celebration.</h1>
+      <p class="hero-desc">Fresh Nigerian small chops, ready-to-fry packs, and homemade pastries — made to order for your events, parties, and special moments. Minimum 4 days notice.</p>
+      <div class="hero-btns">
+        <a href="#menu" class="btn-gold">Browse the Menu</a>
+        <a href="#how" class="btn-outline-w">How to Order</a>
+      </div>
     </div>
-  </div>
-  <div class="hero-floating">
-    <div class="hero-chip"><span class="emoji">🥟</span><span class="label">Puff Puff</span></div>
-    <div class="hero-chip"><span class="emoji">🌯</span><span class="label">Spring Rolls</span></div>
-    <div class="hero-chip"><span class="emoji">🥘</span><span class="label">Samosas</span></div>
-    <div class="hero-chip"><span class="emoji">🍗</span><span class="label">Wings</span></div>
+    <div class="hero-right">
+      <div class="hero-since">
+        <div class="year">2020</div>
+        <div class="label">Established</div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="num">500+</div><div class="lbl">Happy Clients</div></div>
+        <div class="stat"><div class="num">100%</div><div class="lbl">Fresh Always</div></div>
+        <div class="stat"><div class="num">4 day</div><div class="lbl">Lead Time</div></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
+<!-- ═══ HOW IT WORKS ═══ -->
 <section id="how">
-  <span class="section-tag">The Process</span>
-  <h2 class="section-title">How to place your order</h2>
-  <p class="section-sub">We ask for a minimum of 4 days notice so every bite is made fresh, with care, exactly for you.</p>
-  <div class="steps">
-    <div class="step reveal">
-      <div class="step-num">01</div>
-      <h3>Browse & Select</h3>
-      <p>Explore our menu of handcrafted small chops and pick your favourites.</p>
-    </div>
-    <div class="step reveal" style="transition-delay:0.1s">
-      <div class="step-num">02</div>
-      <h3>Place Your Order</h3>
-      <p>Submit your order at least 4 days before your desired delivery or pickup date.</p>
-    </div>
-    <div class="step reveal" style="transition-delay:0.2s">
-      <div class="step-num">03</div>
-      <h3>We Prepare Freshly</h3>
-      <p>Every item is made fresh on the day it's needed — no freezer food here.</p>
-    </div>
-    <div class="step reveal" style="transition-delay:0.3s">
-      <div class="step-num">04</div>
-      <h3>Pickup or Delivery</h3>
-      <p>Receive your order at your door or collect at our designated pickup point.</p>
+  <div class="container">
+    <span class="sec-tag" style="color:var(--gold-light)">The Process</span>
+    <h2 class="sec-title">How to place your order</h2>
+    <p class="sec-sub">We need 4 days notice so every item is prepared fresh, never frozen.</p>
+    <div class="steps">
+      <div class="step reveal"><div class="step-n">01</div><h3>Browse & Select</h3><p>Explore our three collections — ready-to-fry, fried packages, or pastries.</p></div>
+      <div class="step reveal" style="transition-delay:0.1s"><div class="step-n">02</div><h3>Place Your Order</h3><p>Submit your request at least 4 days before your event date.</p></div>
+      <div class="step reveal" style="transition-delay:0.2s"><div class="step-n">03</div><h3>We Prepare Fresh</h3><p>Everything is made fresh for your specific date. No pre-made stock.</p></div>
+      <div class="step reveal" style="transition-delay:0.3s"><div class="step-n">04</div><h3>Collect or Delivery</h3><p>Pick up your order or have it delivered right to your event.</p></div>
     </div>
   </div>
 </section>
 
-<!-- MENU -->
+<!-- ═══ MENU ═══ -->
 <section id="menu">
-  <div class="menu-header">
-    <div>
-      <span class="section-tag">Our Offerings</span>
-      <h2 class="section-title">Signature Small Chops</h2>
+  <div class="container">
+    <span class="sec-tag">Our Offerings</span>
+    <h2 class="sec-title">Sila's Kitchen Menu</h2>
+    <p class="sec-sub">Three collections to suit every occasion — pick one or mix and match.</p>
+
+    <!-- Tabs -->
+    <div class="menu-tabs" style="margin-top:2rem;">
+      <button class="menu-tab active" onclick="menuTab('rtf',this)">🧊 Signature Ready-to-Fry</button>
+      <button class="menu-tab" onclick="menuTab('fried',this)">🍟 Fried Small Chops</button>
+      <button class="menu-tab" onclick="menuTab('pastry',this)">🥐 Pastries</button>
     </div>
-    <p class="section-sub" style="max-width:300px;text-align:right;">Each item is made to order. Prices are per serving pack.</p>
-  </div>
-  <div class="menu-grid">
-    <div class="menu-card reveal">
-      <div class="menu-card-img puff">🥟</div>
-      <div class="menu-card-body">
-        <h3>Puff Puff</h3>
-        <p>Golden, pillowy fried dough balls lightly sweetened and perfectly crispy on the outside.</p>
-      </div>
-      <div class="menu-card-footer">
-        <span class="price">From ₦2,000</span>
-        <button class="order-btn" onclick="openModal('Puff Puff')">Order</button>
-      </div>
-    </div>
-    <div class="menu-card reveal" style="transition-delay:0.1s">
-      <div class="menu-card-img spring">🌯</div>
-      <div class="menu-card-body">
-        <h3>Spring Rolls</h3>
-        <p>Crispy golden rolls filled with a savoury mix of vegetables and seasoned protein.</p>
-      </div>
-      <div class="menu-card-footer">
-        <span class="price">From ₦3,500</span>
-        <button class="order-btn" onclick="openModal('Spring Rolls')">Order</button>
-      </div>
-    </div>
-    <div class="menu-card reveal" style="transition-delay:0.2s">
-      <div class="menu-card-img samosa">🫓</div>
-      <div class="menu-card-body">
-        <h3>Samosas</h3>
-        <p>Flaky, triangular pastry shells with a warmly spiced savoury filling inside.</p>
-      </div>
-      <div class="menu-card-footer">
-        <span class="price">From ₦3,000</span>
-        <button class="order-btn" onclick="openModal('Samosas')">Order</button>
-      </div>
-    </div>
-    <div class="menu-card reveal" style="transition-delay:0.1s">
-      <div class="menu-card-img wings">🍗</div>
-      <div class="menu-card-body">
-        <h3>Chicken Wings</h3>
-        <p>Marinated, oven-roasted or fried chicken wings with our signature Sila seasoning.</p>
-      </div>
-      <div class="menu-card-footer">
-        <span class="price">From ₦4,500</span>
-        <button class="order-btn" onclick="openModal('Chicken Wings')">Order</button>
+
+    <!-- ══ PANEL 1: Ready-to-Fry ══ -->
+    <div id="panel-rtf" class="menu-panel active">
+      <div class="menu-subsection"><span>🧊</span> Signature Ready-to-Fry Small Chops</div>
+      <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem;">Freshly prepared, unfried — ready for you to fry at home. Perfect for stocking up.</p>
+      <div class="menu-grid">
+        <div class="menu-card reveal">
+          <div class="card-icon bg-green">🌯</div>
+          <div class="card-body"><h3>Spring Rolls &amp; Samosas Mix</h3><p>5 Spring Rolls + 5 Samosas — a perfect starter combo.</p></div>
+          <div class="card-footer"><span class="price">₦2,500</span><button class="order-btn" onclick="openModal('Spring Rolls & Samosas Mix')">Order</button></div>
+        </div>
+        <div class="menu-card reveal" style="transition-delay:0.1s">
+          <div class="card-icon bg-green">🌯</div>
+          <div class="card-body"><h3>Spring Rolls Only (x10)</h3><p>Ten generously filled spring rolls, ready to fry golden.</p></div>
+          <div class="card-footer"><span class="price">₦2,500</span><button class="order-btn" onclick="openModal('10 Spring Rolls')">Order</button></div>
+        </div>
+        <div class="menu-card reveal" style="transition-delay:0.2s">
+          <div class="card-icon bg-amber">🥟</div>
+          <div class="card-body"><h3>Samosas Only (x10)</h3><p>Ten crispy savoury samosas, spiced to perfection.</p></div>
+          <div class="card-footer"><span class="price">₦3,000</span><button class="order-btn" onclick="openModal('10 Samosas')">Order</button></div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="card-icon bg-teal">👛</div>
+          <div class="card-body"><h3>Money Bag (x5)</h3><p>Five delightful money bag dumplings filled with a savoury mix.</p></div>
+          <div class="card-footer"><span class="price">₦2,500</span><button class="order-btn" onclick="openModal('5 Money Bags')">Order</button></div>
+        </div>
+        <div class="menu-card reveal" style="transition-delay:0.1s">
+          <div class="card-icon bg-yellow">🍡</div>
+          <div class="card-body">
+            <h3>Puff-Puff Mix</h3>
+            <p>Pre-made puff-puff batter mix — just fry and serve hot.</p>
+            <p style="margin-top:0.4rem;font-size:0.76rem;color:var(--gold);">500g → ₦2,000 &nbsp;|&nbsp; 1kg → ₦4,000</p>
+          </div>
+          <div class="card-footer"><span class="price">From ₦2,000</span><button class="order-btn" onclick="openModal('Puff-Puff Mix')">Order</button></div>
+        </div>
       </div>
     </div>
-    <div class="menu-card reveal" style="transition-delay:0.2s">
-      <div class="menu-card-img gizzard">🍲</div>
-      <div class="menu-card-body">
-        <h3>Peppered Gizzards</h3>
-        <p>Tender chicken gizzards sautéed in a fiery blend of peppers and aromatic spices.</p>
+
+    <!-- ══ PANEL 2: Fried Small Chops ══ -->
+    <div id="panel-fried" class="menu-panel">
+      <div class="menu-subsection"><span>🍟</span> Fried Small Chops Packages</div>
+      <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem;">Ready to eat — fried fresh on your event date. All packages come with your <strong>choice of protein.</strong></p>
+      <div class="menu-grid">
+        <div class="menu-card reveal">
+          <div class="card-icon bg-orange">🍗</div>
+          <div class="card-body">
+            <h3>Classic Mix</h3>
+            <p>1 Spring Roll · 1 Samosa · 3 Puff-Puff · 1 Chicken</p>
+          </div>
+          <div class="card-footer"><span class="price">₦2,500</span><button class="order-btn" onclick="openModal('Classic Mix')">Order</button></div>
+        </div>
+        <div class="menu-card reveal" style="transition-delay:0.1s">
+          <div class="card-icon bg-orange">🎉</div>
+          <div class="card-body">
+            <h3>Deluxe Mix</h3>
+            <p>1 Spring Roll · 1 Samosa · 3 Puff-Puff · 3 Banana Balls · 1 Chicken</p>
+          </div>
+          <div class="card-footer"><span class="price">₦3,000</span><button class="order-btn" onclick="openModal('Deluxe Mix')">Order</button></div>
+        </div>
+        <div class="menu-card reveal" style="transition-delay:0.2s">
+          <div class="card-icon bg-red">🎊</div>
+          <div class="card-body">
+            <h3>Party Pack</h3>
+            <p>2 Spring Rolls · 2 Samosas · 5 Puff-Puff · 1 Chicken</p>
+          </div>
+          <div class="card-footer"><span class="price">₦3,500</span><button class="order-btn" onclick="openModal('Party Pack')">Order</button></div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="card-icon bg-brown">🌭</div>
+          <div class="card-body">
+            <h3>Corn Dog</h3>
+            <p>A single golden corn dog — crispy, warm, and irresistible.</p>
+          </div>
+          <div class="card-footer"><span class="price">₦700</span><button class="order-btn" onclick="openModal('Corn Dog')">Order</button></div>
+        </div>
       </div>
-      <div class="menu-card-footer">
-        <span class="price">From ₦4,000</span>
-        <button class="order-btn" onclick="openModal('Peppered Gizzards')">Order</button>
+      <div class="menu-note">
+        🍖 <strong>Protein of choice:</strong> All fried orders can be prepared with your preferred protein — <strong>Turkey, Gizzard, Beef,</strong> or <strong>Chicken.</strong> Specify when ordering.
       </div>
     </div>
-    <div class="menu-card reveal" style="transition-delay:0.3s">
-      <div class="menu-card-img more">✨</div>
-      <div class="menu-card-body">
-        <h3>& More Surprises</h3>
-        <p>Seasonal specials, platters, and custom combinations for your events — just ask!</p>
+
+    <!-- ══ PANEL 3: Pastries ══ -->
+    <div id="panel-pastry" class="menu-panel">
+      <div class="menu-subsection"><span>🥐</span> Pastries Package</div>
+      <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem;">Freshly baked pastries — perfect for events, gifting, or personal indulgence.</p>
+      <div class="menu-grid">
+        <div class="menu-card reveal">
+          <div class="card-icon bg-caramel">🍩</div>
+          <div class="card-body">
+            <h3>Milk Coated Donut</h3>
+            <p>Soft, fluffy donuts glazed with a smooth milk coating. Box of 3.</p>
+          </div>
+          <div class="card-footer"><span class="price">₦3,500 / box</span><button class="order-btn" onclick="openModal('Milk Coated Donut')">Order</button></div>
+        </div>
+        <div class="menu-card reveal" style="transition-delay:0.1s">
+          <div class="card-icon bg-pink">🍩</div>
+          <div class="card-body">
+            <h3>Sugar Coated Donut with Jam</h3>
+            <p>Sugar-crusted donuts filled with fruity jam. Box of 3.</p>
+          </div>
+          <div class="card-footer"><span class="price">₦3,000 / box</span><button class="order-btn" onclick="openModal('Sugar Jam Donut')">Order</button></div>
+        </div>
+        <div class="menu-card reveal" style="transition-delay:0.2s">
+          <div class="card-icon bg-yellow">🍩</div>
+          <div class="card-body">
+            <h3>Donut with Jam</h3>
+            <p>Classic light donut filled with a generous jam centre. Box of 3.</p>
+          </div>
+          <div class="card-footer"><span class="price">₦2,500 / box</span><button class="order-btn" onclick="openModal('Donut with Jam')">Order</button></div>
+        </div>
+        <div class="menu-card reveal">
+          <div class="card-icon bg-brown">🥧</div>
+          <div class="card-body">
+            <h3>Meat Pie</h3>
+            <p>Golden flaky pastry filled with seasoned savoury minced meat. Per piece.</p>
+          </div>
+          <div class="card-footer"><span class="price">₦1,000 / piece</span><button class="order-btn" onclick="openModal('Meat Pie')">Order</button></div>
+        </div>
+        <div class="menu-card reveal" style="transition-delay:0.1s">
+          <div class="card-icon bg-amber">🥚</div>
+          <div class="card-body">
+            <h3>Egg Roll</h3>
+            <p>Soft egg wrapped in a lightly sweetened pastry dough. Per piece.</p>
+          </div>
+          <div class="card-footer"><span class="price">₦700 / piece</span><button class="order-btn" onclick="openModal('Egg Roll')">Order</button></div>
+        </div>
       </div>
-      <div class="menu-card-footer">
-        <span class="price">Custom Pricing</span>
-        <button class="order-btn" onclick="openModal('Custom Order')">Enquire</button>
+      <div class="menu-note">
+        📦 <strong>Donuts note:</strong> All donut options come in a <strong>box of 3.</strong> For bulk orders or event catering quantities, please use the <a href="#consultation" style="color:var(--gold)">consultation form</a>.
       </div>
     </div>
   </div>
 </section>
 
-<!-- ABOUT -->
+<!-- ═══ ABOUT ═══ -->
 <section id="about">
-  <div class="about-visual reveal">
-    <div class="about-box about-box-1">🍽️</div>
-    <div class="about-box about-box-2">🎉</div>
-    <div class="about-box about-box-3">
-      <strong>100%</strong>
-      Made Fresh<br>to Order
-    </div>
-  </div>
-  <div class="about-text reveal">
-    <span class="section-tag">Our Story</span>
-    <h2 class="section-title">More than snacks — we make memories.</h2>
-    <p>Sila Kitchen and More was born out of a deep love for community, celebration, and food that truly brings people together. We believe the best moments in life deserve the best bites.</p>
-    <p>From intimate family gatherings to large events and corporate functions, we craft every piece of small chops with intentionality, freshness, and passion. No pre-made stock — everything is prepared fresh for your specific date.</p>
-    <p>We are proudly homegrown, built on the principle that <em>Good Food</em> truly makes for a <em>Good Life</em>.</p>
-    <div class="about-highlights">
-      <div class="highlight">
-        <div class="num">4+</div>
-        <div class="lbl">Years Serving</div>
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap reveal">
+       </linearGradient>
+            <linearGradient id="as" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#F5D5A8"/><stop offset="100%" stop-color="#E0B88A"/>
+            </linearGradient>
+            <linearGradient id="ac" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#F5D278"/><stop offset="100%" stop-color="#A67A10"/>
+            </linearGradient>
+            <clipPath id="aclip"><circle cx="250" cy="250" r="198"/></clipPath>
+            <path id="ata" d="M250,250 m-188,0 a188,188 0 1,1 376,0" fill="none"/>
+            <path id="aba" d="M250,250 m-170,0 a170,170 0 0,0 340,0" fill="none"/>
+          </defs>
+          <circle cx="250" cy="250" r="250" fill="#FFFDF7"/>
+          <circle cx="250" cy="250" r="220" fill="#FDF0D0"/>
+          <circle cx="250" cy="250" r="245" fill="none" stroke="url(#ag)" stroke-width="5"/>
+          <circle cx="250" cy="250" r="224" fill="none" stroke="#C9932A" stroke-width="1.5" opacity="0.6"/>
+          <circle cx="250" cy="250" r="200" fill="none" stroke="#C9932A" stroke-width="1" opacity="0.4"/>
+          <polygon points="250,14 257,23 250,32 243,23" fill="#C9932A"/>
+          <polygon points="250,468 257,477 250,486 243,477" fill="#C9932A"/>
+          <polygon points="14,250 23,243 32,250 23,257" fill="#C9932A"/>
+          <polygon points="468,250 477,243 486,250 477,257" fill="#C9932A"/>
+          <text font-family="Georgia,serif" font-size="22" font-weight="bold" letter-spacing="5.5" fill="#1A1008"><textPath href="#ata" startOffset="7%">SILA'S  KITCHEN  AND  MORE</textPath></text>
+          <text font-family="Georgia,serif" font-size="14.5" letter-spacing="3.5" fill="#C9932A"><textPath href="#aba" startOffset="3%">QUALITY  SERVICE  IS  OUR  BENCHMARK</textPath></text>
+          <g clip-path="url(#aclip)">
+            <g transform="translate(316,168)"><ellipse cx="0" cy="26" rx="30" ry="6" fill="url(#ac)"/><ellipse cx="0" cy="23" rx="27" ry="4.5" fill="#FDF0D0"/><path d="M-28,23 Q-28,-12 0,-18 Q28,-12 28,23 Z" fill="url(#ac)" stroke="#A67A10" stroke-width="1.2"/><rect x="-4" y="-26" width="8" height="10" rx="4" fill="url(#ac)"/><ellipse cx="0" cy="-28" rx="7" ry="4.5" fill="url(#ac)"/></g>
+            <path d="M252,232 C265,210 282,183 302,168 C310,162 320,158 322,165 C325,172 315,178 308,185 C292,200 278,220 268,238 Z" fill="url(#as)"/>
+            <path d="M210,250 C205,260 200,310 202,360 C204,380 220,395 250,398 C280,398 296,380 298,360 C300,310 295,260 290,250 Z" fill="#2A1800"/>
+            <path d="M225,255 C222,265 218,310 220,355 C221,368 232,378 250,380 C268,378 279,368 280,355 C282,310 278,265 275,255 Z" fill="#3D2200"/>
+            <ellipse cx="250" cy="235" rx="14" ry="10" fill="url(#as)"/>
+            <ellipse cx="250" cy="200" rx="38" ry="42" fill="url(#as)"/>
+            <path d="M213,200 C213,170 220,152 250,150 C280,152 287,170 287,200 L280,200 C280,174 268,162 250,161 C232,162 220,174 220,200 Z" fill="#1A1008"/>
+            <rect x="215" y="193" width="70" height="10" rx="4" fill="#1A1008"/>
+            <ellipse cx="250" cy="163" rx="30" ry="20" fill="#1A1008"/>
+            <ellipse cx="239" cy="200" rx="4" ry="4.5" fill="#1A1008"/>
+            <ellipse cx="261" cy="200" rx="4" ry="4.5" fill="#1A1008"/>
+            <circle cx="241" cy="198" r="1.3" fill="#fff"/>
+            <circle cx="263" cy="198" r="1.3" fill="#fff"/>
+            <path d="M241,213 Q250,220 259,213" fill="none" stroke="#1A1008" stroke-width="1.8" stroke-linecap="round"/>
+            <ellipse cx="232" cy="210" rx="7" ry="4" fill="#E8A080" opacity="0.35"/>
+            <ellipse cx="268" cy="210" rx="7" ry="4" fill="#E8A080" opacity="0.35"/>
+            <path d="M218,245 C210,260 206,290 208,315 C209,325 215,330 220,328 C225,326 226,318 225,308 C224,285 228,262 232,248 Z" fill="url(#as)"/>
+            <ellipse cx="215" cy="330" rx="9" ry="7" fill="url(#as)"/>
+            <ellipse cx="310" cy="185" rx="9" ry="7" fill="url(#as)" transform="rotate(-30 310 185)"/>
+            <path d="M202,360 C198,380 194,400 192,418 L308,418 C306,400 302,380 298,360 Z" fill="#2A1800"/>
+            <path d="M236,242 L250,255 L264,242 L258,235 L250,240 L242,235 Z" fill="#1A1008"/>
+            <circle cx="250" cy="268" r="3" fill="#C9932A" opacity="0.8"/>
+            <circle cx="250" cy="282" r="3" fill="#C9932A" opacity="0.8"/>
+            <circle cx="250" cy="296" r="3" fill="#C9932A" opacity="0.8"/>
+          </g>
+        </svg>
       </div>
-      <div class="highlight">
-        <div class="num">500+</div>
-        <div class="lbl">Happy Clients</div>
-      </div>
-      <div class="highlight">
-        <div class="num">100%</div>
-        <div class="lbl">Fresh Always</div>
+      <div class="about-text reveal" style="transition-delay:0.15s">
+        <span class="sec-tag">Our Story</span>
+        <h2 class="sec-title">More than food — we make moments.</h2>
+        <p>Sila's Kitchen and More was born out of a deep love for community, celebration, and food that truly brings people together.</p>
+        <p>From intimate family gatherings to large events and corporate functions, every piece is crafted with freshness and passion. No pre-made stock — everything prepared fresh for your date.</p>
+        <p>We are proudly homegrown, built on the principle that <em>Quality Service Is Our Benchmark.</em></p>
+        <div class="about-nums">
+          <div class="about-num"><div class="n">4+</div><div class="l">Years Serving</div></div>
+          <div class="about-num"><div class="n">500+</div><div class="l">Happy Clients</div></div>
+          <div class="about-num"><div class="n">100%</div><div class="l">Fresh Always</div></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- GALLERY -->
+<!-- ═══ GALLERY ═══ -->
 <section id="gallery">
-  <span class="section-tag">Gallery</span>
-  <h2 class="section-title">A feast for the eyes</h2>
-  <div class="gallery-grid">
-    <div class="gallery-item reveal">🍽️</div>
-    <div class="gallery-item reveal" style="transition-delay:0.1s">🥟</div>
-    <div class="gallery-item reveal" style="transition-delay:0.2s">🌯</div>
-    <div class="gallery-item reveal" style="transition-delay:0.1s">🍗</div>
-    <div class="gallery-item reveal" style="transition-delay:0.2s">🥘</div>
+  <div class="container">
+    <span class="sec-tag" style="color:var(--gold-light)">Gallery</span>
+    <h2 class="sec-title reveal">A feast for the eyes</h2>
+    <div class="gal-tabs reveal">
+      <button class="gal-tab active" onclick="galTab('photos',this)">📸 Photos</button>
+      <button class="gal-tab" onclick="galTab('videos',this)">🎬 Videos</button>
+    </div>
+    <div id="gphotos" class="gal-panel gal-photos active">
+      <div class="g-item reveal"><span>🍽️</span><div class="g-label">Our Spread</div></div>
+      <div class="g-item reveal" style="transition-delay:0.1s"><span>🌯</span><div class="g-label">Spring Rolls</div></div>
+      <div class="g-item reveal" style="transition-delay:0.15s"><span>🥟</span><div class="g-label">Samosas</div></div>
+      <div class="g-item reveal" style="transition-delay:0.1s"><span>🍩</span><div class="g-label">Donuts</div></div>
+      <div class="g-item reveal" style="transition-delay:0.2s"><span>🥧</span><div class="g-label">Pastries</div></div>
+    </div>
+    <div id="gvideos" class="gal-panel gal-videos">
+      <div class="vid-card"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><div class="vid-title">Behind the Kitchen</div><div class="vid-sub">Watch us prepare your order</div></div>
+      <div class="vid-card"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><div class="vid-title">Event Highlights</div><div class="vid-sub">Sila's at celebrations</div></div>
+      <div class="vid-card"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><div class="vid-title">Making Puff Puff</div><div class="vid-sub">Fresh from the fryer</div></div>
+      <div class="vid-card"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><div class="vid-title">Customer Stories</div><div class="vid-sub">What our clients say</div></div>
+      <div class="vid-hint">💡 To add real videos: replace each video card's inner content with <code>&lt;video src="your-video.mp4" controls poster="thumb.jpg"&gt;&lt;/video&gt;</code></div>
+    </div>
   </div>
 </section>
 
-<!-- CONSULTATION -->
+<!-- ═══ CONSULTATION ═══ -->
 <section id="consultation">
-  <div class="consult-wrapper">
-    <div class="consult-info reveal">
-      <span class="section-tag">Consultation Service</span>
-      <h2 class="section-title">Planning an event? Let's talk.</h2>
-      <p>Whether it's a birthday party, wedding reception, corporate event, or a small get-together — we'll help you figure out the right quantities, variety, and budget to make your event delicious.</p>
-      <p>Our consultation is free and available via phone, WhatsApp, or in-person (by appointment).</p>
-      <ul class="consult-features">
-        <li>Custom menu curation for your event type</li>
-        <li>Portion & quantity planning advice</li>
-        <li>Budget-friendly options available</li>
-        <li>Bulk order discounts for large events</li>
-        <li>Delivery logistics coordination</li>
-        <li>Same-day WhatsApp confirmations</li>
-      </ul>
-    </div>
-    <div class="consult-form reveal" style="transition-delay:0.2s">
-      <h3>Book a Free Consultation</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label>First Name</label>
-          <input type="text" placeholder="Ada">
+  <div class="container">
+    <div class="consult-grid">
+      <div class="reveal">
+        <span class="sec-tag">Free Consultation</span>
+        <h2 class="sec-title">Planning an event? Let's talk.</h2>
+        <p>Whether it's a birthday, wedding, or corporate function — we'll help you plan the right quantities, variety, and budget.</p>
+        <p>Available via phone, WhatsApp, or in-person (by appointment).</p>
+        <ul class="consult-list">
+          <li>Custom menu curation for your event</li>
+          <li>Portion &amp; quantity planning advice</li>
+          <li>Budget-friendly options</li>
+          <li>Bulk order discounts for large events</li>
+          <li>Delivery logistics coordination</li>
+          <li>WhatsApp confirmations same day</li>
+        </ul>
+      </div>
+      <div class="consult-form reveal" style="transition-delay:0.2s">
+        <h3>Book a Free Consultation</h3>
+        <div class="fg2">
+          <div class="fg"><label>First Name</label><input type="text" placeholder="Ada"></div>
+          <div class="fg"><label>Last Name</label><input type="text" placeholder="Okafor"></div>
         </div>
-        <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" placeholder="Okafor">
+        <div class="fg"><label>Phone / WhatsApp</label><input type="tel" placeholder="+234 800 000 0000"></div>
+        <div class="fg"><label>Event Type</label>
+          <select><option>Select event type</option><option>Birthday Party</option><option>Wedding / Engagement</option><option>Corporate Event</option><option>Baby Shower</option><option>Graduation Party</option><option>Other</option></select>
         </div>
-      </div>
-      <div class="form-group">
-        <label>Phone / WhatsApp</label>
-        <input type="tel" placeholder="+234 800 000 0000">
-      </div>
-      <div class="form-group">
-        <label>Event Type</label>
-        <select>
-          <option value="">Select event type</option>
-          <option>Birthday Party</option>
-          <option>Wedding / Engagement</option>
-          <option>Corporate Event</option>
-          <option>Baby Shower</option>
-          <option>Graduation Party</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Event Date</label>
-          <input type="date">
+        <div class="fg2">
+          <div class="fg"><label>Event Date</label><input type="date"></div>
+          <div class="fg"><label>Guests (approx.)</label><input type="number" placeholder="50"></div>
         </div>
-        <div class="form-group">
-          <label>Guests (approx.)</label>
-          <input type="number" placeholder="50">
-        </div>
+        <div class="fg"><label>Notes</label><textarea placeholder="Tell us more about your event..."></textarea></div>
+        <button class="btn-gold" style="width:100%;" onclick="alert('Thank you! We\'ll contact you within 24 hours.')">Submit Request</button>
       </div>
-      <div class="form-group">
-        <label>Additional Notes</label>
-        <textarea placeholder="Tell us more about your event..."></textarea>
-      </div>
-      <button class="btn-primary" style="width:100%;text-align:center;" onclick="alert('Thank you! We will contact you within 24 hours.')">
-        Submit Consultation Request
-      </button>
     </div>
   </div>
 </section>
 
-<!-- CONTACT & HOURS -->
+<!-- ═══ CONTACT ═══ -->
 <section id="contact">
-  <span class="section-tag">Find Us</span>
-  <h2 class="section-title">Contact & Hours</h2>
-  <div class="contact-grid">
-    <div class="contact-card reveal">
-      <h3>Get In Touch</h3>
-      <p>
-        📞 <a href="tel:+2340000000000">+234 000 000 0000</a><br><br>
-        💬 <a href="#">WhatsApp Us</a><br><br>
-        ✉️ <a href="mailto:hello@silakitchen.com">hello@silakitchen.com</a><br><br>
-        📸 <a href="#">@silakitchen</a> on Instagram
-      </p>
+  <div class="container">
+    <span class="sec-tag" style="color:var(--gold-light)">Find Us</span>
+    <h2 class="sec-title">Contact &amp; Hours</h2>
+    <div class="contact-grid">
+      <div class="contact-card reveal">
+        <h3>Get In Touch</h3>
+        <p>📞 <a href="tel:+2348150563651">+2348150563651</a><br><br>
+           💬 <a href="#">WhatsApp Us</a><br><br>
+           ✉️ <a href="mailto:hello@sila’skitchenandmore@gmail.com">sila’skitchenandmore@gmail.com</a><br><br>
+           📸 <a href="#">@silaskitchenandmore</a></p>
+      </div>
+      <div class="contact-card reveal" style="transition-delay:0.1s">
+        <h3>Order Hours</h3>
+        <div class="hr-row"><span class="d">Monday – Friday</span><span class="t">8am – 6pm</span></div>
+        <div class="hr-row"><span class="d">Saturday</span><span class="t">9am – 4pm</span></div>
+        <div class="hr-row"><span class="d">Sunday</span><span class="t">Closed</span></div>
+        <br><p style="font-size:0.76rem;color:rgba(255,255,255,0.3);">Orders via WhatsApp, email or form.</p>
+      </div>
+      <div class="contact-card reveal" style="transition-delay:0.2s">
+        <h3>Delivery &amp; Pickup</h3>
+        <p>We offer both <strong style="color:#fff">pickup</strong> and <strong style="color:#fff">delivery</strong>.<br><br>Delivery zones and fees apply. Contact us to confirm availability.<br><br><a href="#consultation">→ Book a consultation</a> for large events.</p>
+      </div>
     </div>
-    <div class="contact-card reveal" style="transition-delay:0.1s">
-      <h3>Order Hours</h3>
-      <div class="hours-row"><span class="day">Monday – Friday</span><span class="time">8am – 6pm</span></div>
-      <div class="hours-row"><span class="day">Saturday</span><span class="time">9am – 4pm</span></div>
-      <div class="hours-row"><span class="day">Sunday</span><span class="time">Closed</span></div>
-      <br>
-      <p style="font-size:0.8rem;color:rgba(255,255,255,0.4);">Orders accepted via WhatsApp, email, or website form.</p>
-    </div>
-    <div class="contact-card reveal" style="transition-delay:0.2s">
-      <h3>Delivery & Pickup</h3>
-      <p>
-        We offer both <strong style="color:#fff">pickup</strong> and <strong style="color:#fff">delivery</strong> options.<br><br>
-        Delivery zones and fees apply.<br>
-        Contact us to confirm availability in your area.<br><br>
-        <a href="#consultation">→ Book a consultation</a> for large event deliveries.
-      </p>
-    </div>
-  </div>
-  <div class="notice">
-    ⏰ <strong>Important:</strong> All orders require a minimum of <strong>4 days advance notice</strong> to ensure freshness. We do not accept same-day or next-day orders.
+    <div class="notice">⏰ <strong>Important:</strong> All orders require a minimum of <strong>4 days advance notice.</strong> We do not accept same-day or next-day orders.</div>
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ═══ FOOTER ═══ -->
 <footer>
-  <p>© 2025 <span>Sila Kitchen and More</span> · Good Food, Good Life. · All rights reserved.</p>
+  <div class="footer-left">
+    <svg class="footer-logo-circle" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="fg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#F5D278"/><stop offset="50%" stop-color="#C9932A"/><stop offset="100%" stop-color="#8B5E10"/>
+        </linearGradient>
+        <linearGradient id="fs" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#F5D5A8"/><stop offset="100%" stop-color="#E0B88A"/>
+        </linearGradient>
+        <linearGradient id="fc" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#F5D278"/><stop offset="100%" stop-color="#A67A10"/>
+        </linearGradient>
+        <clipPath id="fclip"><circle cx="250" cy="250" r="198"/></clipPath>
+        <path id="fta" d="M250,250 m-188,0 a188,188 0 1,1 376,0" fill="none"/>
+        <path id="fba" d="M250,250 m-170,0 a170,170 0 0,0 340,0" fill="none"/>
+      </defs>
+      <circle cx="250" cy="250" r="250" fill="#FFFDF7"/>
+      <circle cx="250" cy="250" r="220" fill="#FDF0D0"/>
+      <circle cx="250" cy="250" r="245" fill="none" stroke="url(#fg)" stroke-width="5"/>
+      <circle cx="250" cy="250" r="224" fill="none" stroke="#C9932A" stroke-width="1.5" opacity="0.6"/>
+      <circle cx="250" cy="250" r="200" fill="none" stroke="#C9932A" stroke-width="1" opacity="0.4"/>
+      <polygon points="250,14 257,23 250,32 243,23" fill="#C9932A"/>
+      <polygon points="250,468 257,477 250,486 243,477" fill="#C9932A"/>
+      <polygon points="14,250 23,243 32,250 23,257" fill="#C9932A"/>
+      <polygon points="468,250 477,243 486,250 477,257" fill="#C9932A"/>
+      <text font-family="Georgia,serif" font-size="22" font-weight="bold" letter-spacing="5.5" fill="#1A1008"><textPath href="#fta" startOffset="7%">SILA'S  KITCHEN  AND  MORE</textPath></text>
+      <text font-family="Georgia,serif" font-size="14.5" letter-spacing="3.5" fill="#C9932A"><textPath href="#fba" startOffset="3%">QUALITY  SERVICE  IS  OUR  BENCHMARK</textPath></text>
+      <g clip-path="url(#fclip)">
+        <g transform="translate(316,168)"><ellipse cx="0" cy="26" rx="30" ry="6" fill="url(#fc)"/><ellipse cx="0" cy="23" rx="27" ry="4.5" fill="#FDF0D0"/><path d="M-28,23 Q-28,-12 0,-18 Q28,-12 28,23 Z" fill="url(#fc)" stroke="#A67A10" stroke-width="1.2"/><rect x="-4" y="-26" width="8" height="10" rx="4" fill="url(#fc)"/><ellipse cx="0" cy="-28" rx="7" ry="4.5" fill="url(#fc)"/></g>
+        <path d="M252,232 C265,210 282,183 302,168 C310,162 320,158 322,165 C325,172 315,178 308,185 C292,200 278,220 268,238 Z" fill="url(#fs)"/>
+        <path d="M210,250 C205,260 200,310 202,360 C204,380 220,395 250,398 C280,398 296,380 298,360 C300,310 295,260 290,250 Z" fill="#2A1800"/>
+        <path d="M225,255 C222,265 218,310 220,355 C221,368 232,378 250,380 C268,378 279,368 280,355 C282,310 278,265 275,255 Z" fill="#3D2200"/>
+        <ellipse cx="250" cy="235" rx="14" ry="10" fill="url(#fs)"/>
+        <ellipse cx="250" cy="200" rx="38" ry="42" fill="url(#fs)"/>
+        <path d="M213,200 C213,170 220,152 250,150 C280,152 287,170 287,200 L280,200 C280,174 268,162 250,161 C232,162 220,174 220,200 Z" fill="#1A1008"/>
+        <rect x="215" y="193" width="70" height="10" rx="4" fill="#1A1008"/>
+        <ellipse cx="250" cy="163" rx="30" ry="20" fill="#1A1008"/>
+        <ellipse cx="239" cy="200" rx="4" ry="4.5" fill="#1A1008"/>
+        <ellipse cx="261" cy="200" rx="4" ry="4.5" fill="#1A1008"/>
+        <circle cx="241" cy="198" r="1.3" fill="#fff"/>
+        <circle cx="263" cy="198" r="1.3" fill="#fff"/>
+        <path d="M241,213 Q250,220 259,213" fill="none" stroke="#1A1008" stroke-width="1.8" stroke-linecap="round"/>
+        <ellipse cx="232" cy="210" rx="7" ry="4" fill="#E8A080" opacity="0.35"/>
+        <ellipse cx="268" cy="210" rx="7" ry="4" fill="#E8A080" opacity="0.35"/>
+        <path d="M218,245 C210,260 206,290 208,315 C209,325 215,330 220,328 C225,326 226,318 225,308 C224,285 228,262 232,248 Z" fill="url(#fs)"/>
+        <ellipse cx="215" cy="330" rx="9" ry="7" fill="url(#fs)"/>
+        <ellipse cx="310" cy="185" rx="9" ry="7" fill="url(#fs)" transform="rotate(-30 310 185)"/>
+        <path d="M202,360 C198,380 194,400 192,418 L308,418 C306,400 302,380 298,360 Z" fill="#2A1800"/>
+        <path d="M236,242 L250,255 L264,242 L258,235 L250,240 L242,235 Z" fill="#1A1008"/>
+        <circle cx="250" cy="268" r="3" fill="#C9932A" opacity="0.8"/>
+        <circle cx="250" cy="282" r="3" fill="#C9932A" opacity="0.8"/>
+        <circle cx="250" cy="296" r="3" fill="#C9932A" opacity="0.8"/>
+      </g>
+    </svg>
+    <div class="footer-brand">
+      <span class="footer-brand-name">Sila's Kitchen and More</span>
+      <span class="footer-brand-slogan">Quality Service Is Our Benchmark</span>
+    </div>
+  </div>
+  <p class="footer-copy">© 2025 Sila's Kitchen and More · All rights reserved.</p>
+  <div class="footer-links">
+    <a href="#menu">Menu</a><a href="#about">About</a>
+    <a href="#gallery">Gallery</a><a href="#contact">Contact</a>
+  </div>
 </footer>
 
-<!-- ORDER MODAL -->
-<div class="modal-overlay" id="orderModal">
+<!-- ═══ ORDER MODAL ═══ -->
+<div class="modal-overlay" id="modal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">×</button>
     <h3 id="modalTitle">Place an Order</h3>
-    <p>Fill in your details and we'll confirm your order within 24 hours. Remember: orders need at least 4 days notice!</p>
-    <div class="form-group">
-      <label>Your Name</label>
-      <input type="text" placeholder="Full Name">
-    </div>
-    <div class="form-group">
-      <label>WhatsApp / Phone</label>
-      <input type="tel" placeholder="+234 800 000 0000">
-    </div>
-    <div class="form-group">
-      <label>Desired Date</label>
-      <input type="date">
-    </div>
-    <div class="form-group">
-      <label>Quantity / Notes</label>
-      <textarea placeholder="e.g. 50 pieces, for a birthday party..."></textarea>
-    </div>
-    <button class="btn-primary" style="width:100%;" onclick="submitOrder()">Send Order Request</button>
+    <p>Fill in your details. Minimum 4 days notice required.</p>
+    <div class="fg"><label>Your Name</label><input type="text" placeholder="Full Name"></div>
+    <div class="fg"><label>WhatsApp / Phone</label><input type="tel" placeholder="+234 800 000 0000"></div>
+    <div class="fg"><label>Desired Date</label><input type="date"></div>
+    <div class="fg"><label>Quantity / Protein choice / Notes</label><textarea placeholder="e.g. 50 pieces, protein: gizzard, birthday party..."></textarea></div>
+    <button class="btn-gold" style="width:100%;" onclick="submitOrder()">Send Order Request</button>
   </div>
 </div>
 
 <script>
-  // Modal
-  function openModal(item) {
-    document.getElementById('modalTitle').textContent = 'Order: ' + item;
-    document.getElementById('orderModal').classList.add('active');
-  }
-  function closeModal() {
-    document.getElementById('orderModal').classList.remove('active');
-  }
-  function submitOrder() {
-    closeModal();
-    alert('🎉 Order request received! We\'ll confirm via WhatsApp within 24 hours.');
-  }
-  document.getElementById('orderModal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-  });
-
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
+function menuTab(name,btn){
+  document.querySelectorAll('.menu-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.menu-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function galTab(name,btn){
+  document.querySelectorAll('.gal-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.gal-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('g'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function openModal(item){
+  document.getElementById('modalTitle').textContent='Order: '+item;
+  document.getElementById('modal').classList.add('active');
+}
+function closeModal(){document.getElementById('modal').classList.remove('active');}
+function submitOrder(){closeModal();alert('🎉 Order received! We\'ll confirm via WhatsApp within 24 hours.');}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal();});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 </script>
 </body>
 </html>
