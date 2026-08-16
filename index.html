@@ -776,60 +776,118 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
 
   const WHATSAPP_NUMBER = '2348150563651';
   const MIN_LEAD_DAYS = 4;
+  const $ = id => document.getElementById(id);
 
-  const GALLERY_PHOTOS = [
-    {src:'menu-small-chops-fusion.jpg',label:'Small Chops Fusion'},
-    {src:'menu-spring-rolls-samosas-mix.jpg',label:'Spring Rolls & Samosas Mix'},
-    {src:'menu-spring-rolls.JPG',label:'Spring Rolls'},
-    {src:'menu-samosas.JPG',label:'Samosas'},
-    {src:'menu-money-bag.jpg',label:'Money Bags'},
-    {src:'menu-puff-puff-mix.JPG',label:'Puff-Puff'},
-    {src:'menu-classic-mix.jpg',label:'Classic Mix'},
-    {src:'menu-deluxe-mix.jpg',label:'Deluxe Mix'},
-    {src:'sobo.jpg',label:'Sobo Drink'},
-    {src:'menu-milk-donut.jpg',label:'Milk Coated Donut'}
-  ];
+  const state = { item:'(no item)', price:'', pay:'' };
 
-  const GALLERY_VIDEOS = [];
-    checks.forEach(([wrap,id,test])=>{
-      const el=$(wrap),ok=test($(id).value.trim());
-      el.classList.toggle('has-error',!ok);
-      const msg=el.querySelector('.error-msg'); if(msg)msg.style.display=ok?'none':'block';
-      if(!ok)valid=false;
+  function escapeHTML(value){
+    return String(value ?? '').replace(/[&<>"']/g,ch=>({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+    })[ch]);
+  }
+
+  function minimumDate(){
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    d.setDate(d.getDate()+MIN_LEAD_DAYS);
+    return d.toISOString().split('T')[0];
+  }
+
+  function formatDate(value){
+    if(!value) return '—';
+    const parts=value.split('-').map(Number);
+    if(parts.length!==3 || parts.some(Number.isNaN)) return value;
+    return new Date(parts[0],parts[1]-1,parts[2]).toLocaleDateString('en-GB',{
+      day:'numeric',month:'long',year:'numeric'
+    });
+  }
+
+  /* MENU TABS */
+  document.querySelectorAll('.menu-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.menu-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.menu-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      const panel=$('panel-'+btn.dataset.menu);
+      if(panel) panel.classList.add('active');
+    });
+  });
+
+  /* ORDER MODAL */
+  function showStep(id){
+    ['step1','step2','step3'].forEach(step=>{
+      const el=$(step);
+      if(el) el.classList.toggle('active',step===id);
+    });
+    $('slbl1').classList.toggle('active',id==='step1');
+    $('slbl2').classList.toggle('active',id!=='step1');
+  }
+
+  function openModal(item,price){
+    state.item=item||'(no item)';
+    state.price=price||'';
+    state.pay='';
+    $('modalTitle').textContent='Order: '+state.item;
+    document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('selected'));
+    $('paymentError').classList.remove('show');
+    showStep('step1');
+    $('modal').classList.add('active');
+    $('modal').setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+  }
+
+  function closeModal(){
+    $('modal').classList.remove('active');
+    $('modal').setAttribute('aria-hidden','true');
+    state.pay='';
+    document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('selected'));
+    document.body.classList.remove('modal-open');
+  }
+
+  function validateOrderDetails(){
+    const checks=[
+      ['fieldName','oName',v=>v.length>0],
+      ['fieldPhone','oPhone',v=>v.length>0],
+      ['fieldDate','oDate',v=>v && v>=minimumDate()]
+    ];
+    let valid=true;
+    checks.forEach(([wrapId,inputId,test])=>{
+      const wrap=$(wrapId),input=$(inputId);
+      const ok=test(input.value.trim());
+      wrap.classList.toggle('has-error',!ok);
+      const msg=wrap.querySelector('.error-msg');
+      if(msg) msg.style.display=ok?'none':'block';
+      if(!ok && valid) input.focus();
+      if(!ok) valid=false;
     });
     return valid;
   }
 
   function continueToPayment(){
-    if(!validateOrderDetails())return;
-    const name=escapeHTML($('oName').value.trim());
-    const phone=escapeHTML($('oPhone').value.trim());
-    const date=formatDate($('oDate').value);
+    if(!validateOrderDetails()) return;
     const notes=escapeHTML($('oNotes').value.trim()).replace(/\n/g,'<br>');
     $('orderSummary').innerHTML=
-      `<strong>Item:</strong> ${escapeHTML(state.item)}<br>
-       <strong>Price:</strong> <span style="color:var(--gold);font-weight:800">${escapeHTML(state.price)}</span><br>
-       <strong>Name:</strong> ${name}<br>
-       <strong>Phone:</strong> ${phone}<br>
-       <strong>Date:</strong> ${date}
-       ${notes?`<br><strong>Notes:</strong> ${notes}`:''}`;
+      '<strong>Item:</strong> '+escapeHTML(state.item)+'<br>'+
+      '<strong>Price:</strong> <span style="color:var(--gold);font-weight:800">'+escapeHTML(state.price)+'</span><br>'+
+      '<strong>Name:</strong> '+escapeHTML($('oName').value.trim())+'<br>'+
+      '<strong>Phone:</strong> '+escapeHTML($('oPhone').value.trim())+'<br>'+
+      '<strong>Date:</strong> '+escapeHTML(formatDate($('oDate').value))+
+      (notes?'<br><strong>Notes:</strong> '+notes:'');
     showStep('step2');
   }
 
   function buildWhatsAppMessage(){
-    const methodNames={bank:'Bank Transfer',mobile:'Mobile Payment',ussd:'USSD Transfer',pickup:'Pay on Pickup'};
+    const names={bank:'Bank Transfer',mobile:'Mobile Payment',ussd:'USSD Transfer',pickup:'Pay on Pickup'};
     return [
-      "Hello Sila's Kitchen and More,",
-      "",
+      "Hello Sila's Kitchen and More,","",
       "I would like to place an order.",
-      `Item: ${state.item}`,
-      `Price: ${state.price}`,
-      `Name: ${$('oName').value.trim()}`,
-      `Phone/WhatsApp: ${$('oPhone').value.trim()}`,
-      `Desired Date: ${formatDate($('oDate').value)}`,
-      `Quantity / Protein / Notes: ${$('oNotes').value.trim() || 'Not specified'}`,
-      `Preferred Payment: ${methodNames[state.pay] || state.pay}`,
-      "",
+      "Item: "+state.item,
+      "Price: "+state.price,
+      "Name: "+$('oName').value.trim(),
+      "Phone/WhatsApp: "+$('oPhone').value.trim(),
+      "Desired Date: "+formatDate($('oDate').value),
+      "Quantity / Protein / Notes: "+($('oNotes').value.trim()||'Not specified'),
+      "Preferred Payment: "+(names[state.pay]||state.pay),"",
       "Please confirm availability and the next steps. Thank you."
     ].join('\n');
   }
@@ -839,117 +897,27 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
       $('paymentError').classList.add('show');
       return;
     }
-    const paymentDetails={
+    const details={
       bank:'Bank Transfer — Opay account 8150563651. Send receipt via WhatsApp after payment.',
       mobile:'Mobile Payment — Opay/Palmpay/Kuda. Send payment screenshot via WhatsApp after payment.',
       ussd:'USSD Transfer — Opay USSD: *955#. Transfer to 8150563651 and send confirmation via WhatsApp.',
       pickup:'Pay on Pickup — Cash or POS at collection.'
     };
     $('confirmDetails').innerHTML=
-      `<strong>Order:</strong> ${escapeHTML(state.item)}<br>
-       <strong>Price:</strong> ${escapeHTML(state.price)}<br>
-       <strong>Name:</strong> ${escapeHTML($('oName').value.trim())}<br>
-       <strong>Date:</strong> ${escapeHTML(formatDate($('oDate').value))}<br>
-       <strong>Payment:</strong> ${escapeHTML(paymentDetails[state.pay])}<br><br>
-       <strong>Next step:</strong> Send this order request through WhatsApp. Your order is not considered confirmed until Sila's Kitchen acknowledges it.`;
+      '<strong>Order:</strong> '+escapeHTML(state.item)+'<br>'+
+      '<strong>Price:</strong> '+escapeHTML(state.price)+'<br>'+
+      '<strong>Name:</strong> '+escapeHTML($('oName').value.trim())+'<br>'+
+      '<strong>Date:</strong> '+escapeHTML(formatDate($('oDate').value))+'<br>'+
+      '<strong>Payment:</strong> '+escapeHTML(details[state.pay])+'<br><br>'+
+      '<strong>Next step:</strong> Send this order request through WhatsApp. '+
+      'Your order is not considered confirmed until Sila\'s Kitchen acknowledges it.';
     $('whatsappOrder').href='https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(buildWhatsAppMessage());
     showStep('step3');
   }
 
-  function wireImageFallbacks(){
-    document.querySelectorAll('.mcard-top img').forEach(img=>{
-      if(!img.getAttribute('src')){
-        const wrap=img.closest('.mcard-top');
-        if(wrap) wrap.classList.add('has-error');
-        return;
-      }
-      img.addEventListener('error',()=>{
-        img.dataset.broken='true';
-        const wrap=img.closest('.mcard-top');
-        if(wrap) wrap.classList.add('has-error');
-      },{once:true});
-    });
-  }
-
-  const galleryState={index:0,items:[]};
-
-  function buildGallery(){
-    $('gphotos').innerHTML=GALLERY_PHOTOS.map((p,i)=>
-      `<button class="g-item" type="button" data-gallery-index="${i}" aria-label="View ${escapeHTML(p.label)}">
-        <img src="${escapeHTML(p.src)}" alt="${escapeHTML(p.label)}" loading="${i<3?'eager':'lazy'}" decoding="async">
-        <span class="g-zoom" aria-hidden="true">⌕</span>
-        <span class="g-label">${escapeHTML(p.label)}</span>
-      </button>`).join('');
-
-    $('gvideos').innerHTML=GALLERY_VIDEOS.length
-      ? GALLERY_VIDEOS.map(v=>`<article class="vid-card"><video src="${escapeHTML(v.src)}" poster="${escapeHTML(v.poster||'')}" controls preload="metadata" playsinline></video><div class="vid-meta"><div class="vid-title">${escapeHTML(v.title)}</div><div class="vid-sub">${escapeHTML(v.sub)}</div></div></article>`).join('')
-      : `<div class="video-empty"><div style="font-size:2rem;margin-bottom:.6rem">🎬</div><strong>Videos coming soon</strong><span>We're preparing more behind-the-scenes and event videos for Sila's Kitchen.</span></div>`;
-
-    galleryState.items=[...GALLERY_PHOTOS];
-    document.querySelectorAll('.g-item').forEach(card=>card.addEventListener('click',()=>openLightbox(Number(card.dataset.galleryIndex))));
-  }
-
-  function openLightbox(index){
-    if(!galleryState.items.length)return;
-    galleryState.index=(index+galleryState.items.length)%galleryState.items.length;
-    renderLightbox();
-    $('galleryLightbox').classList.add('active');
-    $('galleryLightbox').setAttribute('aria-hidden','false');
-    document.body.classList.add('modal-open');
-  }
-
-  function renderLightbox(){
-    const item=galleryState.items[galleryState.index],img=$('lightboxImage');
-    img.classList.remove('lightbox-image');void img.offsetWidth;img.classList.add('lightbox-image');
-    img.src=item.src;img.alt=item.label;
-    $('lightboxTitle').textContent=item.label;
-    $('lightboxCounter').textContent=(galleryState.index+1)+' / '+galleryState.items.length;
-  }
-
-  function closeLightbox(){
-    $('galleryLightbox').classList.remove('active');
-    $('galleryLightbox').setAttribute('aria-hidden','true');
-    document.body.classList.remove('modal-open');
-    $('lightboxImage').src='';
-  }
-
-  function galleryNext(step){
-    if(!galleryState.items.length)return;
-    galleryState.index=(galleryState.index+step+galleryState.items.length)%galleryState.items.length;
-    renderLightbox();
-  }
-
-  $('lightboxClose').addEventListener('click',closeLightbox);
-  $('lightboxPrev').addEventListener('click',()=>galleryNext(-1));
-  $('lightboxNext').addEventListener('click',()=>galleryNext(1));
-  $('galleryLightbox').addEventListener('click',e=>{if(e.target===$('galleryLightbox'))closeLightbox();});
-  let touchStartX=0;
-  $('galleryLightbox').addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].clientX;},{passive:true});
-  $('galleryLightbox').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchStartX;if(Math.abs(dx)>50)galleryNext(dx<0?1:-1);},{passive:true});
-  document.addEventListener('keydown',e=>{const lb=$('galleryLightbox');if(lb.classList.contains('active')){if(e.key==='Escape')closeLightbox();if(e.key==='ArrowRight')galleryNext(1);if(e.key==='ArrowLeft')galleryNext(-1);}});
-
-  document.querySelectorAll('.menu-tab').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.menu-tab').forEach(b=>b.classList.remove('active'));
-      document.querySelectorAll('.menu-panel').forEach(p=>p.classList.remove('active'));
-      btn.classList.add('active');
-      $('panel-'+btn.dataset.menu).classList.add('active');
-    });
-  });
-
-  document.querySelectorAll('.gal-tab').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.gal-tab').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
-      document.querySelectorAll('.gal-panel').forEach(p=>p.classList.remove('active'));
-      btn.classList.add('active');btn.setAttribute('aria-selected','true');
-      $('g'+btn.dataset.gallery).classList.add('active');
-    });
-  });
-
   document.querySelectorAll('.order-btn').forEach(btn=>{
     btn.addEventListener('click',()=>openModal(btn.dataset.item,btn.dataset.price));
   });
-
   document.querySelectorAll('.pay-option').forEach(btn=>{
     btn.addEventListener('click',()=>{
       document.querySelectorAll('.pay-option').forEach(b=>b.classList.remove('selected'));
@@ -958,53 +926,199 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
       $('paymentError').classList.remove('show');
     });
   });
-
   $('continuePayment').addEventListener('click',continueToPayment);
   $('backDetails').addEventListener('click',()=>showStep('step1'));
   $('confirmOrder').addEventListener('click',confirmOrder);
   $('modalClose').addEventListener('click',closeModal);
   $('doneOrder').addEventListener('click',closeModal);
+  $('modal').addEventListener('click',e=>{if(e.target===$('modal'))closeModal();});
 
-  $('modal').addEventListener('click',e=>{if(e.target===$('modal'))closeModal()});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape' && $('modal').classList.contains('active'))closeModal()});
+  /* GALLERY
+     Built directly from the images already used by the menu cards.
+     This keeps exact filename/case and prevents a second, stale
+     gallery inventory from breaking the page.
+  */
+  const galleryState={index:0,items:[]};
 
+  function collectGalleryImages(){
+    const seen=new Set();
+    const items=[];
+    document.querySelectorAll('.mcard-top img[src]').forEach(img=>{
+      const src=img.getAttribute('src');
+      if(!src || seen.has(src)) return;
+      seen.add(src);
+      const card=img.closest('.mcard');
+      const title=card ? card.querySelector('h3') : null;
+      items.push({
+        src:src,
+        label:title ? title.textContent.trim() : "Sila's Kitchen"
+      });
+    });
+    return items;
+  }
+
+  function refreshGalleryIndexes(){
+    document.querySelectorAll('#gphotos .g-item').forEach((card,index)=>{
+      card.dataset.galleryIndex=index;
+    });
+  }
+
+  function buildGallery(){
+    const photos=$('gphotos'),videos=$('gvideos');
+    galleryState.items=collectGalleryImages();
+
+    if(photos){
+      if(!galleryState.items.length){
+        photos.innerHTML='<div class="video-empty"><div style="font-size:2rem;margin-bottom:.6rem">📷</div><strong>Photos coming soon</strong><span>Product photographs will appear here.</span></div>';
+      }else{
+        photos.innerHTML=galleryState.items.map((item,index)=>
+          '<button class="g-item" type="button" data-gallery-index="'+index+'" aria-label="View '+escapeHTML(item.label)+'">'+
+          '<img src="'+escapeHTML(item.src)+'" alt="'+escapeHTML(item.label)+'" loading="'+(index<4?'eager':'lazy')+'" decoding="async">'+
+          '<span class="g-zoom" aria-hidden="true">⌕</span>'+
+          '<span class="g-label">'+escapeHTML(item.label)+'</span>'+
+          '</button>'
+        ).join('');
+
+        photos.querySelectorAll('.g-item').forEach(card=>{
+          card.addEventListener('click',()=>openLightbox(Number(card.dataset.galleryIndex)));
+          const img=card.querySelector('img');
+          img.addEventListener('error',()=>{
+            const badIndex=Number(card.dataset.galleryIndex);
+            card.remove();
+            galleryState.items.splice(badIndex,1);
+            refreshGalleryIndexes();
+          },{once:true});
+        });
+      }
+    }
+
+    if(videos){
+      videos.innerHTML='<div class="video-empty"><div style="font-size:2rem;margin-bottom:.6rem">🎬</div><strong>Videos coming soon</strong><span>We’re preparing more behind-the-scenes and event videos for Sila’s Kitchen.</span></div>';
+    }
+  }
+
+  function openLightbox(index){
+    if(!galleryState.items.length) return;
+    galleryState.index=(index+galleryState.items.length)%galleryState.items.length;
+    renderLightbox();
+    $('galleryLightbox').classList.add('active');
+    $('galleryLightbox').setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+  }
+
+  function renderLightbox(){
+    const item=galleryState.items[galleryState.index];
+    const img=$('lightboxImage');
+    img.classList.remove('lightbox-image');
+    void img.offsetWidth;
+    img.classList.add('lightbox-image');
+    img.src=item.src;
+    img.alt=item.label;
+    $('lightboxTitle').textContent=item.label;
+    $('lightboxCounter').textContent=(galleryState.index+1)+' / '+galleryState.items.length;
+  }
+
+  function closeLightbox(){
+    $('galleryLightbox').classList.remove('active');
+    $('galleryLightbox').setAttribute('aria-hidden','true');
+    $('lightboxImage').src='';
+    document.body.classList.remove('modal-open');
+  }
+
+  function galleryNext(step){
+    if(!galleryState.items.length) return;
+    galleryState.index=(galleryState.index+step+galleryState.items.length)%galleryState.items.length;
+    renderLightbox();
+  }
+
+  $('lightboxClose').addEventListener('click',closeLightbox);
+  $('lightboxPrev').addEventListener('click',()=>galleryNext(-1));
+  $('lightboxNext').addEventListener('click',()=>galleryNext(1));
+  $('galleryLightbox').addEventListener('click',e=>{if(e.target===$('galleryLightbox'))closeLightbox();});
+
+  let touchStartX=0;
+  $('galleryLightbox').addEventListener('touchstart',e=>{
+    touchStartX=e.changedTouches[0].clientX;
+  },{passive:true});
+  $('galleryLightbox').addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-touchStartX;
+    if(Math.abs(dx)>50) galleryNext(dx<0?1:-1);
+  },{passive:true});
+
+  document.querySelectorAll('.gal-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.gal-tab').forEach(b=>{
+        b.classList.remove('active');
+        b.setAttribute('aria-selected','false');
+      });
+      document.querySelectorAll('.gal-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected','true');
+      const panel=$('g'+btn.dataset.gallery);
+      if(panel) panel.classList.add('active');
+    });
+  });
+
+  /* KEYBOARD */
+  document.addEventListener('keydown',e=>{
+    const lb=$('galleryLightbox');
+    if(lb && lb.classList.contains('active')){
+      if(e.key==='Escape') closeLightbox();
+      if(e.key==='ArrowRight') galleryNext(1);
+      if(e.key==='ArrowLeft') galleryNext(-1);
+    }
+    if(e.key==='Escape' && $('modal').classList.contains('active')) closeModal();
+  });
+
+  /* MOBILE NAV */
   $('navToggle').addEventListener('click',()=>{
     const open=$('navLinks').classList.toggle('open');
     $('navToggle').setAttribute('aria-expanded',String(open));
   });
-  document.querySelectorAll('#navLinks a').forEach(a=>a.addEventListener('click',()=>{
-    $('navLinks').classList.remove('open');$('navToggle').setAttribute('aria-expanded','false');
-  }));
+  document.querySelectorAll('#navLinks a').forEach(a=>{
+    a.addEventListener('click',()=>{
+      $('navLinks').classList.remove('open');
+      $('navToggle').setAttribute('aria-expanded','false');
+    });
+  });
 
+  /* CONSULTATION */
   $('consultForm').addEventListener('submit',e=>{
     e.preventDefault();
-    const date=$('cDate').value;
-    const status=$('consultStatus');
+    const date=$('cDate').value,status=$('consultStatus');
     if(date<minimumDate()){
       status.textContent='Please choose an event date at least 4 days from today.';
       status.className='form-status show error';
       return;
     }
     const message=[
-      "Hello Sila's Kitchen and More,",
-      "",
+      "Hello Sila's Kitchen and More,","",
       "I would like to book a free consultation.",
-      `Name: ${$('cFirst').value.trim()} ${$('cLast').value.trim()}`,
-      `Phone/WhatsApp: ${$('cPhone').value.trim()}`,
-      `Event Type: ${$('cType').value}`,
-      `Event Date: ${formatDate(date)}`,
-      `Guests: ${$('cGuests').value}`,
-      `Notes: ${$('cNotes').value.trim() || 'None'}`
+      "Name: "+$('cFirst').value.trim()+" "+$('cLast').value.trim(),
+      "Phone/WhatsApp: "+$('cPhone').value.trim(),
+      "Event Type: "+$('cType').value,
+      "Event Date: "+formatDate(date),
+      "Guests: "+$('cGuests').value,
+      "Notes: "+($('cNotes').value.trim()||'None')
     ].join('\n');
     status.textContent='Opening WhatsApp with your consultation request...';
     status.className='form-status show success';
     window.open('https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(message),'_blank','noopener');
   });
 
+  /* IMAGE FALLBACK */
+  document.querySelectorAll('.mcard-top img').forEach(img=>{
+    img.addEventListener('error',()=>{
+      const wrap=img.closest('.mcard-top');
+      if(wrap) wrap.classList.add('has-error');
+    },{once:true});
+  });
+
+  /* INITIALIZE */
   $('oDate').min=minimumDate();
   $('cDate').min=minimumDate();
   buildGallery();
-  wireImageFallbacks();
+
 })();
 </script>
 </body>
