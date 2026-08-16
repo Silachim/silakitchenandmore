@@ -278,24 +278,46 @@ section{padding:6rem 4rem;scroll-margin-top:70px}
 .pay-note{margin-top:2.5rem;background:rgba(184,134,11,.07);border:1px solid rgba(184,134,11,.25);border-left:4px solid var(--gold);padding:1.2rem 1.6rem}
 .pay-note p{color:rgba(255,255,255,.65);line-height:1.7}.pay-note strong{color:var(--gold-pale)}
 
-/* GALLERY */
-#gallery{background:var(--dark2)}
-#gallery .sec-h2{color:#fff}
-#gallery .sec-eye{color:var(--gold-pale)}
-.gal-tabs{display:flex;gap:.5rem;margin-bottom:2.5rem}
-.gal-tab{background:rgba(255,255,255,.05);border:1px solid rgba(184,134,11,.25);color:rgba(255,255,255,.6);padding:.55rem 1.3rem;font-size:.82rem;font-weight:800}
-.gal-tab.active,.gal-tab:hover{background:var(--gold);color:#fff}
-.gal-panel{display:none}.gal-panel.active{display:grid}
-.gal-photos{grid-template-columns:2fr 1fr 1fr;grid-auto-rows:200px;gap:.75rem}
-.g-item{position:relative;overflow:hidden;border-radius:3px;background:#1a0e00;cursor:pointer}
-.g-item:nth-child(1){grid-row:span 2}
-.g-item img{width:100%;height:100%;object-fit:cover;display:block}
-.g-label{position:absolute;left:0;right:0;bottom:0;padding:.7rem .9rem;background:linear-gradient(to top,rgba(0,0,0,.7),transparent);color:#fff;font-size:.78rem;font-weight:800;text-transform:uppercase;opacity:0;transition:.3s}
-.g-item:hover .g-label{opacity:1}
-.gal-videos{grid-template-columns:1fr 1fr;gap:1rem}
-.vid-card{border:1px solid rgba(184,134,11,.2);border-radius:3px;overflow:hidden;background:#160b00;padding:0}
-.vid-card video{width:100%;display:block;background:#000}
-.vid-meta{padding:.8rem 1rem}.vid-title{color:#fff;font-weight:800}.vid-sub{color:var(--gold-pale);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}.video-empty{grid-column:1/-1;border:1px solid rgba(184,134,11,.25);background:rgba(255,255,255,.04);padding:2rem;text-align:center;color:rgba(255,255,255,.7)}.video-empty strong{display:block;color:var(--gold-pale);font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:.45rem}.video-empty span{display:block;font-size:.85rem;color:rgba(255,255,255,.5)}
+/* ══════════════ GALLERY — INTERACTIVE SHOWCASE ══════════════ */
+#gallery{background:var(--dark2);position:relative;overflow:hidden}
+#gallery::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 10% 20%,rgba(184,134,11,.09),transparent 28%),radial-gradient(circle at 90% 80%,rgba(240,200,64,.06),transparent 30%)}
+#gallery .container{position:relative;z-index:1}
+#gallery .sec-h2{color:#fff}.gallery-intro{color:rgba(255,255,255,.55);max-width:650px;line-height:1.8;margin-bottom:1.8rem}
+.gal-toolbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.gal-tabs{display:flex;gap:.5rem;margin:0}
+.gal-tab{background:rgba(255,255,255,.05);border:1px solid rgba(184,134,11,.28);color:rgba(255,255,255,.65);padding:.6rem 1.2rem;font-size:.78rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;border-radius:2px;transition:.25s}
+.gal-tab:hover{transform:translateY(-2px);border-color:var(--gold)}.gal-tab.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+.gallery-hint{color:rgba(255,255,255,.38);font-size:.78rem;font-weight:700}
+.gal-panel{display:none}.gal-panel.active{display:grid;animation:galleryPanelIn .45s ease both}
+@keyframes galleryPanelIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.gal-photos{grid-template-columns:1.35fr .85fr .85fr;grid-template-rows:220px 220px 170px;grid-auto-rows:170px;gap:.85rem}
+.g-item{position:relative;overflow:hidden;border-radius:5px;background:#160b00;cursor:zoom-in;border:1px solid rgba(184,134,11,.18);box-shadow:0 10px 30px rgba(0,0,0,.18);isolation:isolate;transition:.3s;padding:0}
+.g-item:nth-child(1){grid-row:span 2}.g-item:nth-child(4){grid-column:span 2}
+.g-item::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.72));opacity:.7;z-index:1}
+.g-item:hover{transform:translateY(-3px);box-shadow:0 18px 42px rgba(0,0,0,.3)}
+.g-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .65s cubic-bezier(.2,.7,.2,1),filter .45s}
+.g-item:hover img{transform:scale(1.08);filter:saturate(1.08)}
+.g-label{position:absolute;left:0;right:0;bottom:0;padding:1.1rem 1rem .9rem;color:#fff;font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;z-index:2}
+.g-zoom{position:absolute;top:.8rem;right:.8rem;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;z-index:3;background:rgba(0,0,0,.48);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:1rem;backdrop-filter:blur(5px);transition:.25s}
+.g-item:hover .g-zoom{transform:scale(1.08);background:rgba(184,134,11,.9)}
+.lightbox{position:fixed;inset:0;z-index:1500;display:none;align-items:center;justify-content:center;background:rgba(5,3,0,.94);backdrop-filter:blur(12px);padding:clamp(1rem,3vw,3rem)}
+.lightbox.active{display:flex;animation:lightboxFade .25s ease both}
+@keyframes lightboxFade{from{opacity:0}to{opacity:1}}
+.lightbox-inner{width:min(1100px,100%);height:min(88vh,850px);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.lightbox-image-wrap{width:100%;height:calc(100% - 70px);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.lightbox-image{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:4px;box-shadow:0 25px 90px rgba(0,0,0,.65);animation:lightboxImageIn .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes lightboxImageIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.lightbox-caption{width:100%;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem .25rem 0}
+.lightbox-title{font:700 1.15rem 'Playfair Display',serif;color:var(--gold-pale)}.lightbox-counter{font-size:.78rem;color:rgba(255,255,255,.5);font-weight:800}
+.lightbox-close,.lightbox-nav{position:absolute;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.45);color:#fff;display:grid;place-items:center;backdrop-filter:blur(6px);transition:.2s}
+.lightbox-close{top:-.25rem;right:0;width:46px;height:46px;border-radius:50%;font-size:1.7rem}.lightbox-nav{top:50%;transform:translateY(-50%);width:52px;height:72px;border-radius:4px;font-size:1.7rem}
+.lightbox-nav:hover,.lightbox-close:hover{background:var(--gold);border-color:var(--gold)}.lightbox-nav.prev{left:-4.5rem}.lightbox-nav.next{right:-4.5rem}
+.lightbox-swipe-note{display:none;color:rgba(255,255,255,.35);font-size:.7rem;margin-top:.5rem}
+.gal-videos{grid-template-columns:1fr 1fr;gap:1rem}.vid-card{border:1px solid rgba(184,134,11,.2);border-radius:5px;overflow:hidden;background:#160b00;padding:0;transition:.3s}.vid-card:hover{transform:translateY(-4px);border-color:var(--gold)}
+.vid-card video{width:100%;display:block;background:#000}.vid-meta{padding:.9rem 1rem}.vid-title{color:#fff;font-weight:800}.vid-sub{color:var(--gold-pale);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem}
+.video-empty{grid-column:1/-1;padding:3rem 1rem;text-align:center;border:1px solid rgba(184,134,11,.18);border-radius:5px;color:rgba(255,255,255,.45)}.video-empty strong{display:block;color:var(--gold-pale);margin-bottom:.35rem;font:700 1.2rem 'Playfair Display',serif}
+@media(max-width:1024px){.gal-photos{grid-template-columns:1fr 1fr;grid-template-rows:220px 220px 180px}.g-item:nth-child(1){grid-row:span 1}.g-item:nth-child(4){grid-column:span 1}.lightbox-nav.prev{left:-1rem}.lightbox-nav.next{right:-1rem}}
+@media(max-width:700px){.gal-toolbar{align-items:flex-start}.gal-tabs{width:100%}.gal-tab{flex:1;padding:.7rem .6rem;font-size:.7rem}.gallery-hint{width:100%}.gal-photos{grid-template-columns:1fr 1fr;grid-template-rows:180px 180px 180px;gap:.6rem}.g-item:nth-child(1),.g-item:nth-child(4){grid-column:span 2}.lightbox{padding:.75rem}.lightbox-inner{height:86vh}.lightbox-image-wrap{height:calc(100% - 88px)}.lightbox-nav{top:auto;bottom:1.7rem;transform:none;width:48px;height:44px}.lightbox-nav.prev{left:1rem}.lightbox-nav.next{right:1rem}.lightbox-close{top:.25rem;right:.25rem}.lightbox-caption{padding:1rem 4.2rem 0 0;align-items:flex-start}.lightbox-swipe-note{display:block}}
 
 /* CONSULTATION */
 #consultation{background:var(--cream)}
@@ -596,14 +618,28 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
   <div class="container">
     <span class="sec-eye">Gallery</span>
     <h2 class="sec-h2">A feast for the eyes</h2>
-    <div class="gal-tabs">
-      <button class="gal-tab active" data-gallery="photos">📸 Photos</button>
-      <button class="gal-tab" data-gallery="videos">🎬 Videos</button>
+    <p class="gallery-intro">Take a closer look at some of Sila's handcrafted favourites. Tap any photo to enlarge it, move through the collection, and explore the food from a little closer.</p>
+    <div class="gal-toolbar">
+      <div class="gal-tabs" role="tablist" aria-label="Gallery categories">
+        <button class="gal-tab active" data-gallery="photos" type="button" role="tab" aria-selected="true">📸 Photos</button>
+        <button class="gal-tab" data-gallery="videos" type="button" role="tab" aria-selected="false">🎬 Videos</button>
+      </div>
+      <span class="gallery-hint">Click a photo to enlarge · Use ← → to browse</span>
     </div>
-    <div id="gphotos" class="gal-panel gal-photos active"></div>
-    <div id="gvideos" class="gal-panel gal-videos"></div>
+    <div id="gphotos" class="gal-panel gal-photos active" role="tabpanel"></div>
+    <div id="gvideos" class="gal-panel gal-videos" role="tabpanel"></div>
   </div>
 </section>
+<div class="lightbox" id="galleryLightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Expanded gallery image">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close image viewer">×</button>
+    <button class="lightbox-nav prev" id="lightboxPrev" type="button" aria-label="Previous image">‹</button>
+    <div class="lightbox-image-wrap"><img class="lightbox-image" id="lightboxImage" src="" alt=""></div>
+    <div class="lightbox-caption"><div class="lightbox-title" id="lightboxTitle"></div><div class="lightbox-counter" id="lightboxCounter"></div></div>
+    <div class="lightbox-swipe-note">Swipe or use the arrows to browse</div>
+    <button class="lightbox-nav next" id="lightboxNext" type="button" aria-label="Next image">›</button>
+  </div>
+</div>
 
 <section id="consultation">
   <div class="container">
@@ -746,74 +782,15 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
     {src:'menu-spring-rolls-samosas-mix.jpg',label:'Spring Rolls & Samosas Mix'},
     {src:'menu-spring-rolls.JPG',label:'Spring Rolls'},
     {src:'menu-samosas.JPG',label:'Samosas'},
-    {src:'menu-puff-puff.jpg',label:'Fried Puff Puff'},
-    {src:'menu-classic-donut.jpg',label:'Classic Donut'}
+    {src:'menu-money-bag.jpg',label:'Money Bags'},
+    {src:'menu-puff-puff-mix.JPG',label:'Puff-Puff'},
+    {src:'menu-classic-mix.jpg',label:'Classic Mix'},
+    {src:'menu-deluxe-mix.jpg',label:'Deluxe Mix'},
+    {src:'sobo.jpg',label:'Sobo Drink'},
+    {src:'menu-milk-donut.jpg',label:'Milk Coated Donut'}
   ];
 
   const GALLERY_VIDEOS = [];
-
-  const state = {item:'',price:'',pay:''};
-
-  const $ = id => document.getElementById(id);
-
-  function localISODate(date){
-    const d = new Date(date);
-    const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
-  }
-
-  function minimumDate(){
-    const d=new Date();
-    d.setHours(12,0,0,0);
-    d.setDate(d.getDate()+MIN_LEAD_DAYS);
-    return localISODate(d);
-  }
-
-  function formatDate(value){
-    if(!value)return '—';
-    const d=new Date(value+'T12:00:00');
-    return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  }
-
-  function escapeHTML(value){
-    return String(value ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-  }
-
-  function showStep(id){
-    document.querySelectorAll('.pay-step').forEach(el=>el.classList.remove('active'));
-    $(id).classList.add('active');
-    document.querySelectorAll('.modal-step-lbl').forEach(el=>el.classList.remove('active'));
-    if(id==='step1')$('slbl1').classList.add('active');
-    else $('slbl2').classList.add('active');
-  }
-
-  function openModal(item,price){
-    state.item=item; state.price=price; state.pay='';
-    $('modalTitle').textContent='Order: '+item;
-    $('oName').value='';$('oPhone').value='';$('oDate').value='';$('oNotes').value='';
-    $('oDate').min=minimumDate();
-    document.querySelectorAll('.pay-option').forEach(el=>el.classList.remove('selected'));
-    $('paymentError').classList.remove('show');
-    showStep('step1');
-    $('modal').classList.add('active');
-    $('modal').setAttribute('aria-hidden','false');
-    document.body.classList.add('modal-open');
-    setTimeout(()=>$('oName').focus(),50);
-  }
-
-  function closeModal(){
-    $('modal').classList.remove('active');
-    $('modal').setAttribute('aria-hidden','true');
-    document.body.classList.remove('modal-open');
-  }
-
-  function validateOrderDetails(){
-    let valid=true;
-    const checks=[
-      ['fieldName','oName',v=>v.length>0],
-      ['fieldPhone','oPhone',v=>v.length>=7],
-      ['fieldDate','oDate',v=>v>=minimumDate()]
-    ];
     checks.forEach(([wrap,id,test])=>{
       const el=$(wrap),ok=test($(id).value.trim());
       el.classList.toggle('has-error',!ok);
@@ -894,17 +871,62 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
     });
   }
 
+  const galleryState={index:0,items:[]};
+
   function buildGallery(){
-    $('gphotos').innerHTML=GALLERY_PHOTOS.map(p=>
-      `<div class="g-item"><img src="${escapeHTML(p.src)}" alt="${escapeHTML(p.label)}" loading="lazy" decoding="async"><div class="g-label">${escapeHTML(p.label)}</div></div>`
-    ).join('');
+    $('gphotos').innerHTML=GALLERY_PHOTOS.map((p,i)=>
+      `<button class="g-item" type="button" data-gallery-index="${i}" aria-label="View ${escapeHTML(p.label)}">
+        <img src="${escapeHTML(p.src)}" alt="${escapeHTML(p.label)}" loading="${i<3?'eager':'lazy'}" decoding="async">
+        <span class="g-zoom" aria-hidden="true">⌕</span>
+        <span class="g-label">${escapeHTML(p.label)}</span>
+      </button>`).join('');
 
     $('gvideos').innerHTML=GALLERY_VIDEOS.length
-      ? GALLERY_VIDEOS.map(v=>
-          `<article class="vid-card"><video src="${escapeHTML(v.src)}" poster="${escapeHTML(v.poster)}" controls preload="metadata" playsinline></video><div class="vid-meta"><div class="vid-title">${escapeHTML(v.title)}</div><div class="vid-sub">${escapeHTML(v.sub)}</div></div></article>`
-        ).join('')
-      : "<div class=\"video-empty\"><strong>Videos coming soon</strong><span>We are preparing short behind-the-scenes and event videos for Sila\'s Kitchen and More.</span></div>";
+      ? GALLERY_VIDEOS.map(v=>`<article class="vid-card"><video src="${escapeHTML(v.src)}" poster="${escapeHTML(v.poster||'')}" controls preload="metadata" playsinline></video><div class="vid-meta"><div class="vid-title">${escapeHTML(v.title)}</div><div class="vid-sub">${escapeHTML(v.sub)}</div></div></article>`).join('')
+      : `<div class="video-empty"><div style="font-size:2rem;margin-bottom:.6rem">🎬</div><strong>Videos coming soon</strong><span>We're preparing more behind-the-scenes and event videos for Sila's Kitchen.</span></div>`;
+
+    galleryState.items=[...GALLERY_PHOTOS];
+    document.querySelectorAll('.g-item').forEach(card=>card.addEventListener('click',()=>openLightbox(Number(card.dataset.galleryIndex))));
   }
+
+  function openLightbox(index){
+    if(!galleryState.items.length)return;
+    galleryState.index=(index+galleryState.items.length)%galleryState.items.length;
+    renderLightbox();
+    $('galleryLightbox').classList.add('active');
+    $('galleryLightbox').setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+  }
+
+  function renderLightbox(){
+    const item=galleryState.items[galleryState.index],img=$('lightboxImage');
+    img.classList.remove('lightbox-image');void img.offsetWidth;img.classList.add('lightbox-image');
+    img.src=item.src;img.alt=item.label;
+    $('lightboxTitle').textContent=item.label;
+    $('lightboxCounter').textContent=(galleryState.index+1)+' / '+galleryState.items.length;
+  }
+
+  function closeLightbox(){
+    $('galleryLightbox').classList.remove('active');
+    $('galleryLightbox').setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+    $('lightboxImage').src='';
+  }
+
+  function galleryNext(step){
+    if(!galleryState.items.length)return;
+    galleryState.index=(galleryState.index+step+galleryState.items.length)%galleryState.items.length;
+    renderLightbox();
+  }
+
+  $('lightboxClose').addEventListener('click',closeLightbox);
+  $('lightboxPrev').addEventListener('click',()=>galleryNext(-1));
+  $('lightboxNext').addEventListener('click',()=>galleryNext(1));
+  $('galleryLightbox').addEventListener('click',e=>{if(e.target===$('galleryLightbox'))closeLightbox();});
+  let touchStartX=0;
+  $('galleryLightbox').addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].clientX;},{passive:true});
+  $('galleryLightbox').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchStartX;if(Math.abs(dx)>50)galleryNext(dx<0?1:-1);},{passive:true});
+  document.addEventListener('keydown',e=>{const lb=$('galleryLightbox');if(lb.classList.contains('active')){if(e.key==='Escape')closeLightbox();if(e.key==='ArrowRight')galleryNext(1);if(e.key==='ArrowLeft')galleryNext(-1);}});
 
   document.querySelectorAll('.menu-tab').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -917,9 +939,9 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
 
   document.querySelectorAll('.gal-tab').forEach(btn=>{
     btn.addEventListener('click',()=>{
-      document.querySelectorAll('.gal-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.gal-tab').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
       document.querySelectorAll('.gal-panel').forEach(p=>p.classList.remove('active'));
-      btn.classList.add('active');
+      btn.classList.add('active');btn.setAttribute('aria-selected','true');
       $('g'+btn.dataset.gallery).classList.add('active');
     });
   });
