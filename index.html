@@ -381,6 +381,23 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
 /* REVEAL */
 .reveal{opacity:1;transform:none}
 
+  /* CUSTOM ORDER BUILDER */
+  .custom-order-card .custom-card-top{display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,rgba(240,200,64,.2),transparent 45%),linear-gradient(145deg,#2C1800,#120900)}
+  .custom-card-icon{font-size:4rem;filter:drop-shadow(0 10px 20px rgba(0,0,0,.35));position:relative;z-index:2;animation:customFloat 3.5s ease-in-out infinite}
+  .custom-card-glow{position:absolute;width:130px;height:130px;border-radius:50%;background:rgba(240,200,64,.13);filter:blur(18px);animation:customPulse 2.8s ease-in-out infinite}
+  @keyframes customFloat{50%{transform:translateY(-7px) rotate(-2deg)}}
+  @keyframes customPulse{50%{transform:scale(1.18);opacity:.75}}
+  .custom-builder{margin:1.2rem 0 1.3rem;background:#fcfaf5;border:1px solid rgba(184,134,11,.2);border-radius:4px;padding:1rem}
+  .custom-builder-head{padding:.2rem .1rem 1rem}.custom-builder-kicker{display:block;color:var(--gold);font-size:.7rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.3rem}
+  .custom-builder-head h4{font:700 1.15rem 'Playfair Display',serif;color:var(--dark);margin-bottom:.3rem}.custom-builder-head p{font-size:.78rem;color:var(--muted);line-height:1.55}
+  .builder-section{border-top:1px solid #eadfce;padding:1rem 0}.builder-section:first-of-type{border-top:0;padding-top:.2rem}.builder-section-title{font-size:.82rem;font-weight:900;color:var(--dark);margin-bottom:.65rem;letter-spacing:.04em}
+  .builder-list{display:grid;gap:.45rem}.builder-row{display:flex;align-items:center;justify-content:space-between;gap:.7rem;background:#fff;border:1px solid #e8ddcd;border-radius:3px;padding:.65rem .7rem}.builder-row>div:first-child{display:flex;flex-direction:column;gap:.08rem}.builder-row strong{font-size:.82rem}.builder-row span{font-size:.7rem;color:var(--muted)}
+  .qty-control{display:flex;align-items:center;border:1px solid #d9cbb8;border-radius:3px;overflow:hidden;background:#fff}.qty-control button{width:30px;height:30px;border:0;background:#f7f1e7;color:var(--dark);font-size:1rem;font-weight:800}.qty-control input{width:38px;height:30px;border:0;border-left:1px solid #e8ddcd;border-right:1px solid #e8ddcd;text-align:center;background:#fff;color:var(--dark);font-weight:800;font-size:.82rem}.qty-control input:focus{outline:none}
+  .protein-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}.protein-option{display:flex;align-items:center;justify-content:space-between;gap:.5rem;border:1px solid #e8ddcd;background:#fff;padding:.55rem .6rem;border-radius:3px;font-size:.76rem}.protein-option>div:first-child{display:flex;flex-direction:column;gap:.05rem}.protein-option>div:first-child strong{font-size:.78rem}.protein-option>div:first-child span{font-size:.68rem;color:var(--muted)}.builder-help{font-size:.68rem!important;color:#8a7353!important;line-height:1.5;margin-top:.55rem}
+  .drink-builder-list{display:grid;gap:.55rem}.drink-builder-row{display:grid;grid-template-columns:1.3fr 1fr .55fr;gap:.55rem}.drink-builder-row label{display:flex;flex-direction:column;gap:.25rem}.drink-builder-row label>span{font-size:.68rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.drink-builder-row select,.drink-builder-row input{width:100%;padding:.58rem .6rem;border:1px solid #d9cbb8;border-radius:3px;background:#fff;color:var(--text);font-size:.78rem}
+  .custom-total{margin-top:.8rem;background:var(--dark);color:#fff;padding:.85rem;border-radius:3px;transition:.2s}.custom-total>div{display:flex;align-items:center;justify-content:space-between;gap:1rem}.custom-total span{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.55);font-weight:800}.custom-total strong{font:700 1.25rem 'Playfair Display',serif;color:var(--gold-pale)}.custom-total small{display:block;color:rgba(255,255,255,.45);font-size:.68rem;line-height:1.45;margin-top:.3rem}.custom-total.builder-error{outline:2px solid var(--danger)}
+  .payment-policy-mini{margin:.8rem 0;padding:.75rem .9rem;background:#fdf9ee;border-left:3px solid var(--gold);font-size:.76rem;line-height:1.55;color:var(--muted)}.payment-policy-mini strong{color:var(--dark)}
+
 /* RESPONSIVE */
 @media(max-width:1024px){
   nav{padding:0 2rem}.nav-links{gap:1rem}
@@ -402,7 +419,7 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
   .gal-photos{grid-template-columns:1fr;grid-auto-rows:220px}
   .about-logo-ring,.about-logo-ring .logo-img{width:260px;height:260px}
   .about-nums{flex-direction:column}.about-num{border-right:0;border-bottom:1px solid rgba(184,134,11,.2)}.about-num:last-child{border-bottom:0}
-  .fg2,.pay-options{grid-template-columns:1fr}
+  .fg2,.pay-options{grid-template-columns:1fr}.protein-grid{grid-template-columns:1fr}.drink-builder-row{grid-template-columns:1fr 1fr .7fr}
   footer{padding:2rem 1.25rem;flex-direction:column;text-align:center}.footer-links{justify-content:center}
   section{padding:4rem 1.25rem}
 }
@@ -436,7 +453,7 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
     <div class="hero-text">
       <div class="hero-badge">🎉 Small Chops · Pastries · Drinks · Events</div>
       <h1 class="hero-h1">Handcrafted <em>bites</em><br>for every<br>celebration.</h1>
-      <p class="hero-p">Fresh Nigerian small chops, ready-to-fry packs, and homemade pastries — made to order for your events, parties, and special moments. Minimum 4 days notice required.</p>
+      <p class="hero-p">Fresh Nigerian small chops, ready-to-fry packs, pastries, refreshing drinks, and yoghurt treats — made to order for your events, parties, and special moments. Minimum 4 days notice required.</p>
       <div class="hero-btns">
         <a href="#menu" class="btn-gold">Browse the Menu</a>
         <a href="#how" class="btn-ghost">How to Order</a>
@@ -462,7 +479,7 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
     <p class="sec-p">We need at least 4 days notice so every item is prepared fresh — never frozen, never pre-made.</p>
     <div class="steps">
       <div class="step"><div class="step-n">01</div><h3>Browse &amp; Select</h3><p>Explore ready-to-fry small chops, fried packages, pastries, fresh drinks, and yoghurt treats.</p></div>
-      <div class="step"><div class="step-n">02</div><h3>Place Your Order</h3><p>Choose an item and provide your name, WhatsApp number, date, quantity and notes.</p></div>
+      <div class="step"><div class="step-n">02</div><h3>Place Your Order</h3><p>Choose a menu item or build a custom order, then provide your name, WhatsApp number, date, quantities and notes.</p></div>
       <div class="step"><div class="step-n">03</div><h3>We Prepare Fresh</h3><p>Everything is made fresh specifically for your date. No pre-made stock.</p></div>
       <div class="step"><div class="step-n">04</div><h3>Pickup or Delivery</h3><p>Collect your order or arrange delivery to your event venue.</p></div>
     </div>
@@ -473,7 +490,7 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
   <div class="container">
     <span class="sec-eye">Our Offerings</span>
     <h2 class="sec-h2">Sila's Kitchen Menu</h2>
-    <p class="sec-p">Five collections to suit every occasion — pick one or mix and match for your event.</p>
+    <p class="sec-p">Five collections to suit every occasion — choose what you need or build a custom order for your event.</p>
 
     <div class="menu-tabs" role="tablist" aria-label="Menu categories">
       <button class="menu-tab active" data-menu="rtf" role="tab">🧊 Ready-to-Fry</button>
@@ -503,13 +520,8 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
           <div class="mcard-foot"><span class="price">₦3,000</span><button class="obtn order-btn" data-item="10 Samosas" data-price="₦3,000">Order</button></div>
         </article>
         <article class="mcard">
-          <div class="mcard-top"><img src="menu-money-bag.jpg" alt="Money Bag" loading="lazy" decoding="async"></div>
-          <div class="mcard-body"><h3>Money Bag (×5)</h3><p>Five delightful money bag dumplings filled with a savoury mix.</p></div>
-          <div class="mcard-foot"><span class="price">₦2,500</span><button class="obtn order-btn" data-item="5 Money Bags" data-price="₦2,500">Order</button></div>
-        </article>
-        <article class="mcard">
           <div class="mcard-top"><img src="menu-puff-puff-mix.JPG" alt="Puff Puff Mix" loading="lazy" decoding="async"></div>
-          <div class="mcard-body"><h3>Puff-Puff Mix</h3><p>Pre-made batter mix — just fry and serve hot.</p><p style="margin-top:.4rem;font-weight:800;color:var(--gold)">500g → ₦2,000 | 1kg → ₦4,000</p></div>
+          <div class="mcard-body"><h3>Puff-Puff Mix</h3><p>Pre-made batter mix — just fry and serve hot. Available in quantities above 1kg for larger orders.</p><p style="margin-top:.4rem;font-weight:800;color:var(--gold)">500g → ₦2,000 | 1kg → ₦4,000 | Above 1kg → Contact us</p></div>
           <div class="mcard-foot"><span class="price">From ₦2,000</span><button class="obtn order-btn" data-item="Puff-Puff Mix" data-price="From ₦2,000">Order</button></div>
         </article>
       </div>
@@ -517,28 +529,35 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
 
     <div id="panel-fried" class="menu-panel">
       <div class="menu-cat-h">🍟 Fried Small Chops Packages</div>
-      <p class="menu-cat-p">Ready to eat — fried fresh on your event date. All packages include your <strong>choice of protein.</strong></p>
+      <p class="menu-cat-p">Freshly fried for your collection or event. Build your own combination with our custom ordering option, or choose from the packages below.</p>
       <div class="menu-grid">
         <article class="mcard">
           <div class="mcard-top"><img src="menu-small-chops-fusion.jpg" alt="Small Chops Fusion" loading="lazy" decoding="async"><div class="image-fallback">Photo coming soon</div></div>
-          <div class="mcard-body"><h3>Small Chops Fusion</h3><p>A freshly fried combination of classic small chops, prepared for immediate serving.</p></div>
-          <div class="mcard-foot"><span class="price">₦2,500</span><button class="obtn order-btn" data-item="Small Chops Fusion" data-price="₦2,500">Order</button></div>
+          <div class="mcard-body"><h3>Small Chops Fusion</h3><p>A freshly fried combination of classic small chops, prepared for immediate serving. A generous option for parties, celebrations, and events.</p></div>
+          <div class="mcard-foot"><span class="price">₦6,000</span><button class="obtn order-btn" data-item="Small Chops Fusion" data-price="₦6,000">Order</button></div>
         </article>
         <article class="mcard">
           <div class="mcard-top"><img src="menu-puff-puff.jpg" alt="Fried Puff Puff" loading="lazy" decoding="async"><div class="image-fallback">Photo coming soon</div></div>
           <div class="mcard-body"><h3>Fried Puff-Puff</h3><p>Freshly fried, soft and fluffy puff-puff, perfect for parties, celebrations, and personal treats.</p></div>
           <div class="mcard-foot"><span class="price">₦100 / ball</span><button class="obtn order-btn" data-item="Fried Puff-Puff" data-price="₦100 per ball">Order</button></div>
         </article>
-        <article class="mcard"><div class="mcard-top no-image"><div class="image-fallback">Photo coming soon</div></div><div class="mcard-body"><h3>Classic Mix</h3><p>1 Spring Roll · 1 Samosa · 3 Puff-Puff · 1 Beef/Chicken/Turkey/Gizzard</p></div><div class="mcard-foot"><span class="price">₦2,500</span><button class="obtn order-btn" data-item="Classic Mix" data-price="₦2,500">Order</button></div></article>
-        <article class="mcard"><div class="mcard-top no-image"><div class="image-fallback">Photo coming soon</div></div><div class="mcard-body"><h3>Deluxe Mix</h3><p>1 Spring Roll · 1 Samosa · 3 Puff-Puff · 3 Banana Balls · 1 Beef/Chicken/Turkey/Gizzard</p></div><div class="mcard-foot"><span class="price">₦3,000</span><button class="obtn order-btn" data-item="Deluxe Mix" data-price="₦3,000">Order</button></div></article>
         <article class="mcard">
-          <div class="mcard-top no-image"><div class="image-fallback">Custom pack photo coming soon</div></div>
-          <div class="mcard-body"><h3>Custom Made Party Pack</h3><p>Custom small-chops combinations prepared to suit your event, quantity, preferred protein, and budget.</p></div>
-          <div class="mcard-foot"><span class="price">Custom quote</span><button class="obtn order-btn" data-item="Custom Made Party Pack" data-price="Custom quote">Order</button></div>
+          <div class="mcard-top"><img src="menu-money-bag.jpg" alt="Money Bag" loading="lazy" decoding="async"><div class="image-fallback">Photo coming soon</div></div>
+          <div class="mcard-body"><h3>Money Bag (×10)</h3><p>Ten delightful money bag dumplings filled with a savoury mix, freshly prepared for parties, events, and personal enjoyment.</p></div>
+          <div class="mcard-foot"><span class="price">₦3,500</span><button class="obtn order-btn" data-item="Money Bag (10 pieces)" data-price="₦3,500">Order</button></div>
         </article>
-        <article class="mcard"><div class="mcard-top no-image"><div class="image-fallback">Photo coming soon</div></div><div class="mcard-body"><h3>Corn Dog</h3><p>A golden corn dog — crispy, warm, and irresistible.</p></div><div class="mcard-foot"><span class="price">₦700</span><button class="obtn order-btn" data-item="Corn Dog" data-price="₦700">Order</button></div></article>
+        <article class="mcard">
+          <div class="mcard-top no-image"><div class="image-fallback">Photo coming soon</div></div>
+          <div class="mcard-body"><h3>Corn Dog</h3><p>A golden corn dog — crispy, warm, and irresistible.</p></div>
+          <div class="mcard-foot"><span class="price">₦700</span><button class="obtn order-btn" data-item="Corn Dog" data-price="₦700">Order</button></div>
+        </article>
+        <article class="mcard custom-order-card">
+          <div class="mcard-top custom-card-top"><div class="custom-card-icon">🧺</div><div class="custom-card-glow"></div></div>
+          <div class="mcard-body"><h3>Custom Small Chops</h3><p>Choose your own small chops, quantities, proteins, and optional drinks. Special custom-made combinations are available based on request.</p></div>
+          <div class="mcard-foot"><span class="price">Build your order</span><button class="obtn custom-order-btn" type="button">Customize</button></div>
+        </article>
       </div>
-      <div class="menu-note">🍖 <strong>Protein of choice:</strong> Turkey, Gizzard, Beef, or Chicken. <strong>Custom-made party packs</strong> are available; please specify your preferred combination, quantity, protein, and budget when ordering.</div>
+      <div class="menu-note">✨ <strong>Special custom-made:</strong> Bespoke small-chops packages and event combinations are available based on request. Use <strong>Custom Small Chops</strong> to build your order or <a href="#consultation">book a free consultation</a> for larger events.</div>
     </div>
 
     <div id="panel-pastry" class="menu-panel">
@@ -610,7 +629,7 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
       <div class="pay-card"><div class="pay-icon">💳</div><h3>USSD / Transfer Code</h3><p>Use your bank's USSD code to transfer directly from your phone.</p><div class="pay-tags"><span class="pay-tag">*955# (Opay)</span></div></div>
       <div class="pay-card"><div class="pay-icon">🤝</div><h3>Pay on Pickup</h3><p>Choose cash or POS at collection. Payment is collected before your items are handed over.</p><div class="pay-tags"><span class="pay-tag">Cash</span><span class="pay-tag">POS</span></div></div>
     </div>
-    <div class="pay-note"><p>⚠️ <strong>Important:</strong> A <strong>50% deposit</strong> is required to confirm orders above ₦5,000. Full payment must be completed at least <strong>24 hours before</strong> collection or delivery. WhatsApp proof of payment to <strong>+234 815 056 3651</strong>.</p></div>
+    <div class="pay-note"><p>⚠️ <strong>Important:</strong> <strong>Payment policy:</strong> Orders below <strong>₦50,000 require full payment</strong>. Bulk orders above <strong>₦50,000 require an 85% deposit</strong> to confirm the order. The remaining 15% balance is payable as agreed before collection or delivery. Send proof of payment to <strong>+234 815 056 3651</strong> on WhatsApp.</p></div>
   </div>
 </section>
 
@@ -702,7 +721,7 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
         <div class="hr-row"><span class="d">Sunday</span><span class="t">Closed</span></div>
         <br><p style="font-size:.82rem;color:rgba(255,255,255,.35)">Orders accepted via WhatsApp, email or our online form.</p>
         <br><h3>Payment Account</h3>
-        <p>🏦 <strong style="color:#fff">Bank:</strong> Opay<br><br>🔢 <strong style="color:#fff">Account No:</strong> <span style="color:var(--gold-pale);font-weight:800">8150563651</span><br><br>👤 <strong style="color:#fff">Name:</strong> Tope-Egbedeyi Omowumi Christianah</p>
+        <p>🏦 <strong style="color:#fff">Bank:</strong> Opay<br><br>🔢 <strong style="color:#fff">Account No:</strong> <span style="color:var(--gold-pale);font-weight:800">6104687060</span><br><br>👤 <strong style="color:#fff">Name:</strong> Tope-Egbedeyi Omowumi Christianah</p>
       </div>
 
       <div class="contact-card">
@@ -732,11 +751,86 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
 
     <div class="pay-step active" id="step1">
       <h3 id="modalTitle">Place an Order</h3>
-      <p class="modal-sub">Complete your details. Orders require at least 4 days notice.</p>
+      <p class="modal-sub" id="modalLead">Complete your details. Orders require at least 4 days notice.</p>
+
       <div class="fg" id="fieldName"><label for="oName">Your Full Name</label><input id="oName" required placeholder="Full Name"><div class="error-msg">Please enter your name.</div></div>
       <div class="fg" id="fieldPhone"><label for="oPhone">WhatsApp / Phone</label><input id="oPhone" type="tel" required placeholder="+234 800 000 0000"><div class="error-msg">Please enter your phone number.</div></div>
       <div class="fg" id="fieldDate"><label for="oDate">Desired Date</label><input id="oDate" type="date" required><div class="error-msg">Choose a date at least 4 days from today.</div></div>
-      <div class="fg"><label for="oNotes">Quantity / Protein Choice / Notes</label><textarea id="oNotes" placeholder="e.g. 50 pieces, protein: gizzard, birthday party..."></textarea></div>
+
+      <div id="standardOrderFields">
+        <div class="fg"><label for="oNotes">Quantity / Protein Choice / Notes</label><textarea id="oNotes" placeholder="e.g. 50 pieces, protein: gizzard, birthday party..."></textarea></div>
+      </div>
+
+      <div id="customOrderFields" class="custom-builder" hidden>
+        <div class="custom-builder-head">
+          <span class="custom-builder-kicker">Build Your Order</span>
+          <h4>Choose your small chops, proteins &amp; drinks</h4>
+          <p>Select quantities below. Your known subtotal updates automatically. Drink prices are currently confirmed on request.</p>
+        </div>
+
+        <div class="builder-section">
+          <div class="builder-section-title">🍟 Fried Small Chops</div>
+          <div class="builder-list">
+            <div class="builder-row" data-price="400" data-name="Fried Spring Roll">
+              <div><strong>Spring Roll</strong><span>₦400 each</span></div>
+              <div class="qty-control"><button type="button" class="qty-minus" aria-label="Decrease Spring Roll quantity">−</button><input class="qty-input" value="0" inputmode="numeric" aria-label="Spring Roll quantity"><button type="button" class="qty-plus" aria-label="Increase Spring Roll quantity">+</button></div>
+            </div>
+            <div class="builder-row" data-price="400" data-name="Fried Samosa">
+              <div><strong>Samosa</strong><span>₦400 each</span></div>
+              <div class="qty-control"><button type="button" class="qty-minus" aria-label="Decrease Samosa quantity">−</button><input class="qty-input" value="0" inputmode="numeric" aria-label="Samosa quantity"><button type="button" class="qty-plus" aria-label="Increase Samosa quantity">+</button></div>
+            </div>
+            <div class="builder-row" data-price="100" data-name="Puff-Puff">
+              <div><strong>Puff-Puff</strong><span>₦100 each</span></div>
+              <div class="qty-control"><button type="button" class="qty-minus" aria-label="Decrease Puff-Puff quantity">−</button><input class="qty-input" value="0" inputmode="numeric" aria-label="Puff-Puff quantity"><button type="button" class="qty-plus" aria-label="Increase Puff-Puff quantity">+</button></div>
+            </div>
+            <div class="builder-row" data-price="100" data-name="Banana Ball">
+              <div><strong>Banana Ball</strong><span>₦100 each</span></div>
+              <div class="qty-control"><button type="button" class="qty-minus" aria-label="Decrease Banana Ball quantity">−</button><input class="qty-input" value="0" inputmode="numeric" aria-label="Banana Ball quantity"><button type="button" class="qty-plus" aria-label="Increase Banana Ball quantity">+</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="builder-section">
+          <div class="builder-section-title">🍗 Protein — optional</div>
+          <div class="protein-grid">
+            <div class="protein-option" data-protein="Beef" data-price="1000"><div><strong>Beef</strong><span>₦1,000 each</span></div><div class="qty-control"><button type="button" class="protein-minus" aria-label="Decrease Beef quantity">−</button><input class="protein-qty" value="0" inputmode="numeric" aria-label="Beef quantity"><button type="button" class="protein-plus" aria-label="Increase Beef quantity">+</button></div></div>
+            <div class="protein-option" data-protein="Chicken" data-price="1200"><div><strong>Chicken</strong><span>₦1,200 each</span></div><div class="qty-control"><button type="button" class="protein-minus" aria-label="Decrease Chicken quantity">−</button><input class="protein-qty" value="0" inputmode="numeric" aria-label="Chicken quantity"><button type="button" class="protein-plus" aria-label="Increase Chicken quantity">+</button></div></div>
+            <div class="protein-option" data-protein="Gizzard" data-price="500"><div><strong>Gizzard</strong><span>₦500 each</span></div><div class="qty-control"><button type="button" class="protein-minus" aria-label="Decrease Gizzard quantity">−</button><input class="protein-qty" value="0" inputmode="numeric" aria-label="Gizzard quantity"><button type="button" class="protein-plus" aria-label="Increase Gizzard quantity">+</button></div></div>
+            <div class="protein-option" data-protein="Turkey" data-price="2500"><div><strong>Turkey</strong><span>₦2,500 each</span></div><div class="qty-control"><button type="button" class="protein-minus" aria-label="Decrease Turkey quantity">−</button><input class="protein-qty" value="0" inputmode="numeric" aria-label="Turkey quantity"><button type="button" class="protein-plus" aria-label="Increase Turkey quantity">+</button></div></div>
+          </div>
+          <p class="builder-help">Select the quantity of each protein you need. Each unit is charged at the displayed per-piece/portion price.</p>
+        </div>
+
+        <div class="builder-section">
+          <div class="builder-section-title">🥤 Add Drinks — optional</div>
+          <div class="drink-builder-list">
+            <div class="drink-builder-row">
+              <label><span>Drink</span><select class="custom-drink"><option value="">No drink</option><option>Sobo</option><option>Yoghurt</option><option>Tiger Nut</option></select></label>
+              <label><span>Size</span><select class="custom-drink-size"><option value="">Select size</option><option>25cl</option><option>50cl</option><option>75cl</option><option>100cl</option><option>Other size</option></select></label>
+              <label><span>Qty</span><input class="custom-drink-qty" type="number" min="1" value="1" inputmode="numeric"></label>
+            </div>
+            <div class="drink-builder-row">
+              <label><span>Drink</span><select class="custom-drink"><option value="">No drink</option><option>Sobo</option><option>Yoghurt</option><option>Tiger Nut</option></select></label>
+              <label><span>Size</span><select class="custom-drink-size"><option value="">Select size</option><option>25cl</option><option>50cl</option><option>75cl</option><option>100cl</option><option>Other size</option></select></label>
+              <label><span>Qty</span><input class="custom-drink-qty" type="number" min="1" value="1" inputmode="numeric"></label>
+            </div>
+            <div class="drink-builder-row">
+              <label><span>Drink</span><select class="custom-drink"><option value="">No drink</option><option>Sobo</option><option>Yoghurt</option><option>Tiger Nut</option></select></label>
+              <label><span>Size</span><select class="custom-drink-size"><option value="">Select size</option><option>25cl</option><option>50cl</option><option>75cl</option><option>100cl</option><option>Other size</option></select></label>
+              <label><span>Qty</span><input class="custom-drink-qty" type="number" min="1" value="1" inputmode="numeric"></label>
+            </div>
+          </div>
+          <p class="builder-help">Add up to three drink selections. Prices for 25cl, 50cl, 75cl and 100cl are currently to be announced. Other sizes are priced based on request.</p>
+        </div>
+
+        <div class="fg"><label for="customNotes">Special Requests / Event Notes</label><textarea id="customNotes" placeholder="Tell us about your event, preferred combination, quantities, delivery needs, or any special request..."></textarea></div>
+
+        <div class="custom-total" id="customTotalBox">
+          <div><span>Known subtotal</span><strong id="customSubtotal">₦0</strong></div>
+          <small id="customPricingNote">Add items above. Final pricing will be confirmed for any items priced on request.</small>
+        </div>
+      </div>
+
       <button class="btn-gold" id="continuePayment" type="button" style="width:100%;padding:.95rem">Continue to Payment →</button>
     </div>
 
@@ -744,8 +838,9 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
       <h3>Choose Payment Method</h3>
       <p class="modal-sub">Review your order and select how you would like to pay.</p>
       <div class="order-summary" id="orderSummary"></div>
+      <div class="payment-policy-mini"><strong>Payment policy:</strong> Below ₦50,000 requires full payment. Bulk orders above ₦50,000 require an <strong>85% deposit</strong> to confirm.</div>
       <div class="pay-options" id="payOptions">
-        <button class="pay-option" data-pay="bank" type="button"><div class="poi">🏦</div><div class="pon">Bank Transfer</div><div class="pod">Send receipt via WhatsApp</div></button>
+        <button class="pay-option" data-pay="bank" type="button"><div class="poi">🏦</div><div class="pon">Bank Transfer</div><div class="pod">Opay · send receipt via WhatsApp</div></button>
         <button class="pay-option" data-pay="mobile" type="button"><div class="poi">📱</div><div class="pon">Mobile Pay</div><div class="pod">Opay, Palmpay, Kuda</div></button>
         <button class="pay-option" data-pay="ussd" type="button"><div class="poi">💳</div><div class="pon">USSD Transfer</div><div class="pod">Any bank USSD code</div></button>
         <button class="pay-option" data-pay="pickup" type="button"><div class="poi">🤝</div><div class="pon">Pay on Pickup</div><div class="pod">Cash or POS at collection</div></button>
@@ -775,21 +870,18 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
   'use strict';
 
   const WHATSAPP_NUMBER = '2348150563651';
+  const ACCOUNT_NUMBER = '6104687060';
+  const ACCOUNT_NAME = 'Tope-Egbedeyi Omowumi Christianah';
   const MIN_LEAD_DAYS = 4;
   const $ = id => document.getElementById(id);
-
-  const state = { item:'(no item)', price:'', pay:'' };
+  const state = { item:'(no item)', price:'', pay:'', custom:false, knownTotal:0, pricingPending:false };
 
   function escapeHTML(value){
-    return String(value ?? '').replace(/[&<>"']/g,ch=>({
-      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
-    })[ch]);
+    return String(value ?? '').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
   }
 
   function minimumDate(){
-    const d = new Date();
-    d.setHours(0,0,0,0);
-    d.setDate(d.getDate()+MIN_LEAD_DAYS);
+    const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+MIN_LEAD_DAYS);
     return d.toISOString().split('T')[0];
   }
 
@@ -797,10 +889,10 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
     if(!value) return '—';
     const parts=value.split('-').map(Number);
     if(parts.length!==3 || parts.some(Number.isNaN)) return value;
-    return new Date(parts[0],parts[1]-1,parts[2]).toLocaleDateString('en-GB',{
-      day:'numeric',month:'long',year:'numeric'
-    });
+    return new Date(parts[0],parts[1]-1,parts[2]).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
   }
+
+  function naira(n){ return '₦'+Number(n||0).toLocaleString('en-NG'); }
 
   /* MENU TABS */
   document.querySelectorAll('.menu-tab').forEach(btn=>{
@@ -815,310 +907,221 @@ footer{background:var(--dark);padding:2.2rem 3.5rem;border-top:2px solid rgba(18
 
   /* ORDER MODAL */
   function showStep(id){
-    ['step1','step2','step3'].forEach(step=>{
-      const el=$(step);
-      if(el) el.classList.toggle('active',step===id);
-    });
+    ['step1','step2','step3'].forEach(step=>{ const el=$(step); if(el) el.classList.toggle('active',step===id); });
     $('slbl1').classList.toggle('active',id==='step1');
     $('slbl2').classList.toggle('active',id!=='step1');
   }
 
-  function openModal(item,price){
-    state.item=item||'(no item)';
-    state.price=price||'';
-    state.pay='';
-    $('modalTitle').textContent='Order: '+state.item;
+  function resetCustomBuilder(){
+    document.querySelectorAll('.qty-input').forEach(i=>i.value='0');
+    document.querySelectorAll('.protein-qty').forEach(i=>i.value='0');
+    document.querySelectorAll('.custom-drink').forEach(i=>i.value='');
+    document.querySelectorAll('.custom-drink-size').forEach(i=>i.value='');
+    document.querySelectorAll('.custom-drink-qty').forEach(i=>i.value='1');
+    $('customNotes').value='';
+    updateCustomTotal();
+  }
+
+  function openModal(item,price,isCustom=false){
+    state.item=item||'(no item)'; state.price=price||''; state.pay=''; state.custom=Boolean(isCustom); state.knownTotal=0; state.pricingPending=false;
+    $('modalTitle').textContent=isCustom?'Build: Custom Small Chops':'Order: '+state.item;
+    $('modalLead').textContent=isCustom?'Choose your quantities, proteins and optional drinks. Orders require at least 4 days notice.':'Complete your details. Orders require at least 4 days notice.';
+    $('standardOrderFields').hidden=isCustom;
+    $('customOrderFields').hidden=!isCustom;
+    if(isCustom) resetCustomBuilder();
     document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('selected'));
     $('paymentError').classList.remove('show');
-    showStep('step1');
-    $('modal').classList.add('active');
-    $('modal').setAttribute('aria-hidden','false');
-    document.body.classList.add('modal-open');
+    showStep('step1'); $('modal').classList.add('active'); $('modal').setAttribute('aria-hidden','false'); document.body.classList.add('modal-open');
   }
 
   function closeModal(){
-    $('modal').classList.remove('active');
-    $('modal').setAttribute('aria-hidden','true');
-    state.pay='';
-    document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('selected'));
-    document.body.classList.remove('modal-open');
+    $('modal').classList.remove('active'); $('modal').setAttribute('aria-hidden','true'); state.pay='';
+    document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('selected')); document.body.classList.remove('modal-open');
   }
 
   function validateOrderDetails(){
-    const checks=[
-      ['fieldName','oName',v=>v.length>0],
-      ['fieldPhone','oPhone',v=>v.length>0],
-      ['fieldDate','oDate',v=>v && v>=minimumDate()]
-    ];
+    const checks=[['fieldName','oName',v=>v.length>0],['fieldPhone','oPhone',v=>v.length>0],['fieldDate','oDate',v=>v && v>=minimumDate()]];
     let valid=true;
     checks.forEach(([wrapId,inputId,test])=>{
-      const wrap=$(wrapId),input=$(inputId);
-      const ok=test(input.value.trim());
-      wrap.classList.toggle('has-error',!ok);
-      const msg=wrap.querySelector('.error-msg');
-      if(msg) msg.style.display=ok?'none':'block';
-      if(!ok && valid) input.focus();
-      if(!ok) valid=false;
+      const wrap=$(wrapId),input=$(inputId),ok=test(input.value.trim());
+      wrap.classList.toggle('has-error',!ok); const msg=wrap.querySelector('.error-msg'); if(msg) msg.style.display=ok?'none':'block';
+      if(!ok && valid) input.focus(); if(!ok) valid=false;
     });
     return valid;
   }
 
+  function updateCustomTotal(){
+    let total=0;
+    document.querySelectorAll('.builder-row').forEach(row=>{
+      const qty=Math.max(0,parseInt(row.querySelector('.qty-input').value,10)||0);
+      total += qty * Number(row.dataset.price||0);
+    });
+    document.querySelectorAll('.protein-option').forEach(row=>{
+      const qty=Math.max(0,parseInt(row.querySelector('.protein-qty').value,10)||0);
+      total += qty * Number(row.dataset.price||0);
+    });
+    const drinkRows=[...document.querySelectorAll('.drink-builder-row')];
+    const hasDrink=drinkRows.some(row=>Boolean(row.querySelector('.custom-drink').value));
+    state.knownTotal=total;
+    state.pricingPending=hasDrink;
+    $('customSubtotal').textContent=naira(total);
+    $('customPricingNote').textContent = hasDrink
+      ? 'Drink pricing is currently to be announced. Your final total will be confirmed after your request is reviewed.'
+      : 'Only items with confirmed prices are included above. Add quantities, proteins or a drink if needed.';
+  }
+
+  function customOrderLines(){
+    const lines=[];
+    document.querySelectorAll('.builder-row').forEach(row=>{
+      const qty=Math.max(0,parseInt(row.querySelector('.qty-input').value,10)||0);
+      if(qty) lines.push(`${row.dataset.name} × ${qty} = ${naira(qty*Number(row.dataset.price))}`);
+    });
+    const proteins=[];
+    document.querySelectorAll('.protein-option').forEach(row=>{
+      const qty=Math.max(0,parseInt(row.querySelector('.protein-qty').value,10)||0);
+      if(qty) proteins.push(`${row.dataset.protein} × ${qty} = ${naira(qty*Number(row.dataset.price))}`);
+    });
+    if(proteins.length) lines.push('Protein: '+proteins.join(', '));
+    document.querySelectorAll('.drink-builder-row').forEach(row=>{
+      const drink=row.querySelector('.custom-drink').value, size=row.querySelector('.custom-drink-size').value, qty=Math.max(1,parseInt(row.querySelector('.custom-drink-qty').value,10)||1);
+      if(drink) lines.push(`Drink: ${drink}${size?' · '+size:''} × ${qty} — Price to be announced`);
+    });
+    if(!lines.length) lines.push('No priced items selected yet.');
+    const notes=$('customNotes').value.trim(); if(notes) lines.push('Special requests: '+notes);
+    return lines;
+  }
+
+  function customHasSelection(){
+    const hasRows=[...document.querySelectorAll('.builder-row')].some(row=>(parseInt(row.querySelector('.qty-input').value,10)||0)>0);
+    const hasProtein=[...document.querySelectorAll('.protein-qty')].some(i=>(parseInt(i.value,10)||0)>0);
+    const hasDrink=[...document.querySelectorAll('.custom-drink')].some(i=>Boolean(i.value));
+    return hasRows||hasProtein||hasDrink;
+  }
+
   function continueToPayment(){
     if(!validateOrderDetails()) return;
-    const notes=escapeHTML($('oNotes').value.trim()).replace(/\n/g,'<br>');
-    $('orderSummary').innerHTML=
-      '<strong>Item:</strong> '+escapeHTML(state.item)+'<br>'+
-      '<strong>Price:</strong> <span style="color:var(--gold);font-weight:800">'+escapeHTML(state.price)+'</span><br>'+
-      '<strong>Name:</strong> '+escapeHTML($('oName').value.trim())+'<br>'+
-      '<strong>Phone:</strong> '+escapeHTML($('oPhone').value.trim())+'<br>'+
-      '<strong>Date:</strong> '+escapeHTML(formatDate($('oDate').value))+
-      (notes?'<br><strong>Notes:</strong> '+notes:'');
-    showStep('step2');
+    let summary='';
+    if(state.custom){
+      if(!customHasSelection()){
+        $('customTotalBox').classList.add('builder-error');
+        $('customPricingNote').textContent='Please select at least one small-chops item, protein, or drink before continuing.';
+        setTimeout(()=>$('customTotalBox').classList.remove('builder-error'),2500);
+        return;
+      }
+      state.item='Custom Small Chops'; state.price=state.knownTotal>0 ? naira(state.knownTotal)+(state.pricingPending?' + drink price to be confirmed':'') : 'Price to be confirmed';
+      summary='<strong>Order:</strong> Custom Small Chops<br><strong>Known subtotal:</strong> <span style="color:var(--gold);font-weight:800">'+escapeHTML(naira(state.knownTotal))+'</span>'+(state.pricingPending?' <em>(drink price pending)</em>':'')+'<br>'+'<strong>Name:</strong> '+escapeHTML($('oName').value.trim())+'<br><strong>Phone:</strong> '+escapeHTML($('oPhone').value.trim())+'<br><strong>Date:</strong> '+escapeHTML(formatDate($('oDate').value))+'<br><strong>Items:</strong><br>'+customOrderLines().map(escapeHTML).join('<br>');
+    } else {
+      const notes=escapeHTML($('oNotes').value.trim()).replace(/\n/g,'<br>');
+      summary='<strong>Item:</strong> '+escapeHTML(state.item)+'<br><strong>Price:</strong> <span style="color:var(--gold);font-weight:800">'+escapeHTML(state.price)+'</span><br><strong>Name:</strong> '+escapeHTML($('oName').value.trim())+'<br><strong>Phone:</strong> '+escapeHTML($('oPhone').value.trim())+'<br><strong>Date:</strong> '+escapeHTML(formatDate($('oDate').value))+(notes?'<br><strong>Notes:</strong> '+notes:'');
+      const exactPrice=/^₦[0-9,]+$/.test(state.price.trim());
+      const numeric=exactPrice ? state.price.replace('₦','').replace(/,/g,'') : '';
+      state.knownTotal=numeric?Number(numeric):0;
+      state.pricingPending=!exactPrice;
+    }
+    $('orderSummary').innerHTML=summary; showStep('step2');
+  }
+
+  function paymentRule(){
+    if(state.knownTotal>50000) return '85% deposit required';
+    return 'Full payment required';
   }
 
   function buildWhatsAppMessage(){
     const names={bank:'Bank Transfer',mobile:'Mobile Payment',ussd:'USSD Transfer',pickup:'Pay on Pickup'};
-    return [
-      "Hello Sila's Kitchen and More,","",
-      "I would like to place an order.",
-      "Item: "+state.item,
-      "Price: "+state.price,
-      "Name: "+$('oName').value.trim(),
-      "Phone/WhatsApp: "+$('oPhone').value.trim(),
-      "Desired Date: "+formatDate($('oDate').value),
-      "Quantity / Protein / Notes: "+($('oNotes').value.trim()||'Not specified'),
-      "Preferred Payment: "+(names[state.pay]||state.pay),"",
-      "Please confirm availability and the next steps. Thank you."
-    ].join('\n');
+    const lines=["Hello Sila's Kitchen and More,","","I would like to place an order.","Order: "+state.item];
+    if(state.custom){ lines.push('Known subtotal: '+naira(state.knownTotal), ...customOrderLines()); }
+    else lines.push('Price: '+state.price,'Notes: '+($('oNotes').value.trim()||'Not specified'));
+    lines.push('Name: '+$('oName').value.trim(),'Phone/WhatsApp: '+$('oPhone').value.trim(),'Desired Date: '+formatDate($('oDate').value),'Payment preference: '+(names[state.pay]||state.pay), 'Payment rule: '+paymentRule(), '', 'Please confirm availability, final price (if applicable), and next steps. Thank you.');
+    return lines.join('\n');
   }
 
   function confirmOrder(){
-    if(!state.pay){
-      $('paymentError').classList.add('show');
-      return;
-    }
+    if(!state.pay){ $('paymentError').classList.add('show'); return; }
     const details={
-      bank:'Bank Transfer — Opay account 6104687060. Send receipt via WhatsApp after payment.',
-      mobile:'Mobile Payment — Opay/Palmpay/Kuda. Send payment screenshot via WhatsApp after payment.',
-      ussd:'USSD Transfer — Opay USSD: *955#. Transfer to 6104687060 and send confirmation via WhatsApp.',
-      pickup:'Pay on Pickup — Cash or POS at collection.'
+      bank:`Bank Transfer — Opay account ${ACCOUNT_NUMBER}. Account name: ${ACCOUNT_NAME}. Send receipt via WhatsApp after payment.`,
+      mobile:`Mobile Payment — Opay/Palmpay/Kuda. For Opay, use account ${ACCOUNT_NUMBER} under ${ACCOUNT_NAME}. Send payment screenshot via WhatsApp after payment.`,
+      ussd:`USSD Transfer — Opay USSD: *955#. Transfer to Opay account ${ACCOUNT_NUMBER} and send confirmation via WhatsApp.`,
+      pickup:'Pay on Pickup — Cash or POS at collection, subject to order confirmation.'
     };
-    $('confirmDetails').innerHTML=
-      '<strong>Order:</strong> '+escapeHTML(state.item)+'<br>'+
-      '<strong>Price:</strong> '+escapeHTML(state.price)+'<br>'+
-      '<strong>Name:</strong> '+escapeHTML($('oName').value.trim())+'<br>'+
-      '<strong>Date:</strong> '+escapeHTML(formatDate($('oDate').value))+'<br>'+
-      '<strong>Payment:</strong> '+escapeHTML(details[state.pay])+'<br><br>'+
-      '<strong>Next step:</strong> Send this order request through WhatsApp. '+
-      'Your order is not considered confirmed until Sila\'s Kitchen acknowledges it.';
+    const policy=state.knownTotal>50000?'85% deposit is required to confirm this bulk order. The remaining 15% balance is payable as agreed before collection or delivery.':(state.knownTotal>0?'Full payment is required for orders below ₦50,000.': 'Final payment terms will be confirmed once the total price is established.');
+    const itemHtml=state.custom ? customOrderLines().map(escapeHTML).join('<br>') : escapeHTML(state.item)+' · '+escapeHTML(state.price);
+    $('confirmDetails').innerHTML='<strong>Order:</strong> '+itemHtml+'<br><br><strong>Name:</strong> '+escapeHTML($('oName').value.trim())+'<br><strong>Date:</strong> '+escapeHTML(formatDate($('oDate').value))+'<br><strong>Payment:</strong> '+escapeHTML(details[state.pay])+'<br><strong>Policy:</strong> '+escapeHTML(policy)+'<br><br><strong>Next step:</strong> Send this request through WhatsApp. Your order is not confirmed until Sila\'s Kitchen acknowledges it.';
     $('whatsappOrder').href='https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(buildWhatsAppMessage());
     showStep('step3');
   }
 
-  document.querySelectorAll('.order-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>openModal(btn.dataset.item,btn.dataset.price));
+  document.querySelectorAll('.order-btn').forEach(btn=>btn.addEventListener('click',()=>openModal(btn.dataset.item,btn.dataset.price,false)));
+  document.querySelectorAll('.custom-order-btn').forEach(btn=>btn.addEventListener('click',()=>openModal('Custom Small Chops','Build your order',true)));
+  document.querySelectorAll('.pay-option').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.pay-option').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');state.pay=btn.dataset.pay;$('paymentError').classList.remove('show');}));
+  document.querySelectorAll('.builder-row .qty-control').forEach(control=>{
+    const input=control.querySelector('.qty-input');
+    control.querySelector('.qty-minus').addEventListener('click',()=>{input.value=Math.max(0,(parseInt(input.value,10)||0)-1);updateCustomTotal();});
+    control.querySelector('.qty-plus').addEventListener('click',()=>{input.value=Math.min(999,(parseInt(input.value,10)||0)+1);updateCustomTotal();});
+    input.addEventListener('input',()=>{input.value=Math.max(0,Math.min(999,parseInt(input.value,10)||0));updateCustomTotal();});
   });
-  document.querySelectorAll('.pay-option').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.pay-option').forEach(b=>b.classList.remove('selected'));
-      btn.classList.add('selected');
-      state.pay=btn.dataset.pay;
-      $('paymentError').classList.remove('show');
-    });
+  document.querySelectorAll('.protein-option').forEach(row=>{
+    const input=row.querySelector('.protein-qty');
+    row.querySelector('.protein-minus').addEventListener('click',()=>{input.value=Math.max(0,(parseInt(input.value,10)||0)-1);updateCustomTotal();});
+    row.querySelector('.protein-plus').addEventListener('click',()=>{input.value=Math.min(99,(parseInt(input.value,10)||0)+1);updateCustomTotal();});
+    input.addEventListener('input',()=>{input.value=Math.max(0,Math.min(99,parseInt(input.value,10)||0));updateCustomTotal();});
+  });
+  document.querySelectorAll('.drink-builder-row').forEach(row=>{
+    row.querySelector('.custom-drink').addEventListener('change',updateCustomTotal);
+    row.querySelector('.custom-drink-size').addEventListener('change',updateCustomTotal);
+    row.querySelector('.custom-drink-qty').addEventListener('input',updateCustomTotal);
   });
   $('continuePayment').addEventListener('click',continueToPayment);
   $('backDetails').addEventListener('click',()=>showStep('step1'));
   $('confirmOrder').addEventListener('click',confirmOrder);
-  $('modalClose').addEventListener('click',closeModal);
-  $('doneOrder').addEventListener('click',closeModal);
-  $('modal').addEventListener('click',e=>{if(e.target===$('modal'))closeModal();});
+  $('modalClose').addEventListener('click',closeModal); $('doneOrder').addEventListener('click',closeModal);
+  $('modal').addEventListener('click',e=>{if(e.target===$('modal')) closeModal();});
 
-  /* GALLERY
-     Built directly from the images already used by the menu cards.
-     This keeps exact filename/case and prevents a second, stale
-     gallery inventory from breaking the page.
-  */
+  /* GALLERY */
   const galleryState={index:0,items:[]};
-
   function collectGalleryImages(){
-    const seen=new Set();
-    const items=[];
+    const seen=new Set(),items=[];
     document.querySelectorAll('.mcard-top img[src]').forEach(img=>{
-      const src=img.getAttribute('src');
-      if(!src || seen.has(src)) return;
-      seen.add(src);
-      const card=img.closest('.mcard');
-      const title=card ? card.querySelector('h3') : null;
-      items.push({
-        src:src,
-        label:title ? title.textContent.trim() : "Sila's Kitchen"
-      });
+      const src=img.getAttribute('src'); if(!src||seen.has(src)) return; seen.add(src);
+      const card=img.closest('.mcard'),title=card?card.querySelector('h3'):null;
+      items.push({src,label:title?title.textContent.trim():"Sila's Kitchen"});
     });
     return items;
   }
-
-  function refreshGalleryIndexes(){
-    document.querySelectorAll('#gphotos .g-item').forEach((card,index)=>{
-      card.dataset.galleryIndex=index;
-    });
-  }
-
+  function refreshGalleryIndexes(){document.querySelectorAll('#gphotos .g-item').forEach((card,index)=>card.dataset.galleryIndex=index);}
   function buildGallery(){
-    const photos=$('gphotos'),videos=$('gvideos');
-    galleryState.items=collectGalleryImages();
-
+    const photos=$('gphotos'),videos=$('gvideos'); galleryState.items=collectGalleryImages();
     if(photos){
-      if(!galleryState.items.length){
-        photos.innerHTML='<div class="video-empty"><div style="font-size:2rem;margin-bottom:.6rem">📷</div><strong>Photos coming soon</strong><span>Product photographs will appear here.</span></div>';
-      }else{
-        photos.innerHTML=galleryState.items.map((item,index)=>
-          '<button class="g-item" type="button" data-gallery-index="'+index+'" aria-label="View '+escapeHTML(item.label)+'">'+
-          '<img src="'+escapeHTML(item.src)+'" alt="'+escapeHTML(item.label)+'" loading="'+(index<4?'eager':'lazy')+'" decoding="async">'+
-          '<span class="g-zoom" aria-hidden="true">⌕</span>'+
-          '<span class="g-label">'+escapeHTML(item.label)+'</span>'+
-          '</button>'
-        ).join('');
-
+      if(!galleryState.items.length) photos.innerHTML='<div class="video-empty"><div style="font-size:2rem;margin-bottom:.6rem">📷</div><strong>Photos coming soon</strong><span>Product photographs will appear here.</span></div>';
+      else{
+        photos.innerHTML=galleryState.items.map((item,index)=>'<button class="g-item" type="button" data-gallery-index="'+index+'" aria-label="View '+escapeHTML(item.label)+'"><img src="'+escapeHTML(item.src)+'" alt="'+escapeHTML(item.label)+'" loading="'+(index<4?'eager':'lazy')+'" decoding="async"><span class="g-zoom" aria-hidden="true">⌕</span><span class="g-label">'+escapeHTML(item.label)+'</span></button>').join('');
         photos.querySelectorAll('.g-item').forEach(card=>{
           card.addEventListener('click',()=>openLightbox(Number(card.dataset.galleryIndex)));
-          const img=card.querySelector('img');
-          img.addEventListener('error',()=>{
-            const badIndex=Number(card.dataset.galleryIndex);
-            card.remove();
-            galleryState.items.splice(badIndex,1);
-            refreshGalleryIndexes();
-          },{once:true});
+          const img=card.querySelector('img'); img.addEventListener('error',()=>{const badIndex=Number(card.dataset.galleryIndex);card.remove();galleryState.items.splice(badIndex,1);refreshGalleryIndexes();},{once:true});
         });
       }
     }
-
-    if(videos){
-      videos.innerHTML='<div class="video-empty"><div style="font-size:2rem;margin-bottom:.6rem">🎬</div><strong>Videos coming soon</strong><span>We’re preparing more behind-the-scenes and event videos for Sila’s Kitchen.</span></div>';
-    }
+    if(videos) videos.innerHTML='<div class="video-empty"><div style="font-size:2rem;margin-bottom:.6rem">🎬</div><strong>Videos coming soon</strong><span>We’re preparing more behind-the-scenes and event videos for Sila’s Kitchen.</span></div>';
   }
+  function openLightbox(index){if(!galleryState.items.length)return;galleryState.index=(index+galleryState.items.length)%galleryState.items.length;renderLightbox();$('galleryLightbox').classList.add('active');$('galleryLightbox').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');}
+  function renderLightbox(){const item=galleryState.items[galleryState.index],img=$('lightboxImage');img.classList.remove('lightbox-image');void img.offsetWidth;img.classList.add('lightbox-image');img.src=item.src;img.alt=item.label;$('lightboxTitle').textContent=item.label;$('lightboxCounter').textContent=(galleryState.index+1)+' / '+galleryState.items.length;}
+  function closeLightbox(){$('galleryLightbox').classList.remove('active');$('galleryLightbox').setAttribute('aria-hidden','true');$('lightboxImage').src='';document.body.classList.remove('modal-open');}
+  function galleryNext(step){if(!galleryState.items.length)return;galleryState.index=(galleryState.index+step+galleryState.items.length)%galleryState.items.length;renderLightbox();}
+  $('lightboxClose').addEventListener('click',closeLightbox);$('lightboxPrev').addEventListener('click',()=>galleryNext(-1));$('lightboxNext').addEventListener('click',()=>galleryNext(1));$('galleryLightbox').addEventListener('click',e=>{if(e.target===$('galleryLightbox'))closeLightbox();});
+  let touchStartX=0;$('galleryLightbox').addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].clientX;},{passive:true});$('galleryLightbox').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchStartX;if(Math.abs(dx)>50)galleryNext(dx<0?1:-1);},{passive:true});
+  document.querySelectorAll('.gal-tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.gal-tab').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});document.querySelectorAll('.gal-panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');btn.setAttribute('aria-selected','true');const panel=$('g'+btn.dataset.gallery);if(panel)panel.classList.add('active');}));
 
-  function openLightbox(index){
-    if(!galleryState.items.length) return;
-    galleryState.index=(index+galleryState.items.length)%galleryState.items.length;
-    renderLightbox();
-    $('galleryLightbox').classList.add('active');
-    $('galleryLightbox').setAttribute('aria-hidden','false');
-    document.body.classList.add('modal-open');
-  }
-
-  function renderLightbox(){
-    const item=galleryState.items[galleryState.index];
-    const img=$('lightboxImage');
-    img.classList.remove('lightbox-image');
-    void img.offsetWidth;
-    img.classList.add('lightbox-image');
-    img.src=item.src;
-    img.alt=item.label;
-    $('lightboxTitle').textContent=item.label;
-    $('lightboxCounter').textContent=(galleryState.index+1)+' / '+galleryState.items.length;
-  }
-
-  function closeLightbox(){
-    $('galleryLightbox').classList.remove('active');
-    $('galleryLightbox').setAttribute('aria-hidden','true');
-    $('lightboxImage').src='';
-    document.body.classList.remove('modal-open');
-  }
-
-  function galleryNext(step){
-    if(!galleryState.items.length) return;
-    galleryState.index=(galleryState.index+step+galleryState.items.length)%galleryState.items.length;
-    renderLightbox();
-  }
-
-  $('lightboxClose').addEventListener('click',closeLightbox);
-  $('lightboxPrev').addEventListener('click',()=>galleryNext(-1));
-  $('lightboxNext').addEventListener('click',()=>galleryNext(1));
-  $('galleryLightbox').addEventListener('click',e=>{if(e.target===$('galleryLightbox'))closeLightbox();});
-
-  let touchStartX=0;
-  $('galleryLightbox').addEventListener('touchstart',e=>{
-    touchStartX=e.changedTouches[0].clientX;
-  },{passive:true});
-  $('galleryLightbox').addEventListener('touchend',e=>{
-    const dx=e.changedTouches[0].clientX-touchStartX;
-    if(Math.abs(dx)>50) galleryNext(dx<0?1:-1);
-  },{passive:true});
-
-  document.querySelectorAll('.gal-tab').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.gal-tab').forEach(b=>{
-        b.classList.remove('active');
-        b.setAttribute('aria-selected','false');
-      });
-      document.querySelectorAll('.gal-panel').forEach(p=>p.classList.remove('active'));
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected','true');
-      const panel=$('g'+btn.dataset.gallery);
-      if(panel) panel.classList.add('active');
-    });
-  });
-
-  /* KEYBOARD */
-  document.addEventListener('keydown',e=>{
-    const lb=$('galleryLightbox');
-    if(lb && lb.classList.contains('active')){
-      if(e.key==='Escape') closeLightbox();
-      if(e.key==='ArrowRight') galleryNext(1);
-      if(e.key==='ArrowLeft') galleryNext(-1);
-    }
-    if(e.key==='Escape' && $('modal').classList.contains('active')) closeModal();
-  });
-
-  /* MOBILE NAV */
-  $('navToggle').addEventListener('click',()=>{
-    const open=$('navLinks').classList.toggle('open');
-    $('navToggle').setAttribute('aria-expanded',String(open));
-  });
-  document.querySelectorAll('#navLinks a').forEach(a=>{
-    a.addEventListener('click',()=>{
-      $('navLinks').classList.remove('open');
-      $('navToggle').setAttribute('aria-expanded','false');
-    });
-  });
+  /* KEYBOARD + NAV */
+  document.addEventListener('keydown',e=>{const lb=$('galleryLightbox');if(lb&&lb.classList.contains('active')){if(e.key==='Escape')closeLightbox();if(e.key==='ArrowRight')galleryNext(1);if(e.key==='ArrowLeft')galleryNext(-1);}if(e.key==='Escape'&&$('modal').classList.contains('active'))closeModal();});
+  $('navToggle').addEventListener('click',()=>{const open=$('navLinks').classList.toggle('open');$('navToggle').setAttribute('aria-expanded',String(open));});
+  document.querySelectorAll('#navLinks a').forEach(a=>a.addEventListener('click',()=>{$('navLinks').classList.remove('open');$('navToggle').setAttribute('aria-expanded','false');}));
 
   /* CONSULTATION */
-  $('consultForm').addEventListener('submit',e=>{
-    e.preventDefault();
-    const date=$('cDate').value,status=$('consultStatus');
-    if(date<minimumDate()){
-      status.textContent='Please choose an event date at least 4 days from today.';
-      status.className='form-status show error';
-      return;
-    }
-    const message=[
-      "Hello Sila's Kitchen and More,","",
-      "I would like to book a free consultation.",
-      "Name: "+$('cFirst').value.trim()+" "+$('cLast').value.trim(),
-      "Phone/WhatsApp: "+$('cPhone').value.trim(),
-      "Event Type: "+$('cType').value,
-      "Event Date: "+formatDate(date),
-      "Guests: "+$('cGuests').value,
-      "Notes: "+($('cNotes').value.trim()||'None')
-    ].join('\n');
-    status.textContent='Opening WhatsApp with your consultation request...';
-    status.className='form-status show success';
-    window.open('https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(message),'_blank','noopener');
-  });
+  $('consultForm').addEventListener('submit',e=>{e.preventDefault();const date=$('cDate').value,status=$('consultStatus');if(date<minimumDate()){status.textContent='Please choose an event date at least 4 days from today.';status.className='form-status show error';return;}const message=["Hello Sila's Kitchen and More,","","I would like to book a free consultation.","Name: "+$('cFirst').value.trim()+" "+$('cLast').value.trim(),"Phone/WhatsApp: "+$('cPhone').value.trim(),"Event Type: "+$('cType').value,"Event Date: "+formatDate(date),"Guests: "+$('cGuests').value,"Notes: "+($('cNotes').value.trim()||'None')].join('\n');status.textContent='Opening WhatsApp with your consultation request...';status.className='form-status show success';window.open('https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(message),'_blank','noopener');});
 
   /* IMAGE FALLBACK */
-  document.querySelectorAll('.mcard-top img').forEach(img=>{
-    img.addEventListener('error',()=>{
-      const wrap=img.closest('.mcard-top');
-      if(wrap) wrap.classList.add('has-error');
-    },{once:true});
-  });
+  document.querySelectorAll('.mcard-top img').forEach(img=>img.addEventListener('error',()=>{const wrap=img.closest('.mcard-top');if(wrap)wrap.classList.add('has-error');},{once:true}));
 
-  /* INITIALIZE */
-  $('oDate').min=minimumDate();
-  $('cDate').min=minimumDate();
-  buildGallery();
-
+  $('oDate').min=minimumDate(); $('cDate').min=minimumDate(); buildGallery(); updateCustomTotal();
 })();
 </script>
 </body>
