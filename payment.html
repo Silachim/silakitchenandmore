@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sila's Kitchen and More customer payment and receipt upload.">
+<title>Customer Payment | Sila's Kitchen and More</title>
+<style>
+:root{--gold:#B8860B;--gold2:#D4A020;--dark:#1A0E00;--dark2:#2C1800;--cream:#F8F3E3;--white:#fffef8;--muted:#6B4C1E;--line:#e2d6c1;--danger:#b42318;--success:#1b7f3a}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:#2A1600;font-family:Arial,sans-serif;line-height:1.55}
+.wrap{width:min(720px,calc(100% - 28px));margin:40px auto}
+.card{background:#fff;padding:28px;border-radius:10px;box-shadow:0 18px 50px rgba(26,14,0,.14)}
+.brand{text-align:center;margin-bottom:25px}.brand img{width:82px;height:82px;border-radius:50%;object-fit:cover;border:3px solid var(--gold)}
+h1,h2{font-family:Georgia,serif}h1{font-size:2rem;margin:10px 0 5px}.sub{color:var(--muted)}
+label{display:block;font-weight:800;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin:16px 0 6px}
+input,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:5px;background:#fff}
+button,.btn{border:0;background:var(--gold);color:#fff;padding:13px 18px;border-radius:5px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block}
+button:hover,.btn:hover{background:var(--gold2)}
+.full{width:100%}.hidden{display:none}
+.summary{background:#fffaf0;border:1px solid #ead9b7;border-left:4px solid var(--gold);padding:16px;margin:18px 0}
+.bank{background:var(--dark);color:#fff;padding:18px;border-radius:7px;margin:18px 0}.bank strong{color:#f0c840}
+.status{margin-top:14px;padding:12px;border-radius:5px;display:none}.status.show{display:block}.status.error{background:#fff0ee;color:var(--danger)}.status.success{background:#edf8ef;color:var(--success)}
+.filebox{border:2px dashed #d7c5a5;padding:18px;text-align:center;border-radius:7px;background:#fffdf8}
+.small{font-size:.78rem;color:#7b6c58}
+.progress{height:8px;background:#eee3d0;border-radius:99px;overflow:hidden;margin-top:10px}.progress i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
+.toplink{display:inline-block;margin-bottom:15px;color:var(--gold);font-weight:800}
+</style>
+</head>
+<body>
+<main class="wrap">
+<a class="toplink" href="index.html">← Back to Sila's Kitchen</a>
+<div class="card">
+  <div class="brand">
+    <img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More">
+    <h1>Complete Your Payment</h1>
+    <div class="sub">Enter the payment code sent to you by Sila's Kitchen and More.</div>
+  </div>
+
+  <label for="paymentCode">Payment Code</label>
+  <input id="paymentCode" placeholder="e.g. SILA-PAY-AB12CD34" autocomplete="off">
+  <button id="loadBtn" class="full" style="margin-top:10px">Load Payment Details</button>
+
+  <div id="status" class="status"></div>
+
+  <section id="paymentPanel" class="hidden">
+    <div id="summary" class="summary"></div>
+
+    <div class="bank">
+      <h2 style="margin-top:0;color:#fff">Payment Account</h2>
+      <div><strong>Bank:</strong> Opay</div>
+      <div><strong>Account Number:</strong> 6104687060</div>
+      <div><strong>Account Name:</strong> Tope-Egbedeyi Omowumi Christianah</div>
+      <p class="small" style="color:rgba(255,255,255,.65)">Use your payment code as your transfer narration/reference where your bank permits.</p>
+    </div>
+
+    <label for="amountPaid">Amount Paid</label>
+    <input id="amountPaid" type="number" min="1" step="0.01" placeholder="Enter the amount you transferred">
+
+    <label>Payment Receipt</label>
+    <div class="filebox">
+      <input id="receiptFile" type="file" accept="image/jpeg,image/png,image/webp,application/pdf">
+      <div class="small">Accepted: JPG, PNG, WEBP or PDF. Maximum 10MB.</div>
+      <div class="progress"><i id="progressBar"></i></div>
+    </div>
+
+    <label for="customerNote">Note (optional)</label>
+    <textarea id="customerNote" rows="3" placeholder="Any note about your payment..."></textarea>
+
+    <button id="uploadBtn" class="full" style="margin-top:18px">Upload Receipt & Submit Payment</button>
+  </section>
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="payment.js"></script>
+</body>
+</html>
