@@ -3,4383 +3,598 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<meta name="description"
-content="Sila's Kitchen and More — Nigerian small chops, pastries, drinks and custom event catering in Ibadan and across Nigeria.">
-
+<meta name="description" content="Sila's Kitchen and More — Nigerian small chops, pastries, drinks and custom event catering in Ibadan and across Nigeria.">
 <meta name="theme-color" content="#11100d">
-
 <title>Sila's Kitchen and More | Small Chops, Pastries & Drinks</title>
+
+<!-- Supabase client. Only the public/anon key belongs in this page. NEVER use service_role here. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
-  --ink:#17140f;
-  --muted:#6f675c;
-  --gold:#b8860b;
-  --gold2:#d6aa45;
-  --cream:#fbf7ed;
-  --paper:#fffdf8;
-  --dark:#15120e;
-  --dark2:#211b14;
-  --line:#e8dfcf;
-  --danger:#bd2c2c;
-  --shadow:0 16px 45px rgba(30,20,8,.12);
-  --radius:16px;
-
+  --ink:#17140f;--muted:#6f675c;--gold:#b8860b;--gold2:#d6aa45;
+  --cream:#fbf7ed;--paper:#fffdf8;--dark:#15120e;--dark2:#211b14;
+  --line:#e8dfcf;--danger:#bd2c2c;--success:#237a43;
+  --shadow:0 16px 45px rgba(30,20,8,.12);--radius:16px;
   font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  color:var(--ink);
-  background:var(--paper);
-  font-synthesis:none;
-}
-
-*{
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
-body{
-  margin:0;
-  background:var(--paper);
-  line-height:1.55;
-}
-
-img{
-  max-width:100%;
-}
-
-button,
-input,
-select,
-textarea{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-a{
-  color:inherit;
-  text-decoration:none;
-}
-
-.container{
-  width:min(1180px,calc(100% - 32px));
-  margin:auto;
-}
-
-/* =========================
-   NAVIGATION
-========================= */
-
-nav{
-  position:sticky;
-  top:0;
-  z-index:50;
-  background:rgba(255,253,248,.96);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--line);
-  height:78px;
-  display:flex;
-  align-items:center;
-  padding:0 max(20px,calc((100% - 1180px)/2));
-  gap:24px;
-}
-
-.nav-logo{
-  display:flex;
-  align-items:center;
-}
-
-.nav-logo img{
-  width:58px;
-  height:58px;
-  object-fit:contain;
-  border-radius:50%;
-}
-
-.nav-links{
-  display:flex;
-  gap:22px;
-  list-style:none;
-  margin:0 auto;
-  padding:0;
-  font-size:.88rem;
-  font-weight:700;
-}
-
-.nav-links a:hover{
-  color:var(--gold);
-}
-
-.nav-cta,
-.btn-gold{
-  background:var(--gold);
-  color:#fff;
-  border:0;
-  border-radius:9px;
-  padding:.78rem 1.15rem;
-  font-weight:800;
-}
-
-.nav-cta:hover,
-.btn-gold:hover{
-  background:#9c7309;
-}
-
-.btn-ghost{
-  background:transparent;
-  color:var(--ink);
-  border:1px solid var(--gold);
-  border-radius:9px;
-  padding:.78rem 1.15rem;
-  font-weight:800;
-}
-
-/* =========================
-   GENERAL SECTIONS
-========================= */
-
-section{
-  padding:76px 0;
-}
-
-.hero{
-  background:
-    radial-gradient(
-      circle at 75% 30%,
-      rgba(214,170,69,.18),
-      transparent 35%
-    ),
-    var(--cream);
-
-  padding:72px 0;
-}
-
-.hero-inner{
-  display:grid;
-  grid-template-columns:1.15fr .85fr;
-  gap:50px;
-  align-items:center;
-}
-
-.badge,
-.sec-eye{
-  display:inline-block;
-  color:var(--gold);
-  font-size:.75rem;
-  font-weight:900;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-}
-
-h1{
-  font-family:Georgia,serif;
-  font-size:clamp(3rem,6vw,5.5rem);
-  line-height:.98;
-  margin:16px 0;
-}
-
-.hero h1 em{
-  color:var(--gold);
-  font-weight:400;
-}
-
-.hero-p,
-.sec-p{
-  color:var(--muted);
-  max-width:720px;
-}
-
-.hero-btns{
-  display:flex;
-  gap:12px;
-  margin-top:25px;
-  flex-wrap:wrap;
-}
-
-.hero-right{
-  text-align:center;
-}
-
-.hero-logo{
-  width:min(330px,80vw);
-  height:min(330px,80vw);
-  object-fit:contain;
-  border-radius:50%;
-  margin:auto;
-  filter:drop-shadow(0 18px 24px rgba(0,0,0,.12));
-}
-
-.hero-stats,
-.about-nums{
-  display:flex;
-  justify-content:center;
-  gap:30px;
-  margin-top:25px;
-}
-
-.hstat .n,
-.about-num .n{
-  font-weight:900;
-  color:var(--gold);
-  font-size:1.2rem;
-}
-
-.hstat .l,
-.about-num .l{
-  font-size:.72rem;
-  color:var(--muted);
-}
-
-.sec-h2{
-  font-family:Georgia,serif;
-  font-size:clamp(2rem,4vw,3.2rem);
-  margin:8px 0 12px;
-}
-
-/* =========================
-   PROCESS
-========================= */
-
-.steps,
-.menu-grid,
-.pay-grid,
-.contact-grid{
-  display:grid;
-  gap:18px;
-}
-
-.steps{
-  grid-template-columns:repeat(4,1fr);
-  margin-top:35px;
-}
-
-.step,
-.mcard,
-.pay-card,
-.contact-card,
-.consult-form{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-}
-
-.step{
-  padding:25px;
-}
-
-.step-n{
-  color:var(--gold);
-  font-weight:900;
-  font-size:.8rem;
-}
-
-.step h3,
-.mcard h3,
-.pay-card h3,
-.contact-card h3{
-  margin:.45rem 0;
-}
-
-.step p,
-.mcard p,
-.pay-card p,
-.contact-card p{
-  color:var(--muted);
-  font-size:.9rem;
-}
-
-/* =========================
-   MENU
-========================= */
-
-#menu{
-  background:var(--cream);
-}
-
-.menu-tabs,
-.gal-tabs{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin:28px 0;
-}
-
-.menu-tab,
-.gal-tab{
-  border:1px solid var(--line);
-  background:#fff;
-  padding:.7rem 1rem;
-  border-radius:999px;
-  font-weight:800;
-}
-
-.menu-tab.active,
-.gal-tab.active{
-  background:var(--gold);
-  color:#fff;
-  border-color:var(--gold);
-}
-
-.menu-panel{
-  display:none;
-}
-
-.menu-panel.active{
-  display:block;
-}
-
-.menu-cat-h{
-  font:700 1.5rem Georgia,serif;
-  margin-top:20px;
-}
-
-.menu-cat-p{
-  color:var(--muted);
-}
-
-.menu-grid{
-  grid-template-columns:repeat(3,1fr);
-  margin-top:22px;
-}
-
-.mcard{
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-}
-
-.mcard-top{
-  height:210px;
-  background:#eee;
-}
-
-.mcard-top img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.mcard-body{
-  padding:17px;
-  flex:1;
-}
-
-.mcard-foot{
-  padding:14px 17px;
-  border-top:1px solid var(--line);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.price{
-  font-weight:900;
-  color:var(--gold);
-}
-
-.obtn{
-  border:0;
-  background:var(--dark);
-  color:#fff;
-  padding:.58rem .85rem;
-  border-radius:7px;
-  font-weight:800;
-}
-
-.menu-note,
-.pay-note,
-.notice{
-  margin-top:22px;
-  padding:16px;
-  border-left:4px solid var(--gold);
-  background:#fff9e9;
-  border-radius:8px;
-  color:#5d503e;
-}
-
-/* =========================
-   ABOUT
-========================= */
-
-#about{
-  background:#fff;
-}
-
-.about-grid,
-.consult-grid{
-  display:grid;
-  grid-template-columns:.8fr 1.2fr;
-  gap:55px;
-  align-items:center;
-}
-
-.about-logo-col{
-  text-align:center;
-}
-
-.about-logo-ring{
-  width:340px;
-  height:340px;
-  margin:auto;
-  border-radius:50%;
-  background:var(--cream);
-  display:grid;
-  place-items:center;
-  overflow:hidden;
-  border:1px solid var(--line);
-}
-
-.about-logo-ring img{
-  width:92%;
-  height:92%;
-  object-fit:contain;
-}
-
-.about-quote{
-  font:italic 1.1rem Georgia,serif;
-  color:var(--gold);
-}
-
-/* =========================
-   PAYMENT
-========================= */
-
-#payment,
-#gallery{
-  background:var(--dark);
-  color:#fff;
-}
-
-.pay-intro{
-  color:rgba(255,255,255,.7);
-  max-width:700px;
-}
-
-.pay-grid{
-  grid-template-columns:repeat(4,1fr);
-  margin-top:30px;
-}
-
-.pay-card{
-  background:var(--dark2);
-  border-color:rgba(255,255,255,.1);
-  padding:22px;
-}
-
-.pay-card p{
-  color:rgba(255,255,255,.65);
-}
-
-.pay-icon{
-  font-size:2rem;
-}
-
-.pay-tags{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-}
-
-.pay-tag{
-  font-size:.72rem;
-  border:1px solid rgba(214,170,69,.4);
-  padding:.35rem .55rem;
-  border-radius:999px;
-  color:#f1d68d;
-}
-
-/* =========================
-   GALLERY
-========================= */
-
-#gallery .sec-h2{
-  color:#fff;
-}
-
-.gal-panel{
-  display:none;
-}
-
-.gal-panel.active{
-  display:block;
-}
-
-.gal-photos{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:14px;
-}
-
-.g-item{
-  position:relative;
-  height:230px;
-  overflow:hidden;
-  border-radius:14px;
-  cursor:pointer;
-  background:#29231c;
-}
-
-.g-item img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  transition:transform .5s;
-}
-
-.g-item:hover img{
-  transform:scale(1.07);
-}
-
-.g-label{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
-  padding:30px 14px 12px;
-  background:linear-gradient(
-    transparent,
-    rgba(0,0,0,.75)
-  );
-  font-weight:800;
-}
-
-.gal-videos{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:20px;
-}
-
-.vid-card{
-  background:var(--dark2);
-  padding:12px;
-  border-radius:14px;
-}
-
-.vid-title{
-  font-weight:800;
-  margin-top:9px;
-}
-
-.vid-sub{
-  color:#aaa;
-  font-size:.8rem;
-}
-
-/* =========================
-   CONSULTATION
-========================= */
-
-.consult-grid{
-  align-items:start;
-}
-
-.consult-list{
-  padding-left:20px;
-  color:var(--muted);
-}
-
-.consult-form{
-  padding:25px;
-}
-
-.fg{
-  margin-bottom:14px;
-}
-
-.fg label{
-  display:block;
-  font-size:.76rem;
-  font-weight:800;
-  margin-bottom:5px;
-}
-
-.fg input,
-.fg select,
-.fg textarea{
-  width:100%;
-  padding:.75rem;
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:#fff;
-}
-
-.fg textarea{
-  min-height:95px;
-  resize:vertical;
-}
-
-.fg2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-/* =========================
-   CONTACT
-========================= */
-
-.contact-grid{
-  grid-template-columns:repeat(3,1fr);
-}
-
-#contact{
-  background:var(--dark);
-  color:#fff;
-}
-
-.contact-card{
-  background:var(--dark2);
-  border-color:rgba(255,255,255,.1);
-  padding:23px;
-}
-
-.contact-card p,
-.contact-card .hr-row{
-  color:rgba(255,255,255,.65);
-}
-
-.contact-card a{
-  color:#f1d68d;
-}
-
-.hr-row{
-  display:flex;
-  justify-content:space-between;
-  padding:9px 0;
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.notice{
-  color:#5d503e;
-  background:#fff9e9;
-}
-
-/* =========================
-   FOOTER
-========================= */
-
-footer{
-  background:#0d0b09;
-  color:#aaa;
-  padding:25px max(20px,calc((100% - 1180px)/2));
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-}
-
-.footer-left img{
-  width:54px;
-  height:54px;
-  object-fit:contain;
-}
-
-.footer-links{
-  display:flex;
-  gap:15px;
-  font-size:.8rem;
-}
-
-/* =========================
-   ORDER MODAL
-========================= */
-
-.modal-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.68);
-  z-index:100;
-  align-items:center;
-  justify-content:center;
-  padding:15px;
-}
-
-.modal-overlay.active{
-  display:flex;
-}
-
-.modal{
-  width:min(560px,100%);
-  max-height:92vh;
-  overflow:auto;
-  background:#fff;
-  border-radius:18px;
-  padding:25px;
-  position:relative;
-  box-shadow:0 25px 70px rgba(0,0,0,.35);
-}
-
-.modal-close{
-  position:absolute;
-  right:15px;
-  top:10px;
-  border:0;
-  background:none;
-  font-size:2rem;
-}
-
-.modal-steps-bar{
-  display:flex;
-  gap:15px;
-  border-bottom:1px solid var(--line);
-  padding-bottom:12px;
-  margin-bottom:20px;
-}
-
-.modal-step-lbl{
-  font-size:.78rem;
-  font-weight:800;
-  color:#aaa;
-}
-
-.modal-step-lbl.active{
-  color:var(--gold);
-}
-
-.pay-step{
-  display:none;
-}
-
-.pay-step.active{
-  display:block;
-}
-
-.modal-sub{
-  color:var(--muted);
-  font-size:.88rem;
-}
-
-/* =========================
-   CART
-========================= */
-
-.cart-fab{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  z-index:60;
-  background:var(--gold);
-  color:#fff;
-  border:0;
-  border-radius:50%;
-  width:62px;
-  height:62px;
-  box-shadow:0 10px 25px rgba(0,0,0,.25);
-  font-size:1.25rem;
-}
-
-.cart-count{
-  position:absolute;
-  right:-2px;
-  top:-3px;
-  background:#c62828;
-  color:#fff;
-  border-radius:50%;
-  font-size:.68rem;
-  width:22px;
-  height:22px;
-  display:grid;
-  place-items:center;
-  font-weight:900;
-}
-
-.cart-drawer{
-  position:fixed;
-  right:0;
-  top:0;
-  bottom:0;
-  width:min(430px,100%);
-  background:#fff;
-  z-index:90;
-  transform:translateX(100%);
-  transition:.3s;
-  box-shadow:-15px 0 45px rgba(0,0,0,.2);
-  padding:24px;
-  overflow:auto;
-}
-
-.cart-drawer.active{
-  transform:none;
-}
-
-.cart-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid var(--line);
-  padding-bottom:12px;
-}
-
-.cart-close{
-  border:0;
-  background:none;
-  font-size:1.6rem;
-}
-
-.cart-item{
-  padding:15px 0;
-  border-bottom:1px solid var(--line);
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:8px;
-}
-
-.cart-item-title{
-  font-weight:900;
-}
-
-.cart-item-meta{
-  font-size:.75rem;
-  color:var(--muted);
-}
-
-.qty{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.qty button{
-  width:26px;
-  height:26px;
-  border:1px solid var(--line);
-  background:#fff;
-  border-radius:5px;
-}
-
-.cart-total{
-  display:flex;
-  justify-content:space-between;
-  font-weight:900;
-  font-size:1.1rem;
-  margin:20px 0;
-}
-
-.empty{
-  color:var(--muted);
-  text-align:center;
-  padding:45px 10px;
-}
-
-/* =========================
-   CUSTOM BUILDER
-========================= */
-
-.builder{
-  border:1px solid var(--line);
-  background:#fff;
-  border-radius:14px;
-  padding:20px;
-  margin-top:25px;
-}
-
-.builder-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:14px;
-}
-
-.builder-box{
-  border:1px solid var(--line);
-  padding:15px;
-  border-radius:10px;
-}
-
-.builder-box h4{
-  margin:0 0 10px;
-}
-
-.choice{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:8px 0;
-  border-bottom:1px solid #f0eadf;
-  font-size:.88rem;
-}
-
-.choice:last-child{
-  border-bottom:0;
-}
-
-.choice input{
-  accent-color:var(--gold);
-  width:70px;
-}
-
-.builder-total{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:18px;
-  padding-top:15px;
-  border-top:2px solid var(--line);
-  font-weight:900;
-}
-
-/* =========================
-   LIGHTBOX
-========================= */
-
-.lightbox{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.92);
-  z-index:120;
-  align-items:center;
-  justify-content:center;
-  padding:25px;
-}
-
-.lightbox.active{
-  display:flex;
-}
-
-.lightbox img{
-  max-width:94vw;
-  max-height:88vh;
-  object-fit:contain;
-  border-radius:8px;
-}
-
-.lb-close{
-  position:absolute;
-  top:15px;
-  right:22px;
-  color:#fff;
-  background:none;
-  border:0;
-  font-size:2.5rem;
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media(max-width:1024px){
-
-  .hero-inner,
-  .about-grid,
-  .consult-grid{
-    grid-template-columns:1fr;
-  }
-
-  .hero{
-    text-align:center;
-  }
-
-  .hero-p{
-    margin-left:auto;
-    margin-right:auto;
-  }
-
-  .hero-btns{
-    justify-content:center;
-  }
-
-  .steps{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .menu-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .pay-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .contact-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .nav-links{
-    display:none;
-  }
-}
-
-@media(max-width:640px){
-
-  section{
-    padding:55px 0;
-  }
-
-  .steps,
-  .menu-grid,
-  .pay-grid,
-  .contact-grid,
-  .gal-photos,
-  .gal-videos{
-    grid-template-columns:1fr;
-  }
-
-  .fg2,
-  .builder-grid,
-  .pay-options{
-    grid-template-columns:1fr;
-  }
-
-  .about-logo-ring{
-    width:270px;
-    height:270px;
-  }
-
-  .hero-stats{
-    gap:16px;
-  }
-
-  .footer-links{
-    display:none;
-  }
-
-  footer{
-    justify-content:center;
-    text-align:center;
-  }
-}
+  color:var(--ink);background:var(--paper);font-synthesis:none;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);line-height:1.55}
+img{max-width:100%}button,input,select,textarea{font:inherit}button{cursor:pointer}
+a{color:inherit;text-decoration:none}.container{width:min(1180px,calc(100% - 32px));margin:auto}
+nav{position:sticky;top:0;z-index:50;background:rgba(255,253,248,.96);backdrop-filter:blur(12px);
+border-bottom:1px solid var(--line);height:78px;display:flex;align-items:center;padding:0 max(20px,calc((100% - 1180px)/2));gap:24px}
+.nav-logo{display:flex;align-items:center}.nav-logo img{width:58px;height:58px;object-fit:contain;border-radius:50%}
+.nav-links{display:flex;gap:22px;list-style:none;margin:0 auto;padding:0;font-size:.88rem;font-weight:700}
+.nav-links a:hover{color:var(--gold)}.nav-cta,.btn-gold{background:var(--gold);color:#fff;border:0;border-radius:9px;padding:.78rem 1.15rem;font-weight:800}
+.nav-cta:hover,.btn-gold:hover{background:#9c7309}.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--gold);border-radius:9px;padding:.78rem 1.15rem;font-weight:800}
+section{padding:76px 0}.hero{background:radial-gradient(circle at 75% 30%,rgba(214,170,69,.18),transparent 35%),var(--cream);padding:72px 0}
+.hero-inner{display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:center}.badge,.sec-eye{display:inline-block;color:var(--gold);font-size:.75rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+h1{font-family:Georgia,serif;font-size:clamp(3rem,6vw,5.5rem);line-height:.98;margin:16px 0}.hero h1 em{color:var(--gold);font-weight:400}
+.hero-p,.sec-p{color:var(--muted);max-width:720px}.hero-btns{display:flex;gap:12px;margin-top:25px;flex-wrap:wrap}.hero-right{text-align:center}
+.hero-logo{width:min(330px,80vw);height:min(330px,80vw);object-fit:contain;border-radius:50%;margin:auto;filter:drop-shadow(0 18px 24px rgba(0,0,0,.12))}
+.hero-stats,.about-nums{display:flex;justify-content:center;gap:30px;margin-top:25px}.hstat .n,.about-num .n{font-weight:900;color:var(--gold);font-size:1.2rem}
+.hstat .l,.about-num .l{font-size:.72rem;color:var(--muted)}.sec-h2{font-family:Georgia,serif;font-size:clamp(2rem,4vw,3.2rem);margin:8px 0 12px}
+.steps,.menu-grid,.pay-grid,.contact-grid{display:grid;gap:18px}.steps{grid-template-columns:repeat(4,1fr);margin-top:35px}
+.step,.mcard,.pay-card,.contact-card,.consult-form{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.step{padding:25px}.step-n{color:var(--gold);font-weight:900;font-size:.8rem}.step h3,.mcard h3,.pay-card h3,.contact-card h3{margin:.45rem 0}
+.step p,.mcard p,.pay-card p,.contact-card p{color:var(--muted);font-size:.9rem}
+#menu{background:var(--cream)}.menu-tabs,.gal-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0}
+.menu-tab,.gal-tab{border:1px solid var(--line);background:#fff;padding:.7rem 1rem;border-radius:999px;font-weight:800}
+.menu-tab.active,.gal-tab.active{background:var(--gold);color:#fff;border-color:var(--gold)}.menu-panel{display:none}.menu-panel.active{display:block}
+.menu-cat-h{font:700 1.5rem Georgia,serif;margin-top:20px}.menu-cat-p{color:var(--muted)}
+.menu-grid{grid-template-columns:repeat(3,1fr);margin-top:22px}.mcard{overflow:hidden;display:flex;flex-direction:column}
+.mcard-top{height:210px;background:#eee}.mcard-top img{width:100%;height:100%;object-fit:cover}.mcard-body{padding:17px;flex:1}
+.mcard-foot{padding:14px 17px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.price{font-weight:900;color:var(--gold)}.obtn{border:0;background:var(--dark);color:#fff;padding:.58rem .85rem;border-radius:7px;font-weight:800}
+.menu-note,.pay-note,.notice{margin-top:22px;padding:16px;border-left:4px solid var(--gold);background:#fff9e9;border-radius:8px;color:#5d503e}
+#about{background:#fff}.about-grid,.consult-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:55px;align-items:center}.about-logo-col{text-align:center}
+.about-logo-ring{width:340px;height:340px;margin:auto;border-radius:50%;background:var(--cream);display:grid;place-items:center;overflow:hidden;border:1px solid var(--line)}
+.about-logo-ring img{width:92%;height:92%;object-fit:contain}.about-quote{font:italic 1.1rem Georgia,serif;color:var(--gold)}
+#payment,#gallery{background:var(--dark);color:#fff}.pay-intro{color:rgba(255,255,255,.7);max-width:700px}.pay-grid{grid-template-columns:repeat(4,1fr);margin-top:30px}
+.pay-card{background:var(--dark2);border-color:rgba(255,255,255,.1);padding:22px}.pay-card p{color:rgba(255,255,255,.65)}.pay-icon{font-size:2rem}
+.pay-tags{display:flex;gap:7px;flex-wrap:wrap}.pay-tag{font-size:.72rem;border:1px solid rgba(214,170,69,.4);padding:.35rem .55rem;border-radius:999px;color:#f1d68d}
+.gal-panel{display:none}.gal-panel.active{display:block}.gal-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g-item{position:relative;height:230px;overflow:hidden;border-radius:14px;cursor:pointer;background:#29231c}.g-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.g-item:hover img{transform:scale(1.07)}.g-label{position:absolute;left:0;right:0;bottom:0;padding:30px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,.75));font-weight:800}
+.gal-videos{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}.vid-card{background:var(--dark2);padding:12px;border-radius:14px}.vid-title{font-weight:800;margin-top:9px}.vid-sub{color:#aaa;font-size:.8rem}
+.consult-grid{align-items:start}.consult-list{padding-left:20px;color:var(--muted)}.consult-form{padding:25px}.fg{margin-bottom:14px}.fg label{display:block;font-size:.76rem;font-weight:800;margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:.75rem;border:1px solid var(--line);border-radius:8px;background:#fff}.fg textarea{min-height:95px;resize:vertical}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}#contact{background:var(--dark);color:#fff}.contact-grid{grid-template-columns:repeat(3,1fr)}
+.contact-card{background:var(--dark2);border-color:rgba(255,255,255,.1);padding:23px}.contact-card p,.contact-card .hr-row{color:rgba(255,255,255,.65)}
+.contact-card a{color:#f1d68d}.hr-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.notice{color:#5d503e;background:#fff9e9}footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/2));display:flex;align-items:center;justify-content:space-between;gap:20px}
+.footer-left img{width:54px;height:54px;object-fit:contain}.footer-links{display:flex;gap:15px;font-size:.8rem}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:100;align-items:center;justify-content:center;padding:15px}
+.modal-overlay.active{display:flex}.modal{width:min(620px,100%);max-height:94vh;overflow:auto;background:#fff;border-radius:18px;padding:25px;position:relative;box-shadow:0 25px 70px rgba(0,0,0,.35)}
+.modal-close{position:absolute;right:15px;top:10px;border:0;background:none;font-size:2rem}.modal-steps-bar{display:flex;gap:15px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:20px}
+.modal-step-lbl{font-size:.78rem;font-weight:800;color:#aaa}.modal-step-lbl.active{color:var(--gold)}.pay-step{display:none}.pay-step.active{display:block}.modal-sub{color:var(--muted);font-size:.88rem}
+.cart-fab{position:fixed;right:20px;bottom:20px;z-index:60;background:var(--gold);color:#fff;border:0;border-radius:50%;width:62px;height:62px;box-shadow:0 10px 25px rgba(0,0,0,.25);font-size:1.25rem}
+.cart-count{position:absolute;right:-2px;top:-3px;background:#c62828;color:#fff;border-radius:50%;font-size:.68rem;width:22px;height:22px;display:grid;place-items:center;font-weight:900}
+.cart-drawer{position:fixed;right:0;top:0;bottom:0;width:min(430px,100%);background:#fff;z-index:90;transform:translateX(100%);transition:.3s;box-shadow:-15px 0 45px rgba(0,0,0,.2);padding:24px;overflow:auto}
+.cart-drawer.active{transform:none}.cart-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:12px}
+.cart-close{border:0;background:none;font-size:1.6rem}.cart-item{padding:15px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:8px}
+.cart-item-title{font-weight:900}.cart-item-meta{font-size:.75rem;color:var(--muted)}.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:26px;height:26px;border:1px solid var(--line);background:#fff;border-radius:5px}.cart-total{display:flex;justify-content:space-between;font-weight:900;font-size:1.1rem;margin:20px 0}
+.empty{color:var(--muted);text-align:center;padding:45px 10px}
+.builder{border:1px solid var(--line);background:#fff;border-radius:14px;padding:20px;margin-top:25px}.builder-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.builder-box{border:1px solid var(--line);padding:15px;border-radius:10px}.builder-box h4{margin:0 0 10px}.choice{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #f0eadf;font-size:.88rem}
+.choice:last-child{border-bottom:0}.choice input{accent-color:var(--gold);width:90px}.builder-total{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:15px;border-top:2px solid var(--line);font-weight:900}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:120;align-items:center;justify-content:center;padding:25px}
+.lightbox.active{display:flex}.lightbox img{max-width:94vw;max-height:88vh;object-fit:contain;border-radius:8px}.lb-close{position:absolute;top:15px;right:22px;color:#fff;background:none;border:0;font-size:2.5rem}
+.status-box{padding:15px;border:1px solid var(--line);background:var(--cream);border-radius:10px;margin:14px 0}.status-pill{display:inline-block;padding:.35rem .65rem;border-radius:999px;font-size:.75rem;font-weight:900;background:#eee}
+.status-pill.success{background:#e8f6ed;color:var(--success)}.status-pill.warn{background:#fff4d8;color:#805c00}.status-pill.danger{background:#fdeaea;color:var(--danger)}
+.receipt-area{border:2px dashed var(--line);padding:18px;border-radius:12px;background:#fffdf8}.receipt-area input[type=file]{width:100%}
+.whatsapp-box{border:1px solid #d7eadc;background:#f3fbf5;padding:15px;border-radius:12px;margin-top:15px}
+.whatsapp-btn{background:#198754;color:#fff;border:0;border-radius:9px;padding:.78rem 1.15rem;font-weight:800}
+.small-muted{font-size:.76rem;color:var(--muted)}.error-text{color:var(--danger);font-size:.82rem;margin-top:7px}.success-text{color:var(--success);font-size:.82rem;margin-top:7px}
+.package-option{border:1px solid var(--line);padding:12px;border-radius:10px;margin:8px 0}.package-option label{display:flex;gap:10px;align-items:flex-start}
+.package-total{font-weight:900;color:var(--gold);font-size:1.15rem;margin-top:15px}
+@media(max-width:1024px){.hero-inner,.about-grid,.consult-grid{grid-template-columns:1fr}.hero{text-align:center}.hero-p{margin-left:auto;margin-right:auto}.hero-btns{justify-content:center}.steps{grid-template-columns:1fr 1fr}.menu-grid{grid-template-columns:1fr 1fr}.pay-grid{grid-template-columns:1fr 1fr}.contact-grid{grid-template-columns:1fr 1fr}.nav-links{display:none}}
+@media(max-width:640px){section{padding:55px 0}.steps,.menu-grid,.pay-grid,.contact-grid,.gal-photos,.gal-videos{grid-template-columns:1fr}.fg2,.builder-grid{grid-template-columns:1fr}.about-logo-ring{width:270px;height:270px}.hero-stats{gap:16px}.footer-links{display:none}footer{justify-content:center;text-align:center}}
 </style>
 </head>
-
 <body>
 
-<!-- =========================
-     NAVIGATION
-========================= -->
-
 <nav>
-
-  <a href="#hero" class="nav-logo">
-    <img
-      class="logo-img"
-      src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg"
-      alt="Sila's Kitchen and More"
-    >
-  </a>
-
-  <ul class="nav-links">
-    <li><a href="#how">How It Works</a></li>
-    <li><a href="#menu">Menu</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#consultation">Consult</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-
-  <a href="#menu" class="nav-cta">
-    Order Now
-  </a>
-
+<a href="#hero" class="nav-logo"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></a>
+<ul class="nav-links">
+<li><a href="#how">How It Works</a></li><li><a href="#menu">Menu</a></li><li><a href="#about">About</a></li><li><a href="#payment">Payment</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#consultation">Consult</a></li><li><a href="#contact">Contact</a></li>
+</ul>
+<a href="#menu" class="nav-cta">Order Now</a>
 </nav>
 
+<section id="hero" class="hero"><div class="container hero-inner"><div>
+<span class="badge">Small Chops · Pastries · Drinks · Events</span>
+<h1>Handcrafted <em>bites</em><br>for every<br>celebration.</h1>
+<p class="hero-p">Fresh Nigerian small chops, ready-to-fry packs, fried packages, homemade pastries and refreshing drinks. Made to order for your events, parties and special moments. Minimum 4 days notice required.</p>
+<div class="hero-btns"><a class="btn-gold" href="#menu">Browse the Menu</a><a class="btn-ghost" href="#how">How to Order</a></div>
+</div><div class="hero-right">
+<img class="hero-logo" src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More logo">
+<div class="hero-stats"><div class="hstat"><div class="n">2024</div><div class="l">Established</div></div><div class="hstat"><div class="n">100%</div><div class="l">Fresh Always</div></div><div class="hstat"><div class="n">4 Days</div><div class="l">Lead Time</div></div></div>
+</div></div></section>
 
-<!-- =========================
-     HERO
-========================= -->
-
-<section id="hero" class="hero">
-
-<div class="container hero-inner">
-
-<div>
-
-<span class="badge">
-Small Chops · Pastries · Drinks · Events
-</span>
-
-<h1>
-Handcrafted <em>bites</em><br>
-for every<br>
-celebration.
-</h1>
-
-<p class="hero-p">
-Fresh Nigerian small chops, ready-to-fry packs, fried packages,
-homemade pastries and refreshing drinks. Made to order for your
-events, parties and special moments. Minimum 4 days notice required.
-</p>
-
-<div class="hero-btns">
-
-<a class="btn-gold" href="#menu">
-Browse the Menu
-</a>
-
-<a class="btn-ghost" href="#how">
-How to Order
-</a>
-
-</div>
-
-</div>
-
-
-<div class="hero-right">
-
-<img
-  class="hero-logo"
-  src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg"
-  alt="Sila's Kitchen and More logo"
->
-
-<div class="hero-stats">
-
-<div class="hstat">
-<div class="n">2024</div>
-<div class="l">Established</div>
-</div>
-
-<div class="hstat">
-<div class="n">100%</div>
-<div class="l">Fresh Always</div>
-</div>
-
-<div class="hstat">
-<div class="n">4 Days</div>
-<div class="l">Lead Time</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =========================
-     HOW IT WORKS
-========================= -->
-
-<section id="how">
-
-<div class="container">
-
-<span class="sec-eye">
-The Process
-</span>
-
-<h2 class="sec-h2">
-How to place your order
-</h2>
-
-<p class="sec-p">
-Choose individual products or build a custom order across our
-categories. We need at least 4 days notice so everything can be
-prepared fresh.
-</p>
-
+<section id="how"><div class="container"><span class="sec-eye">The Process</span><h2 class="sec-h2">How to place your order</h2>
+<p class="sec-p">Choose individual products or build a custom order across our categories. We need at least 4 days notice so everything can be prepared fresh.</p>
 <div class="steps">
+<div class="step"><div class="step-n">01</div><h3>Browse & Select</h3><p>Choose ready-to-fry items, fried small chops, pastries or drinks.</p></div>
+<div class="step"><div class="step-n">02</div><h3>Build Your Cart</h3><p>Add different products together or create your own custom small-chops combination.</p></div>
+<div class="step"><div class="step-n">03</div><h3>Submit Request</h3><p>Enter your details and preferred event date. We review the request before payment.</p></div>
+<div class="step"><div class="step-n">04</div><h3>Payment & Confirmation</h3><p>After approval, Sila provides a payment code and instructions. Pay online and upload your receipt, or send the receipt through WhatsApp.</p></div>
+</div></div></section>
 
-<div class="step">
-<div class="step-n">01</div>
-<h3>Browse & Select</h3>
-<p>
-Choose ready-to-fry items, fried small chops, pastries or drinks.
-</p>
-</div>
-
-<div class="step">
-<div class="step-n">02</div>
-<h3>Build Your Cart</h3>
-<p>
-Add different products together or create your own custom
-small-chops combination.
-</p>
-</div>
-
-<div class="step">
-<div class="step-n">03</div>
-<h3>Submit Request</h3>
-<p>
-Enter your details and preferred event date. We review the request
-before payment.
-</p>
-</div>
-
-<div class="step">
-<div class="step-n">04</div>
-<h3>Payment & Confirmation</h3>
-<p>
-Sila provides payment instructions and confirms the order after
-payment verification.
-</p>
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =========================
-     MENU
-========================= -->
-
-<section id="menu">
-
-<div class="container">
-
-<span class="sec-eye">
-Our Offerings
-</span>
-
-<h2 class="sec-h2">
-Sila's Kitchen Menu
-</h2>
-
-<p class="sec-p">
-Shop across categories and add everything you need to one cart.
-</p>
-
-
+<section id="menu"><div class="container"><span class="sec-eye">Our Offerings</span><h2 class="sec-h2">Sila's Kitchen Menu</h2><p class="sec-p">Shop across categories and add everything you need to one cart.</p>
 <div class="menu-tabs">
-
-<button
-  class="menu-tab active"
-  onclick="menuTab('rtf',this)"
->
-🧊 Ready-to-Fry
-</button>
-
-<button
-  class="menu-tab"
-  onclick="menuTab('fried',this)"
->
-🍟 Fried Packages
-</button>
-
-<button
-  class="menu-tab"
-  onclick="menuTab('pastry',this)"
->
-🥐 Pastries
-</button>
-
-<button
-  class="menu-tab"
-  onclick="menuTab('drinks',this)"
->
-🥤 Drinks
-</button>
-
+<button class="menu-tab active" onclick="menuTab('rtf',this)">🧊 Ready-to-Fry</button>
+<button class="menu-tab" onclick="menuTab('fried',this)">🍟 Fried Packages</button>
+<button class="menu-tab" onclick="menuTab('pastry',this)">🥐 Pastries</button>
+<button class="menu-tab" onclick="menuTab('drinks',this)">🥤 Drinks</button>
 </div>
 
-
-<!-- =========================
-     READY TO FRY
-========================= -->
-
-<div id="panel-rtf" class="menu-panel active">
-
-<div class="menu-cat-h">
-🧊 Signature Ready-to-Fry Small Chops
-</div>
-
-<p class="menu-cat-p">
-Freshly prepared, unfried and ready for you to cook.
-</p>
-
-
+<div id="panel-rtf" class="menu-panel active"><div class="menu-cat-h">🧊 Signature Ready-to-Fry Small Chops</div><p class="menu-cat-p">Freshly prepared, unfried and ready for you to cook.</p>
 <div class="menu-grid">
+<div class="mcard"><div class="mcard-top"><img src="menu-spring-rolls.JPG" alt="Spring Rolls" loading="lazy"></div><div class="mcard-body"><h3>Spring Rolls Only (×10)</h3><p>Ten generously filled spring rolls, ready to fry.</p></div><div class="mcard-foot"><span class="price">₦2,500</span><button class="obtn" onclick="addToCart('10 Spring Rolls',2500)">Add</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-samosas.JPG" alt="Samosas" loading="lazy"></div><div class="mcard-body"><h3>Samosas Only (×10)</h3><p>Ten savoury samosas, spiced to perfection.</p></div><div class="mcard-foot"><span class="price">₦3,000</span><button class="obtn" onclick="addToCart('10 Samosas',3000)">Add</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-puff-puff-mix.JPG" alt="Puff Puff Mix" loading="lazy"></div><div class="mcard-body"><h3>Puff-Puff Mix</h3><p>Pre-made mix for fresh puff-puff at home. Choose 500g or 1kg; quantities can be increased.</p><p><strong>500g ₦2,000 · 1kg ₦4,000</strong></p></div><div class="mcard-foot"><span class="price">From ₦2,000</span><button class="obtn" onclick="openPuffMix()">Add</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-samosa-spring-roll-mix.JPG" alt="Samosa Spring Roll Mix" loading="lazy"></div><div class="mcard-body"><h3>Samosa-Spring Rolls Mix</h3><p>A convenient combination of samosas and spring rolls prepared ready-to-fry.</p><p><strong>10 pieces</strong></p></div><div class="mcard-foot"><span class="price">₦2,500</span><button class="obtn" onclick="addToCart('Samosa-Spring Rolls Mix (10 pieces)',2500)">Add</button></div></div>
+</div></div>
 
-<div class="mcard">
-
-<div class="mcard-top">
-<img
-src="menu-spring-rolls.JPG"
-alt="Spring Rolls"
-loading="lazy"
->
+<div id="panel-fried" class="menu-panel"><div class="menu-cat-h">🍟 Fried Small Chops & Packages</div><p class="menu-cat-p">Choose one of Sila's signature packages, or build your own combination.</p>
+<div class="menu-grid">
+<div class="mcard"><div class="mcard-top"><img src="menu-deluxe-mix.JPG" alt="Deluxe Mix" loading="lazy"></div><div class="mcard-body"><h3>Deluxe-Mix</h3><p>1 samosa, 1 spring roll, 3 puff-puff, 3 banana balls and protein of choice. Optional drink.</p></div><div class="mcard-foot"><span class="price">From ₦2,400</span><button class="obtn" onclick="openPackage('Deluxe-Mix')">Customize</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-classic-mix.JPG" alt="Classic Mix" loading="lazy"></div><div class="mcard-body"><h3>Classic-Mix</h3><p>1 samosa, 1 spring roll, 3 puff-puff and protein of choice. Optional drink.</p></div><div class="mcard-foot"><span class="price">From ₦1,600</span><button class="obtn" onclick="openPackage('Classic-Mix')">Customize</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-small-chops-fusion.JPG" alt="Small Chops Fusion" loading="lazy"></div><div class="mcard-body"><h3>Small Chops Fusion</h3><p>A generous fried small-chops combination prepared fresh for your event or celebration.</p></div><div class="mcard-foot"><span class="price">₦6,000</span><button class="obtn" onclick="addToCart('Small Chops Fusion',6000)">Add</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-money-bag.jpg" alt="Money Bag" loading="lazy"></div><div class="mcard-body"><h3>Fried Money Bag (×10)</h3><p>Ten fried money bags prepared fresh for your order.</p></div><div class="mcard-foot"><span class="price">₦3,500</span><button class="obtn" onclick="addToCart('Fried Money Bag (10 pieces)',3500)">Add</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-corn-dog.jpg" alt="Corn Dog" loading="lazy"></div><div class="mcard-body"><h3>Corn Dog</h3><p>A freshly fried corn dog, ideal for individual orders, parties and celebrations.</p></div><div class="mcard-foot"><span class="price">₦700</span><button class="obtn" onclick="addToCart('Corn Dog',700)">Add</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-puff-puff.jpg" alt="Fried Puff Puff" loading="lazy"></div><div class="mcard-body"><h3>Fried Puff-Puff</h3><p>Freshly fried puff-puff available at ₦100 per ball. Order as many as needed.</p></div><div class="mcard-foot"><span class="price">₦100 / ball</span><button class="obtn" onclick="addToCart('Fried Puff-Puff',100)">Add</button></div></div>
 </div>
 
-<div class="mcard-body">
-
-<h3>
-Spring Rolls Only (×10)
-</h3>
-
-<p>
-Ten generously filled spring rolls, ready to fry.
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦2,500
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('10 Spring Rolls',2500)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-
-<div class="mcard">
-
-<div class="mcard-top">
-<img
-src="menu-samosas.JPG"
-alt="Samosas"
-loading="lazy"
->
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Samosas Only (×10)
-</h3>
-
-<p>
-Ten savoury samosas, spiced to perfection.
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦2,500
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('10 Samosas',3000)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-
-<!-- UPDATED PUFF PUFF MIX -->
-
-<div class="mcard">
-
-<div class="mcard-top">
-
-<img
-src="menu-puff-puff-mix.JPG"
-alt="Puff Puff Mix"
-loading="lazy"
->
-
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Puff-Puff Mix
-</h3>
-
-<p>
-Pre-made mix for fresh puff-puff at home. Customers can order
-quantities beyond 1kg based on their needs.
-</p>
-
-<p>
-<strong>
-500g ₦2,000 · 1kg ₦4,000
-</strong>
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-From ₦2,000
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('Puff-Puff Mix (500g)',2000; (1kg), 4000)"
->
-Add
-</button>
-  </div>
-
-</div>
-
-
-<!-- UPDATED SAMOSA-SPRING ROLL MIX -->
-
-<div class="mcard">
-
-<div class="mcard-top">
-
-<img
-src="menu-samosa-spring-roll-mix.JPG"
-alt="Samosa Spring Roll Mix"
-loading="lazy"
->
-
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Samosa-Spring Rolls Mix
-</h3>
-
-<p>
-A convenient combination of samosas and spring rolls prepared
-ready-to-fry.
-</p>
-
-<p>
-<strong>
-10 pieces
-</strong>
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦2,500
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('Samosa-Spring Rolls Mix (10 pieces)',2500)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-
-</div>
-
-</div>
-
-
-<!-- =========================
-     FRIED PACKAGES
-========================= -->
-
-<div id="panel-fried" class="menu-panel">
-
-<div class="menu-cat-h">
-🍟 Fried Small Chops & Custom Orders
-</div>
-
-<p class="menu-cat-p">
-Fried fresh for your event. Create your own combination and select
-your preferred protein and drinks.
-</p>
-
-
-<div class="builder">
-
-<h3>
-Custom-Made Small Chops Builder
-</h3>
-
-<p class="sec-p">
-Select the quantities you want. Pricing is calculated automatically.
-</p>
-
-
+<div class="builder"><h3>Build Your Own Custom Small Chops</h3><p class="sec-p">This is a custom ordering tool, not a package. Select the quantities you want and pricing is calculated automatically.</p>
 <div class="builder-grid">
-
-
-<div class="builder-box">
-
-<h4>
-Small Chops
-</h4>
-
-<label class="choice">
-<span>
-Fried Spring Roll ×1 — ₦400
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="spring"
-data-price="400"
->
-
-</label>
-
-
-<label class="choice">
-
-<span>
-Fried Samosa ×1 — ₦400
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="samosa"
-data-price="400"
->
-
-</label>
-
-
-<label class="choice">
-
-<span>
-Puff-Puff ×1 — ₦100
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="puff"
-data-price="100"
->
-
-</label>
-
-
-<label class="choice">
-
-<span>
-Banana Ball ×1 — ₦100
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="banana"
-data-price="100"
->
-
-</label>
-
-
-<label class="choice">
-
-<span>
-Corn Dog ×1 — ₦700
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="corndog"
-data-price="700"
->
-
-</label>
-
-</div>
-
-
-<div class="builder-box">
-
-<h4>
-Protein
-</h4>
-
-<label class="choice">
-
-<span>
-Beef ×1 — ₦1,000
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="beef"
-data-price="1000"
->
-
-</label>
-
-
-<label class="choice">
-
-<span>
-Chicken ×1 — ₦1,200
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="chicken"
-data-price="1200"
->
-
-</label>
-
-
-<label class="choice">
-
-<span>
-Gizzard ×1 — ₦500
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="gizzard"
-data-price="500"
->
-
-</label>
-
-
-<label class="choice">
-
-<span>
-Turkey ×1 — ₦2,500
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="turkey"
-data-price="2500"
->
-
-</label>
-
-</div>
-
-
-<div class="builder-box">
-
-<h4>
-Drinks
-</h4>
-
-<label class="choice">
-
-<span>
-Sobo — price to be announced
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="sobo"
-data-price="0"
->
-
-</label>
-
-
-<label class="choice">
-
-<span>
-Yoghurt — price to be announced
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="yoghurt"
-data-price="0"
->
-
-</label>
-
-
-<label class="choice">
-
-<span>
-Tigernut — price to be announced
-</span>
-
-<input
-type="number"
-min="0"
-value="0"
-data-builder="tigernut"
-data-price="0"
->
-
-</label>
-
-</div>
-
-
-<div class="builder-box">
-
-<h4>
-Order Notes
-</h4>
-
-<div class="fg">
-
-<textarea
-id="builderNotes"
-placeholder="Special request, quantities, event details..."
-></textarea>
-
-</div>
-
-<p class="menu-cat-p">
-Drink sizes: 25cl, 50cl, 75cl and 100cl.
-Other sizes are priced on request.
-</p>
-
-</div>
-
-</div>
-
-
-<div class="builder-total">
-
-<span>
-Estimated Total
-</span>
-
-<span id="builderTotal">
-₦0
-</span>
-
-</div>
-
-
-<button
-class="btn-gold"
-style="width:100%;margin-top:15px"
-onclick="addCustomToCart()"
->
-Add Custom Order to Cart
-</button>
-
-</div>
-
-
-<div class="menu-note">
-
-✨
-<strong>
-Special custom-made orders are available based on request.
-</strong>
-
-For large events, contact us for tailored quantities and requirements.
-
-</div>
-
-
-<div class="menu-grid" style="margin-top:25px">
-
-
-<!-- MONEY BAG -->
-
-<div class="mcard">
-
-<div class="mcard-top">
-
-<img
-src="menu-money-bag.jpg"
-alt="Money Bag"
-loading="lazy"
->
-
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Fried Money Bag (×10)
-</h3>
-
-<p>
-Ten fried money bags prepared fresh for your order.
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦3,500
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('Fried Money Bag (10 pieces)',3500)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-
-<!-- SMALL CHOPS FUSION -->
-
-<div class="mcard">
-
-<div class="mcard-top">
-
-<img
-src="menu-small-chops-fusion.JPG"
-alt="Small Chops Fusion"
-loading="lazy"
->
-
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Small Chops Fusion
-</h3>
-
-<p>
-A generous fried small-chops combination prepared fresh for your
-event or celebration.
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦6,000
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('Small Chops Fusion',6000)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-
-<!-- CORN DOG -->
-
-<div class="mcard">
-
-<div class="mcard-top">
-
-<img
-src="menu-corn-dog.jpg"
-alt="Corn Dog"
-loading="lazy"
->
-
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Corn Dog
-</h3>
-
-<p>
-A freshly fried corn dog, ideal for individual orders,
-parties and celebrations.
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦700
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('Corn Dog',700)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-
-<!-- PUFF PUFF -->
-
-<div class="mcard">
-
-<div class="mcard-top">
-
-<img
-src="menu-puff-puff.jpg"
-alt="Fried Puff Puff"
-loading="lazy"
->
-
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Fried Puff-Puff
-</h3>
-
-<p>
-Freshly fried puff-puff available at ₦100 per ball.
-Order as many as needed for your occasion.
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦100 / ball
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('Fried Puff-Puff',100)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =========================
-     PASTRIES
-========================= -->
-
-<div id="panel-pastry" class="menu-panel">
-
-<div class="menu-cat-h">
-🥐 Pastries
-</div>
-
-<p class="menu-cat-p">
-Freshly baked pastries for events, gifting or personal indulgence.
-</p>
-
-
-<div class="menu-grid">
-
-
-<div class="mcard">
-
-<div class="mcard-top">
-
-<img
-src="menu-milk-donut.jpg"
-alt="Milk Coated Donut"
-loading="lazy"
->
-
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Milk Coated Donut
-</h3>
-
-<p>
-Soft donuts with a smooth milk coating. Box of 3.
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦3,500 / box
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('Milk Coated Donut (Box of 3)',3500)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-
-<div class="mcard">
-
-<div class="mcard-top">
-
-<img
-src="menu-jam-donut.jpg"
-alt="Sugar Coated Jam Donut"
-loading="lazy"
->
-
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Sugar Coated Donut with Jam
-</h3>
-
-<p>
-Sugar-coated donuts filled with jam. Box of 3.
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦3,000 / box
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('Sugar Coated Jam Donut (Box of 3)',3000)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-
-<div class="mcard">
-
-<div class="mcard-top">
-
-<img
-src="menu-classic-donut.jpg"
-alt="Donut with Jam"
-loading="lazy"
->
-
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Donut with Jam
-</h3>
-
-<p>
-Classic donut filled with jam. Box of 3.
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦2,500 / box
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('Donut with Jam (Box of 3)',2500)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-
-<div class="mcard">
-
-<div class="mcard-top">
-
-<img
-src="menu-meat-pie.jpg"
-alt="Meat Pie"
-loading="lazy"
->
-
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Meat Pie
-</h3>
-
-<p>
-Golden flaky pastry filled with seasoned minced meat.
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦1,000 / piece
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('Meat Pie',1000)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-
-<div class="mcard">
-
-<div class="mcard-top">
-
-<img
-src="menu-egg-roll.jpg"
-alt="Egg Roll"
-loading="lazy"
->
-
-</div>
-
-<div class="mcard-body">
-
-<h3>
-Egg Roll
-</h3>
-
-<p>
-Soft egg wrapped in lightly sweetened pastry dough.
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-₦700 / piece
-</span>
-
-<button
-class="obtn"
-onclick="addToCart('Egg Roll',700)"
->
-Add
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =========================
-     DRINKS
-========================= -->
-
-<div id="panel-drinks" class="menu-panel">
-
-<div class="menu-cat-h">
-🥤 Drinks
-</div>
-
-<p class="menu-cat-p">
-Sobo, yoghurt and tigernut drinks are available by request.
-</p>
-
-
-<div class="menu-grid">
-
-
-<div class="mcard">
-
-<div class="mcard-body">
-
-<h3>
-Sobo
-</h3>
-
-<p>
-Refreshing Nigerian hibiscus drink, prepared for events and
-personal orders.
-</p>
-
-<p>
-<strong>
-25cl · 50cl · 75cl · 100cl
-</strong>
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-Price to be announced
-</span>
-
-<button
-class="obtn"
-onclick="openDrinkRequest('Sobo')"
->
-Request
-</button>
-
-</div>
-
-</div>
-
-
-<div class="mcard">
-
-<div class="mcard-body">
-
-<h3>
-Yoghurt
-</h3>
-
-<p>
-Creamy, refreshing yoghurt drink suitable for celebrations and
-events.
-</p>
-
-<p>
-<strong>
-25cl · 50cl · 75cl · 100cl
-</strong>
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-Price to be announced
-</span>
-
-<button
-class="obtn"
-onclick="openDrinkRequest('Yoghurt')"
->
-Request
-</button>
-
-</div>
-
-</div>
-
-
-<div class="mcard">
-
-<div class="mcard-body">
-
-<h3>
-Tigernut
-</h3>
-
-<p>
-Refreshing tigernut drink prepared for events and special
-occasions.
-</p>
-
-<p>
-<strong>
-25cl · 50cl · 75cl · 100cl
-</strong>
-</p>
-
-</div>
-
-<div class="mcard-foot">
-
-<span class="price">
-Price to be announced
-</span>
-
-<button
-class="obtn"
-onclick="openDrinkRequest('Tigernut')"
->
-Request
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="menu-note">
-
-25cl, 50cl, 75cl and 100cl prices will be announced soon.
-Other sizes are determined based on request.
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =========================
-     ABOUT
-========================= -->
-
-<section id="about">
-
-<div class="container about-grid">
-
-<div class="about-logo-col">
-
-<div class="about-logo-ring">
-
-<img
-class="logo-img"
-src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg"
-alt="Sila's Kitchen and More"
->
-
-</div>
-
-<p class="about-quote">
-"Quality Service Is Our Benchmark"
-</p>
-
-</div>
-
-
-<div>
-
-<span class="sec-eye">
-Our Story
-</span>
-
-<h2 class="sec-h2">
-More than food — we make moments.
-</h2>
-
-<p class="sec-p">
-Sila's Kitchen and More was born out of a deep love for community,
-celebration and food that brings people together. Since 2024, we
-have been crafting handmade Nigerian small chops with pride.
-</p>
-
-<p class="sec-p">
-From intimate family gatherings to large events, every order is
-prepared with freshness and passion. We also offer pastries and
-refreshing drinks for everyday orders and celebrations.
-</p>
-
-<p class="sec-p">
-We are proudly homegrown and guided by one principle:
-<em>Quality Service Is Our Benchmark.</em>
-</p>
-
-<div class="about-nums">
-
-<div class="about-num">
-<div class="n">2024</div>
-<div class="l">Established</div>
-</div>
-
-<div class="about-num">
-<div class="n">500+</div>
-<div class="l">Happy Clients</div>
-</div>
-
-<div class="about-num">
-<div class="n">100%</div>
-<div class="l">Fresh Always</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =========================
-     PAYMENT
-========================= -->
-
-<section id="payment">
-
-<div class="container">
-
-<span class="sec-eye">
-Secure Payments
-</span>
-
-<h2 class="sec-h2">
-Pay with ease, your way.
-</h2>
-
-<p class="pay-intro">
-After your order request is reviewed, Sila will provide payment
-instructions. Payment receipt can then be sent for verification
-and confirmation.
-</p>
-
-
+<div class="builder-box"><h4>Small Chops</h4>
+<label class="choice"><span>Fried Spring Roll ×1 — ₦400</span><input type="number" min="0" value="0" data-builder="spring" data-price="400"></label>
+<label class="choice"><span>Fried Samosa ×1 — ₦400</span><input type="number" min="0" value="0" data-builder="samosa" data-price="400"></label>
+<label class="choice"><span>Puff-Puff ×1 — ₦100</span><input type="number" min="0" value="0" data-builder="puff" data-price="100"></label>
+<label class="choice"><span>Banana Ball ×1 — ₦100</span><input type="number" min="0" value="0" data-builder="banana" data-price="100"></label>
+<label class="choice"><span>Corn Dog ×1 — ₦700</span><input type="number" min="0" value="0" data-builder="corndog" data-price="700"></label>
+</div>
+<div class="builder-box"><h4>Protein</h4>
+<label class="choice"><span>Beef ×1 — ₦1,000</span><input type="number" min="0" value="0" data-builder="beef" data-price="1000"></label>
+<label class="choice"><span>Chicken ×1 — ₦1,200</span><input type="number" min="0" value="0" data-builder="chicken" data-price="1200"></label>
+<label class="choice"><span>Gizzard ×1 — ₦500</span><input type="number" min="0" value="0" data-builder="gizzard" data-price="500"></label>
+<label class="choice"><span>Turkey ×1 — ₦2,500</span><input type="number" min="0" value="0" data-builder="turkey" data-price="2500"></label>
+</div>
+<div class="builder-box"><h4>Drinks</h4>
+<label class="choice"><span>Sobo — price to be announced</span><input type="number" min="0" value="0" data-builder="sobo" data-price="0"></label>
+<label class="choice"><span>Yoghurt — price to be announced</span><input type="number" min="0" value="0" data-builder="yoghurt" data-price="0"></label>
+<label class="choice"><span>Tigernut — price to be announced</span><input type="number" min="0" value="0" data-builder="tigernut" data-price="0"></label>
+</div>
+<div class="builder-box"><h4>Order Notes</h4><div class="fg"><textarea id="builderNotes" placeholder="Special request, quantities, event details..."></textarea></div><p class="menu-cat-p">Drink sizes: 25cl, 50cl, 75cl and 100cl. Other sizes are priced on request.</p></div>
+</div>
+<div class="builder-total"><span>Estimated Total</span><span id="builderTotal">₦0</span></div>
+<button class="btn-gold" style="width:100%;margin-top:15px" onclick="addCustomToCart()">Add Custom Order to Cart</button>
+</div>
+<div class="menu-note">✨ <strong>Special custom-made orders are available based on request.</strong> For large events, contact us for tailored quantities and requirements.</div>
+</div>
+
+<div id="panel-pastry" class="menu-panel"><div class="menu-cat-h">🥐 Pastries</div><p class="menu-cat-p">Freshly baked pastries for events, gifting or personal indulgence.</p><div class="menu-grid">
+<div class="mcard"><div class="mcard-top"><img src="menu-milk-donut.jpg" alt="Milk Coated Donut" loading="lazy"></div><div class="mcard-body"><h3>Milk Coated Donut</h3><p>Soft donuts with a smooth milk coating. Box of 3.</p></div><div class="mcard-foot"><span class="price">₦3,500 / box</span><button class="obtn" onclick="addToCart('Milk Coated Donut (Box of 3)',3500)">Add</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-jam-donut.jpg" alt="Sugar Coated Jam Donut" loading="lazy"></div><div class="mcard-body"><h3>Sugar Coated Donut with Jam</h3><p>Sugar-coated donuts filled with jam. Box of 3.</p></div><div class="mcard-foot"><span class="price">₦3,000 / box</span><button class="obtn" onclick="addToCart('Sugar Coated Jam Donut (Box of 3)',3000)">Add</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-classic-donut.jpg" alt="Donut with Jam" loading="lazy"></div><div class="mcard-body"><h3>Donut with Jam</h3><p>Classic donut filled with jam. Box of 3.</p></div><div class="mcard-foot"><span class="price">₦2,500 / box</span><button class="obtn" onclick="addToCart('Donut with Jam (Box of 3)',2500)">Add</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-meat-pie.jpg" alt="Meat Pie" loading="lazy"></div><div class="mcard-body"><h3>Meat Pie</h3><p>Golden flaky pastry filled with seasoned minced meat.</p></div><div class="mcard-foot"><span class="price">₦1,000 / piece</span><button class="obtn" onclick="addToCart('Meat Pie',1000)">Add</button></div></div>
+<div class="mcard"><div class="mcard-top"><img src="menu-egg-roll.jpg" alt="Egg Roll" loading="lazy"></div><div class="mcard-body"><h3>Egg Roll</h3><p>Soft egg wrapped in lightly sweetened pastry dough.</p></div><div class="mcard-foot"><span class="price">₦700 / piece</span><button class="obtn" onclick="addToCart('Egg Roll',700)">Add</button></div></div>
+</div></div>
+
+<div id="panel-drinks" class="menu-panel"><div class="menu-cat-h">🥤 Drinks</div><p class="menu-cat-p">Sobo, yoghurt and tigernut drinks are available by request.</p><div class="menu-grid">
+<div class="mcard"><div class="mcard-body"><h3>Sobo</h3><p>Refreshing Nigerian hibiscus drink, prepared for events and personal orders.</p><p><strong>25cl · 50cl · 75cl · 100cl</strong></p></div><div class="mcard-foot"><span class="price">Price to be announced</span><button class="obtn" onclick="openDrinkRequest('Sobo')">Request</button></div></div>
+<div class="mcard"><div class="mcard-body"><h3>Yoghurt</h3><p>Creamy, refreshing yoghurt drink suitable for celebrations and events.</p><p><strong>25cl · 50cl · 75cl · 100cl</strong></p></div><div class="mcard-foot"><span class="price">Price to be announced</span><button class="obtn" onclick="openDrinkRequest('Yoghurt')">Request</button></div></div>
+<div class="mcard"><div class="mcard-body"><h3>Tigernut</h3><p>Refreshing tigernut drink prepared for events and special occasions.</p><p><strong>25cl · 50cl · 75cl · 100cl</strong></p></div><div class="mcard-foot"><span class="price">Price to be announced</span><button class="obtn" onclick="openDrinkRequest('Tigernut')">Request</button></div></div>
+</div><div class="menu-note">25cl, 50cl, 75cl and 100cl prices will be announced soon. Other sizes are determined based on request.</div></div>
+</div></section>
+
+<section id="about"><div class="container about-grid"><div class="about-logo-col"><div class="about-logo-ring"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></div><p class="about-quote">"Quality Service Is Our Benchmark"</p></div>
+<div><span class="sec-eye">Our Story</span><h2 class="sec-h2">More than food — we make moments.</h2>
+<p class="sec-p">Sila's Kitchen and More was born out of a deep love for community, celebration and food that brings people together. Since 2024, we have been crafting handmade Nigerian small chops with pride.</p>
+<p class="sec-p">From intimate family gatherings to large events, every order is prepared with freshness and passion. We also offer pastries and refreshing drinks for everyday orders and celebrations.</p>
+<p class="sec-p">We are proudly homegrown and guided by one principle: <em>Quality Service Is Our Benchmark.</em></p>
+<div class="about-nums"><div class="about-num"><div class="n">2024</div><div class="l">Established</div></div><div class="about-num"><div class="n">500+</div><div class="l">Happy Clients</div></div><div class="about-num"><div class="n">100%</div><div class="l">Fresh Always</div></div></div>
+</div></div></section>
+
+<section id="payment"><div class="container"><span class="sec-eye">Secure Payments</span><h2 class="sec-h2">Pay with ease, your way.</h2>
+<p class="pay-intro">After your order is reviewed and approved for payment, Sila generates a payment code and provides payment instructions. You can upload your receipt here or send it directly through WhatsApp.</p>
 <div class="pay-grid">
-
-
-<div class="pay-card">
-
-<div class="pay-icon">
-🏦
+<div class="pay-card"><div class="pay-icon">🏦</div><h3>Bank Transfer</h3><p>Transfer to the designated Sila payment account using the payment code supplied after approval.</p><div class="pay-tags"><span class="pay-tag">Opay</span></div></div>
+<div class="pay-card"><div class="pay-icon">📱</div><h3>Mobile Payment</h3><p>Use supported Nigerian mobile payment channels and keep your receipt for verification.</p><div class="pay-tags"><span class="pay-tag">Opay</span><span class="pay-tag">Palmpay</span><span class="pay-tag">Kuda</span><span class="pay-tag">Moniepoint</span></div></div>
+<div class="pay-card"><div class="pay-icon">💳</div><h3>USSD / Transfer</h3><p>Use your bank's USSD service to transfer to the designated account after receiving your payment instructions.</p><div class="pay-tags"><span class="pay-tag">Opay</span></div></div>
+<div class="pay-card"><div class="pay-icon">🤝</div><h3>Payment Policy</h3><p>Orders below ₦50,000 require full payment. Bulk orders above ₦50,000 require an 85% deposit.</p></div>
 </div>
-
-<h3>
-Bank Transfer
-</h3>
-
-<p>
-Transfer to our Opay account and send your payment receipt for
-verification.
-</p>
-
-<div class="pay-tags">
-<span class="pay-tag">
-Opay
-</span>
-</div>
-
-</div>
-
-
-<div class="pay-card">
-
-<div class="pay-icon">
-📱
-</div>
-
-<h3>
-Mobile Payment
-</h3>
-
-<p>
-Use supported Nigerian mobile payment channels and send proof
-of payment.
-</p>
-
-<div class="pay-tags">
-
-<span class="pay-tag">Opay</span>
-<span class="pay-tag">Palmpay</span>
-<span class="pay-tag">Kuda</span>
-<span class="pay-tag">Moniepoint</span>
-
-</div>
-
-</div>
-
-
-<div class="pay-card">
-
-<div class="pay-icon">
-💳
-</div>
-
-<h3>
-USSD / Transfer
-</h3>
-
-<p>
-Use your bank's USSD service to transfer to the designated account.
-</p>
-
-<div class="pay-tags">
-<span class="pay-tag">
-Opay
-</span>
-</div>
-
-</div>
-
-
-<div class="pay-card">
-
-<div class="pay-icon">
-🤝
-</div>
-
-<h3>
-Payment Policy
-</h3>
-
-<p>
-Orders below ₦50,000 require full payment.
-Bulk orders above ₦50,000 require an 85% deposit.
-</p>
-
-</div>
-
-</div>
-
-
-<div class="pay-note">
-
-<strong>
-Payment policy:
-</strong>
-
-Full payment is required for any order below ₦50,000.
-
-An
-<strong>
-85% deposit
-</strong>
-is required for bulk orders above ₦50,000.
-
-Sila will provide the applicable payment instructions after
-reviewing your request.
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =========================
-     GALLERY
-========================= -->
-
-<section id="gallery">
-
-<div class="container">
-
-<span class="sec-eye">
-Gallery
-</span>
-
-<h2 class="sec-h2">
-A feast for the eyes
-</h2>
-
-
-<div class="gal-tabs">
-
-<button
-class="gal-tab active"
-onclick="galTab('photos',this)"
->
-📸 Photos
-</button>
-
-<button
-class="gal-tab"
-onclick="galTab('videos',this)"
->
-🎬 Videos
-</button>
-
-</div>
-
-
-<div
-id="gphotos"
-class="gal-panel gal-photos active"
->
-</div>
-
-
-<div
-id="gvideos"
-class="gal-panel gal-videos"
->
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =========================
-     CONSULTATION
-========================= -->
-
-<section id="consultation">
-
-<div class="container consult-grid">
-
-<div>
-
-<span class="sec-eye">
-Free Consultation
-</span>
-
-<h2 class="sec-h2">
-Planning an event? Let's talk.
-</h2>
-
-<p class="sec-p">
-Whether it's a naming ceremony, wedding, birthday or corporate
-function, we can help plan quantities, variety and budget.
-</p>
-
-<ul class="consult-list">
-
-<li>Custom menu curation</li>
-<li>Portion and quantity planning</li>
-<li>Large-event coordination</li>
-<li>Delivery logistics</li>
-<li>Custom small-chops and drink combinations</li>
-
-</ul>
-
-</div>
-
-
-<div class="consult-form">
-
-<h3>
-Book a Free Consultation
-</h3>
-
-
-<div class="fg2">
-
-<div class="fg">
-
-<label>
-First Name
-</label>
-
-<input
-id="cFirst"
-placeholder="First name"
->
-
-</div>
-
-
-<div class="fg">
-
-<label>
-Last Name
-</label>
-
-<input
-id="cLast"
-placeholder="Last name"
->
-
-</div>
-
-</div>
-
-
-<div class="fg">
-
-<label>
-Phone / WhatsApp
-</label>
-
-<input
-id="cPhone"
-type="tel"
-placeholder="+234..."
->
-
-</div>
-
-
-<div class="fg">
-
-<label>
-Event Type
-</label>
-
-<select id="cEvent">
-
-<option value="">
-Select event type
-</option>
-
-<option>
-Naming Ceremony
-</option>
-
-<option>
-Wedding / Engagement
-</option>
-
-<option>
-Birthday Party
-</option>
-
-<option>
-Corporate Event
-</option>
-
-<option>
-Other
-</option>
-
-</select>
-
-</div>
-
-
-<div class="fg2">
-
-<div class="fg">
-
-<label>
-Event Date
-</label>
-
-<input
-id="cDate"
-type="date"
->
-
-</div>
-
-
-<div class="fg">
-
-<label>
-Guests
-</label>
-
-<input
-id="cGuests"
-type="number"
-placeholder="50"
->
-
-</div>
-
-</div>
-
-
-<div class="fg">
-
-<label>
-Notes
-</label>
-
-<textarea
-id="cNotes"
-placeholder="Tell us about your event..."
-></textarea>
-
-</div>
-
-
-<button
-class="btn-gold"
-style="width:100%"
-onclick="submitConsult()"
->
-Submit Request
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =========================
-     CONTACT
-========================= -->
-
-<section id="contact">
-
-<div class="container">
-
-<span
-class="sec-eye"
-style="color:#f1d68d"
->
-Find Us
-</span>
-
-<h2 class="sec-h2">
-Contact & Hours
-</h2>
-
-
+<div class="pay-note"><strong>Payment policy:</strong> Full payment is required for any order below ₦50,000. An <strong>85% deposit</strong> is required for bulk orders above ₦50,000. Sila will provide the applicable payment instructions after reviewing your request.</div>
+<button class="btn-gold" style="margin-top:16px" onclick="openStatus()">🔎 Check Order / Payment Status</button>
+</div></section>
+
+<section id="gallery"><div class="container"><span class="sec-eye">Gallery</span><h2 class="sec-h2">A feast for the eyes</h2>
+<div class="gal-tabs"><button class="gal-tab active" onclick="galTab('photos',this)">📸 Photos</button><button class="gal-tab" onclick="galTab('videos',this)">🎬 Videos</button></div>
+<div id="gphotos" class="gal-panel gal-photos active"></div><div id="gvideos" class="gal-panel gal-videos"></div></div></section>
+
+<section id="consultation"><div class="container consult-grid"><div><span class="sec-eye">Free Consultation</span><h2 class="sec-h2">Planning an event? Let's talk.</h2><p class="sec-p">Whether it's a naming ceremony, wedding, birthday or corporate function, we can help plan quantities, variety and budget.</p><ul class="consult-list"><li>Custom menu curation</li><li>Portion and quantity planning</li><li>Large-event coordination</li><li>Delivery logistics</li><li>Custom small-chops and drink combinations</li></ul></div>
+<div class="consult-form"><h3>Book a Free Consultation</h3><div class="fg2"><div class="fg"><label>First Name</label><input id="cFirst" placeholder="First name"></div><div class="fg"><label>Last Name</label><input id="cLast" placeholder="Last name"></div></div>
+<div class="fg"><label>Phone / WhatsApp</label><input id="cPhone" type="tel" placeholder="+234..."></div><div class="fg"><label>Event Type</label><select id="cEvent"><option value="">Select event type</option><option>Naming Ceremony</option><option>Wedding / Engagement</option><option>Birthday Party</option><option>Corporate Event</option><option>Other</option></select></div>
+<div class="fg2"><div class="fg"><label>Event Date</label><input id="cDate" type="date"></div><div class="fg"><label>Guests</label><input id="cGuests" type="number" placeholder="50"></div></div>
+<div class="fg"><label>Notes</label><textarea id="cNotes" placeholder="Tell us about your event..."></textarea></div><button class="btn-gold" style="width:100%" onclick="submitConsult()">Submit Request</button></div></div></section>
+
+<section id="contact"><div class="container"><span class="sec-eye" style="color:#f1d68d">Find Us</span><h2 class="sec-h2">Contact & Hours</h2>
 <div class="contact-grid">
-
-
-<div class="contact-card">
-
-<h3>
-Get In Touch
-</h3>
-
-<p>
-
-📞
-<a href="tel:+2348150563651">
-+234 815 056 3651
-</a>
-
-<br><br>
-
-💬
-<a
-href="https://wa.me/2348150563651"
-target="_blank"
-rel="noopener"
->
-WhatsApp Us
-</a>
-
-<br><br>
-
-✉️
-<a href="mailto:silaskitchenandmore@gmail.com">
-silaskitchenandmore@gmail.com
-</a>
-
-<br><br>
-
-📸
-<a
-href="https://instagram.com/silaskitchenandmore"
-target="_blank"
-rel="noopener"
->
-@silaskitchenandmore
-</a>
-
-</p>
-
-</div>
-
-
-<div class="contact-card">
-
-<h3>
-Order Hours
-</h3>
-
-<div class="hr-row">
-<span>Monday – Friday</span>
-<span>8am – 6pm</span>
-</div>
-
-<div class="hr-row">
-<span>Saturday</span>
-<span>9am – 4pm</span>
-</div>
-
-<div class="hr-row">
-<span>Sunday</span>
-<span>Closed</span>
-</div>
-
-
-<br>
-
-<h3>
-Payment Account
-</h3>
-
-<p>
-
-🏦
-<strong style="color:#fff">
-Bank:
-</strong>
-Opay
-
-<br><br>
-
-🔢
-<strong style="color:#fff">
-Account No:
-</strong>
-
-<strong style="color:#f1d68d">
-6104687060
-</strong>
-
-<br><br>
-
-👤
-<strong style="color:#fff">
-Name:
-</strong>
-
-Tope-Egbedeyi Omowumi Christianah
-
-</p>
-
-</div>
-
-
-<div class="contact-card">
-
-<h3>
-Delivery & Pickup
-</h3>
-
-<p>
-
-We offer pickup and delivery within
-<strong style="color:#fff">
-Ibadan.
-</strong>
-
-<br><br>
-
-Events such as naming ceremonies, weddings and other celebrations
-can be served across Nigeria.
-
-<br><br>
-
-Minimum 4 days advance notice is required.
-
-</p>
-
-</div>
-
-</div>
-
-
-<div class="notice">
-
-📍
-<strong>
-Service area:
-</strong>
-
-No 8, Sobaloju Street, Adepeji Villa, Ajobo, Arulogun,
-Ibadan, Oyo State.
-
-Delivery is available within Ibadan.
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =========================
-     FOOTER
-========================= -->
-
-<footer>
-
-<div class="footer-left">
-
-<img
-class="logo-img"
-src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg"
-alt="Sila's Kitchen and More"
->
-
-</div>
-
-
-<p>
-© 2024 Sila's Kitchen and More · Quality Service Is Our Benchmark ·
-All rights reserved.
-</p>
-
-
-<div class="footer-links">
-
-<a href="#menu">
-Menu
-</a>
-
-<a href="#about">
-About
-</a>
-
-<a href="#payment">
-Payment
-</a>
-
-<a href="#gallery">
-Gallery
-</a>
-
-<a href="#contact">
-Contact
-</a>
-
-</div>
-
-</footer>
-
-
-<!-- =========================
-     CART BUTTON
-========================= -->
-
-<button
-class="cart-fab"
-onclick="toggleCart()"
-aria-label="Open shopping cart"
->
-🛒
-
-<span
-class="cart-count"
-id="cartCount"
->
-0
-</span>
-
-</button>
-
-
-<!-- =========================
-     CART DRAWER
-========================= -->
-
-<aside
-class="cart-drawer"
-id="cartDrawer"
->
-
-<div class="cart-head">
-
-<h2>
-Your Cart
-</h2>
-
-<button
-class="cart-close"
-onclick="toggleCart()"
->
-×
-</button>
-
-</div>
-
-<div id="cartItems">
-</div>
-
-<div id="cartBottom">
-</div>
-
-</aside>
-
-
-<!-- =========================
-     ORDER MODAL
-========================= -->
-
-<div
-class="modal-overlay"
-id="modal"
->
-
-<div class="modal">
-
-<button
-class="modal-close"
-onclick="closeModal()"
->
-×
-</button>
-
-
-<div class="modal-steps-bar">
-
-<span
-class="modal-step-lbl active"
-id="slbl1"
->
-1. Your Details
-</span>
-
-<span
-class="modal-step-lbl"
-id="slbl2"
->
-2. Review
-</span>
-
-<span
-class="modal-step-lbl"
-id="slbl3"
->
-3. Confirmation
-</span>
-
-</div>
-
-
-<!-- STEP 1 -->
-
-<div
-class="pay-step active"
-id="step1"
->
-
-<h3>
-Complete Your Order Request
-</h3>
-
-<p class="modal-sub">
-Your cart will be reviewed before payment.
-Minimum 4 days notice required.
-</p>
-
-
-<div class="fg">
-
-<label>
-Full Name
-</label>
-
-<input
-id="oName"
-placeholder="Full name"
->
-
-</div>
-
-
-<div class="fg">
-
-<label>
-WhatsApp / Phone
-</label>
-
-<input
-id="oPhone"
-type="tel"
-placeholder="+234..."
->
-
-</div>
-
-
-<div class="fg">
-
-<label>
-Desired Date
-</label>
-
-<input
-id="oDate"
-type="date"
->
-
-</div>
-
-
-<div class="fg">
-
-<label>
-Order Notes
-</label>
-
-<textarea
-id="oNotes"
-placeholder="Event details, delivery request, special instructions..."
-></textarea>
-
-</div>
-
-
-<button
-class="btn-gold"
-style="width:100%"
-onclick="goToReview()"
->
-Continue →
-</button>
-
-</div>
-
-
-<!-- STEP 2 -->
-
-<div
-class="pay-step"
-id="step2"
->
-
-<h3>
-Review Your Request
-</h3>
-
-<div id="reviewBox">
-</div>
-
-<p class="modal-sub">
-
-Sila will review the request and provide the appropriate payment
-instructions.
-
-<strong>
-Do not make payment until payment instructions are provided.
-</strong>
-
-</p>
-
-
-<button
-class="btn-gold"
-style="width:100%"
-onclick="submitOrderRequest()"
->
-Submit Order Request
-</button>
-
-
-<button
-class="btn-ghost"
-style="width:100%;margin-top:9px"
-onclick="showStep('step1')"
->
-← Back
-</button>
-
-</div>
-
-
-<!-- STEP 3 -->
-
-<div
-class="pay-step"
-id="step3"
->
-
-<div style="text-align:center">
-
-<div style="font-size:3rem">
-✅
-</div>
-
-<h3>
-Request Received
-</h3>
-
-<p class="modal-sub">
-Your order request has been prepared.
-Sila will contact you with payment instructions and the next
-confirmation step.
-</p>
-
-<div id="confirmationBox">
-</div>
-
-<button
-class="btn-gold"
-style="width:100%;margin-top:15px"
-onclick="closeModal()"
->
-Done — Close
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =========================
-     LIGHTBOX
-========================= -->
-
-<div
-class="lightbox"
-id="lightbox"
-onclick="if(event.target===this)closeLightbox()"
->
-
-<button
-class="lb-close"
-onclick="closeLightbox()"
->
-×
-</button>
-
-<img
-id="lightboxImg"
-src=""
-alt=""
->
-
-</div>
-
+<div class="contact-card"><h3>Get In Touch</h3><p>📞 <a href="tel:+2348150563651">+234 815 056 3651</a><br><br>💬 <a href="https://wa.me/2348150563651" target="_blank" rel="noopener">WhatsApp Us</a><br><br>✉️ <a href="mailto:silaskitchenandmore@gmail.com">silaskitchenandmore@gmail.com</a><br><br>📸 <a href="https://instagram.com/silaskitchenandmore" target="_blank" rel="noopener">@silaskitchenandmore</a></p></div>
+<div class="contact-card"><h3>Order Hours</h3><div class="hr-row"><span>Monday – Friday</span><span>8am – 6pm</span></div><div class="hr-row"><span>Saturday</span><span>9am – 4pm</span></div><div class="hr-row"><span>Sunday</span><span>Closed</span></div><br><h3>Payment Account</h3><p>🏦 <strong style="color:#fff">Bank:</strong> Opay<br><br>🔢 <strong style="color:#fff">Account No:</strong> <strong style="color:#f1d68d">6104687060</strong><br><br>👤 <strong style="color:#fff">Name:</strong> Tope-Egbedeyi Omowumi Christianah</p></div>
+<div class="contact-card"><h3>Delivery & Pickup</h3><p>We offer pickup and delivery within <strong style="color:#fff">Ibadan.</strong><br><br>Events such as naming ceremonies, weddings and other celebrations can be served across Nigeria.<br><br>Minimum 4 days advance notice is required.</p></div>
+</div><div class="notice">📍 <strong>Service area:</strong> No 8, Sobaloju Street, Adepeji Villa, Ajobo, Arulogun, Ibadan, Oyo State. Delivery is available within Ibadan.</div></div></section>
+
+<footer><div class="footer-left"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></div><p>© 2024 Sila's Kitchen and More · Quality Service Is Our Benchmark · All rights reserved.</p><div class="footer-links"><a href="#menu">Menu</a><a href="#about">About</a><a href="#payment">Payment</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a></div></footer>
+
+<button class="cart-fab" onclick="toggleCart()" aria-label="Open shopping cart">🛒<span class="cart-count" id="cartCount">0</span></button>
+<aside class="cart-drawer" id="cartDrawer"><div class="cart-head"><h2>Your Cart</h2><button class="cart-close" onclick="toggleCart()">×</button></div><div id="cartItems"></div><div id="cartBottom"></div></aside>
+
+<!-- Main order/payment modal -->
+<div class="modal-overlay" id="modal"><div class="modal"><button class="modal-close" onclick="closeModal()">×</button>
+<div class="modal-steps-bar"><span class="modal-step-lbl active" id="slbl1">1. Details</span><span class="modal-step-lbl" id="slbl2">2. Review</span><span class="modal-step-lbl" id="slbl3">3. Payment</span><span class="modal-step-lbl" id="slbl4">4. Confirmation</span></div>
+
+<div class="pay-step active" id="step1"><h3>Complete Your Order Request</h3><p class="modal-sub">Your cart will be reviewed before payment. Minimum 4 days notice required.</p>
+<div class="fg"><label>Full Name</label><input id="oName" placeholder="Full name"></div><div class="fg"><label>WhatsApp / Phone</label><input id="oPhone" type="tel" placeholder="+234..."></div><div class="fg"><label>Desired Date</label><input id="oDate" type="date"></div><div class="fg"><label>Order Notes</label><textarea id="oNotes" placeholder="Event details, delivery request, special instructions..."></textarea></div>
+<button class="btn-gold" style="width:100%" onclick="goToReview()">Continue →</button></div>
+
+<div class="pay-step" id="step2"><h3>Review Your Request</h3><div id="reviewBox"></div><p class="modal-sub">Sila will review the request and, when approved, generate a payment code and provide payment instructions.</p>
+<button class="btn-gold" style="width:100%" onclick="submitOrderRequest()">Submit Order Request</button><button class="btn-ghost" style="width:100%;margin-top:9px" onclick="showStep('step1')">← Back</button></div>
+
+<div class="pay-step" id="step3"><h3>Payment & Receipt</h3><div id="paymentStatusBox"></div>
+<div class="fg"><label>Payment Code</label><input id="paymentCodeInput" placeholder="Enter the payment code sent by Sila"></div>
+<div class="fg"><label>Payment Amount</label><input id="paymentAmount" type="number" min="1" placeholder="Amount paid"></div>
+<div class="fg"><label>Payment Method</label><select id="paymentMethod"><option value="">Select method</option><option>Opay</option><option>Bank Transfer</option><option>Palmpay</option><option>Kuda</option><option>Moniepoint</option><option>USSD</option><option>Other</option></select></div>
+<div class="fg"><label>Transaction Reference</label><input id="transactionReference" placeholder="Bank/payment transaction reference"></div>
+<div class="receipt-area"><strong>Upload payment receipt</strong><p class="small-muted">Accepted: JPG, PNG, WEBP or PDF. You may upload here, or choose to send the receipt through WhatsApp instead.</p><input id="receiptFile" type="file" accept="image/jpeg,image/png,image/webp,application/pdf"></div>
+<div id="receiptMsg"></div>
+<button class="btn-gold" style="width:100%;margin-top:14px" onclick="submitReceiptPayment()">Submit Payment & Receipt</button>
+<div class="whatsapp-box"><strong>Prefer WhatsApp?</strong><p class="small-muted">You can send the receipt directly to Sila on WhatsApp. Include your order code and payment code so the payment can be matched quickly.</p><button class="whatsapp-btn" style="width:100%" onclick="sendReceiptViaWhatsApp()">💬 Send Receipt via WhatsApp</button></div>
+<button class="btn-ghost" style="width:100%;margin-top:9px" onclick="showStep('step1')">← Back</button></div>
+
+<div class="pay-step" id="step4"><div style="text-align:center"><div style="font-size:3rem">✅</div><h3 id="confirmationTitle">Request Received</h3><p class="modal-sub" id="confirmationText">Your request has been recorded.</p><div id="confirmationBox"></div>
+<button class="btn-gold" style="width:100%;margin-top:15px" onclick="continueToPayment()">💳 Enter Payment Code & Submit Receipt</button>
+<button class="whatsapp-btn" style="width:100%;margin-top:9px" onclick="sendOrderToWhatsApp()">💬 Continue on WhatsApp</button>
+<button class="btn-ghost" style="width:100%;margin-top:9px" onclick="closeModal()">Done — Close</button></div></div>
+</div></div>
+
+<!-- Package selector -->
+<div class="modal-overlay" id="packageModal"><div class="modal"><button class="modal-close" onclick="closePackage()">×</button><h3 id="packageTitle">Package</h3><p id="packageDescription" class="modal-sub"></p>
+<div id="packageOptions"></div><div class="package-total" id="packageTotal">Estimated Total: ₦0</div><button class="btn-gold" style="width:100%;margin-top:15px" onclick="addPackageToCart()">Add Package to Cart</button></div></div>
+
+<!-- Puff mix selector -->
+<div class="modal-overlay" id="puffModal"><div class="modal"><button class="modal-close" onclick="closePuffMix()">×</button><h3>Puff-Puff Mix</h3><p class="modal-sub">Choose size and quantity.</p>
+<div class="fg"><label>Size</label><select id="puffSize"><option value="500" data-price="2000">500g — ₦2,000</option><option value="1000" data-price="4000">1kg — ₦4,000</option></select></div>
+<div class="fg"><label>Quantity</label><input id="puffQty" type="number" min="1" value="1"></div>
+<button class="btn-gold" style="width:100%" onclick="addPuffMixToCart()">Add to Cart</button></div></div>
+
+<!-- Order/payment code lookup -->
+<div class="modal-overlay" id="statusModal"><div class="modal"><button class="modal-close" onclick="closeStatus()">×</button><h3>Check Order / Payment Status</h3><p class="modal-sub">Enter the order code or payment code supplied by Sila.</p>
+<div class="fg"><label>Order Code</label><input id="statusOrderCode" placeholder="e.g. SILA-12345678"></div><div class="fg"><label>Payment Code (optional)</label><input id="statusPaymentCode" placeholder="Payment code"></div>
+<button class="btn-gold" style="width:100%" onclick="lookupOrderStatus()">Check Status</button><div id="statusResult"></div></div></div>
+
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()"><button class="lb-close" onclick="closeLightbox()">×</button><img id="lightboxImg" src="" alt=""></div>
 
 <script>
+/* ============================================================
+   SILA'S KITCHEN — SUPABASE CONFIGURATION
+   Replace ONLY these two values with your Supabase Project URL
+   and anon/public key. Never put the service_role key here.
+============================================================ */
+const SUPABASE_URL = "https://mmrvwfoxbnskqwssgmkd.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tcnZ3Zm94Ym5za3F3c3NnbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjE0MjIsImV4cCI6MjEwMjc5NzQyMn0.ARdHxQhdrpJn0jsWigBocWTS6J6wquroIYLuJ1qcN1M";
+const RECEIPT_BUCKET = "payment-receipts";
+const SILA_WHATSAPP = "2348150563651";
 
-/* =========================
-   GALLERY DATA
-========================= */
+const supabaseConfigured =
+  SUPABASE_URL.startsWith("https://") &&
+  !SUPABASE_URL.includes("YOUR_") &&
+  SUPABASE_ANON_KEY &&
+  !SUPABASE_ANON_KEY.includes("YOUR_");
 
-const GALLERY_PHOTOS = [
+const sb = supabaseConfigured
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
 
-  {
-    src:"gallery-1.jpg",
-    label:"Our Spread"
-  },
+const GALLERY_PHOTOS=[
+{src:"gallery-1.jpg",label:"Our Spread"},{src:"gallery-2.jpg",label:"Spring Rolls"},
+{src:"gallery-3.jpg",label:"Samosas"},{src:"gallery-4.jpg",label:"Puff Puff"},
+{src:"gallery-5.jpg",label:"Pastries"},{src:"gallery-6.jpg",label:"Event Spread"}];
+const GALLERY_VIDEOS=[
+{src:"video-1.mp4",poster:"video-1-thumb.jpg",title:"Behind the Kitchen",sub:"Watch us prepare your order"},
+{src:"video-2.mp4",poster:"video-2-thumb.jpg",title:"Event Highlights",sub:"Sila's at celebrations"},
+{src:"video-3.mp4",poster:"video-3-thumb.jpg",title:"Making Puff Puff",sub:"Fresh from the fryer"},
+{src:"video-4.mp4",poster:"video-4-thumb.jpg",title:"Customer Stories",sub:"What our clients say"}];
 
-  {
-    src:"gallery-2.jpg",
-    label:"Spring Rolls"
-  },
+let cart=JSON.parse(localStorage.getItem("silaCart")||"[]");
+let selectedDrinkRequest="";
+let currentPackage=null;
+let currentOrder=null;
 
-  {
-    src:"gallery-3.jpg",
-    label:"Samosas"
-  },
+function money(n){return "₦"+Number(n||0).toLocaleString("en-NG");}
+function saveCart(){localStorage.setItem("silaCart",JSON.stringify(cart));renderCart();}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
 
-  {
-    src:"gallery-4.jpg",
-    label:"Puff Puff"
-  },
-
-  {
-    src:"gallery-5.jpg",
-    label:"Pastries"
-  },
-
-  {
-    src:"gallery-6.jpg",
-    label:"Event Spread"
-  }
-
-];
-
-
-const GALLERY_VIDEOS = [
-
-  {
-    src:"video-1.mp4",
-    poster:"video-1-thumb.jpg",
-    title:"Behind the Kitchen",
-    sub:"Watch us prepare your order"
-  },
-
-  {
-    src:"video-2.mp4",
-    poster:"video-2-thumb.jpg",
-    title:"Event Highlights",
-    sub:"Sila's at celebrations"
-  },
-
-  {
-    src:"video-3.mp4",
-    poster:"video-3-thumb.jpg",
-    title:"Making Puff Puff",
-    sub:"Fresh from the fryer"
-  },
-
-  {
-    src:"video-4.mp4",
-    poster:"video-4-thumb.jpg",
-    title:"Customer Stories",
-    sub:"What our clients say"
-  }
-
-];
-
-
-/* =========================
-   CART
-========================= */
-
-let cart =
-JSON.parse(
-  localStorage.getItem("silaCart") || "[]"
-);
-
-let selectedDrinkRequest = "";
-
-
-function money(n){
-
-  return "₦" +
-    Number(n).toLocaleString("en-NG");
-
+function addToCart(name,price,meta=""){
+  const index=cart.findIndex(item=>item.name===name&&item.meta===meta);
+  if(index>=0) cart[index].qty++; else cart.push({name,price:Number(price),qty:1,meta});
+  saveCart();toggleCart(true);
 }
-
-
-function saveCart(){
-
-  localStorage.setItem(
-    "silaCart",
-    JSON.stringify(cart)
-  );
-
-  renderCart();
-
-}
-
-
-function addToCart(
-  name,
-  price,
-  meta=""
-){
-
-  const index =
-    cart.findIndex(
-      item =>
-        item.name === name &&
-        item.meta === meta
-    );
-
-  if(index >= 0){
-
-    cart[index].qty++;
-
-  }else{
-
-    cart.push({
-      name,
-      price,
-      qty:1,
-      meta
-    });
-
-  }
-
-  saveCart();
-
-  toggleCart(true);
-
-}
-
-
-function removeCart(i){
-
-  cart.splice(i,1);
-
-  saveCart();
-
-}
-
-
-function changeQty(i,d){
-
-  cart[i].qty =
-    Math.max(
-      0,
-      cart[i].qty + d
-    );
-
-  if(!cart[i].qty){
-
-    cart.splice(i,1);
-
-  }
-
-  saveCart();
-
-}
-
-
+function removeCart(i){cart.splice(i,1);saveCart();}
+function changeQty(i,d){cart[i].qty=Math.max(0,cart[i].qty+d);if(!cart[i].qty)cart.splice(i,1);saveCart();}
 function renderCart(){
-
-  document.getElementById("cartCount").textContent =
-    cart.reduce(
-      (a,x) => a + x.qty,
-      0
-    );
-
-
-  const el =
-    document.getElementById("cartItems");
-
-  const bottom =
-    document.getElementById("cartBottom");
-
-
-  if(!cart.length){
-
-    el.innerHTML =
-      '<div class="empty">Your cart is empty.<br>Add items from the menu.</div>';
-
-    bottom.innerHTML = "";
-
-    return;
-
-  }
-
-
-  el.innerHTML =
-    cart.map(
-      (x,i) => `
-
-      <div class="cart-item">
-
-        <div>
-
-          <div class="cart-item-title">
-            ${escapeHtml(x.name)}
-          </div>
-
-          <div class="cart-item-meta">
-
-            ${
-              x.meta
-              ? escapeHtml(x.meta) + " · "
-              : ""
-            }
-
-            ${money(x.price)} each
-
-          </div>
-
-          <div class="qty">
-
-            <button onclick="changeQty(${i},-1)">
-              −
-            </button>
-
-            <span>
-              ${x.qty}
-            </span>
-
-            <button onclick="changeQty(${i},1)">
-              +
-            </button>
-
-          </div>
-
-        </div>
-
-        <strong>
-          ${money(x.price * x.qty)}
-        </strong>
-
-      </div>
-
-      `
-    ).join("");
-
-
-  const total =
-    cart.reduce(
-      (a,x) =>
-        a + x.price * x.qty,
-      0
-    );
-
-
-  bottom.innerHTML = `
-
-    <div class="cart-total">
-
-      <span>
-        Total
-      </span>
-
-      <span>
-        ${money(total)}
-      </span>
-
-    </div>
-
-
-    <button
-      class="btn-gold"
-      style="width:100%"
-      onclick="openCartCheckout()"
-    >
-      Proceed to Order Request
-    </button>
-
-
-    <button
-      class="btn-ghost"
-      style="width:100%;margin-top:8px"
-      onclick="cart=[];saveCart()"
-    >
-      Clear Cart
-    </button>
-
-  `;
-
+  document.getElementById("cartCount").textContent=cart.reduce((a,x)=>a+x.qty,0);
+  const el=document.getElementById("cartItems"),bottom=document.getElementById("cartBottom");
+  if(!cart.length){el.innerHTML='<div class="empty">Your cart is empty.<br>Add items from the menu.</div>';bottom.innerHTML="";return;}
+  el.innerHTML=cart.map((x,i)=>`<div class="cart-item"><div><div class="cart-item-title">${escapeHtml(x.name)}</div><div class="cart-item-meta">${x.meta?escapeHtml(x.meta)+" · ":""}${money(x.price)} each</div><div class="qty"><button onclick="changeQty(${i},-1)">−</button><span>${x.qty}</span><button onclick="changeQty(${i},1)">+</button></div></div><strong>${money(x.price*x.qty)}</strong></div>`).join("");
+  const total=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  bottom.innerHTML=`<div class="cart-total"><span>Total</span><span>${money(total)}</span></div>
+  <button class="btn-gold" style="width:100%" onclick="openCartCheckout()">Proceed to Order Request</button>
+  <button class="btn-ghost" style="width:100%;margin-top:8px" onclick="cart=[];saveCart()">Clear Cart</button>`;
 }
+function toggleCart(force){const d=document.getElementById("cartDrawer");if(force===true)d.classList.add("active");else d.classList.toggle("active");}
 
-
-function escapeHtml(s){
-
-  return String(s).replace(
-    /[&<>"']/g,
-    c =>
-      ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
-      }[c])
-  );
-
+function menuTab(name,btn){
+  document.querySelectorAll(".menu-panel").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".menu-tab").forEach(x=>x.classList.remove("active"));
+  document.getElementById("panel-"+name).classList.add("active");btn.classList.add("active");
 }
-
-
-function toggleCart(force){
-
-  const drawer =
-    document.getElementById("cartDrawer");
-
-  if(force === true){
-
-    drawer.classList.add("active");
-
-  }else{
-
-    drawer.classList.toggle("active");
-
-  }
-
+function galTab(name,btn){
+  document.querySelectorAll(".gal-panel").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".gal-tab").forEach(x=>x.classList.remove("active"));
+  document.getElementById("g"+name).classList.add("active");btn.classList.add("active");
 }
-
-
-/* =========================
-   MENU TABS
-========================= */
-
-function menuTab(
-  name,
-  btn
-){
-
-  document
-    .querySelectorAll(".menu-panel")
-    .forEach(
-      x =>
-        x.classList.remove("active")
-    );
-
-
-  document
-    .querySelectorAll(".menu-tab")
-    .forEach(
-      x =>
-        x.classList.remove("active")
-    );
-
-
-  document
-    .getElementById(
-      "panel-" + name
-    )
-    .classList.add("active");
-
-
-  btn.classList.add("active");
-
-}
-
-
-/* =========================
-   GALLERY TABS
-========================= */
-
-function galTab(
-  name,
-  btn
-){
-
-  document
-    .querySelectorAll(".gal-panel")
-    .forEach(
-      x =>
-        x.classList.remove("active")
-    );
-
-
-  document
-    .querySelectorAll(".gal-tab")
-    .forEach(
-      x =>
-        x.classList.remove("active")
-    );
-
-
-  document
-    .getElementById("g" + name)
-    .classList.add("active");
-
-
-  btn.classList.add("active");
-
-}
-
-
-/* =========================
-   GALLERY
-========================= */
-
 function buildGallery(){
-
-  document.getElementById("gphotos").innerHTML =
-    GALLERY_PHOTOS.map(
-      p => `
-
-      <div
-        class="g-item"
-        onclick="openLightbox('${p.src}','${escapeHtml(p.label)}')"
-      >
-
-        <img
-          src="${p.src}"
-          loading="lazy"
-          alt="${escapeHtml(p.label)}"
-        >
-
-        <div class="g-label">
-          ${escapeHtml(p.label)}
-        </div>
-
-      </div>
-
-      `
-    ).join("");
-
-
-  document.getElementById("gvideos").innerHTML =
-    GALLERY_VIDEOS.map(
-      v => `
-
-      <div class="vid-card">
-
-        <video
-          src="${v.src}"
-          poster="${v.poster}"
-          controls
-          preload="metadata"
-          style="width:100%;border-radius:8px"
-        ></video>
-
-        <div class="vid-title">
-          ${escapeHtml(v.title)}
-        </div>
-
-        <div class="vid-sub">
-          ${escapeHtml(v.sub)}
-        </div>
-
-      </div>
-
-      `
-    ).join("");
-
+  document.getElementById("gphotos").innerHTML=GALLERY_PHOTOS.map(p=>`<div class="g-item" onclick="openLightbox('${p.src}','${escapeHtml(p.label)}')"><img src="${p.src}" loading="lazy" alt="${escapeHtml(p.label)}"><div class="g-label">${escapeHtml(p.label)}</div></div>`).join("");
+  document.getElementById("gvideos").innerHTML=GALLERY_VIDEOS.map(v=>`<div class="vid-card"><video src="${v.src}" poster="${v.poster}" controls preload="metadata" style="width:100%;border-radius:8px"></video><div class="vid-title">${escapeHtml(v.title)}</div><div class="vid-sub">${escapeHtml(v.sub)}</div></div>`).join("");
 }
-
-
-function openLightbox(
-  src,
-  alt
-){
-
-  document.getElementById(
-    "lightboxImg"
-  ).src = src;
-
-  document.getElementById(
-    "lightboxImg"
-  ).alt = alt;
-
-  document.getElementById(
-    "lightbox"
-  ).classList.add("active");
-
-}
-
-
-function closeLightbox(){
-
-  document.getElementById(
-    "lightbox"
-  ).classList.remove("active");
-
-  document.getElementById(
-    "lightboxImg"
-  ).src = "";
-
-}
-
-
-/* =========================
-   CUSTOM BUILDER
-========================= */
+function openLightbox(src,alt){document.getElementById("lightboxImg").src=src;document.getElementById("lightboxImg").alt=alt;document.getElementById("lightbox").classList.add("active");}
+function closeLightbox(){document.getElementById("lightbox").classList.remove("active");document.getElementById("lightboxImg").src="";}
 
 function builderTotal(){
-
-  let total = 0;
-
-  document
-    .querySelectorAll("[data-builder]")
-    .forEach(
-      x => {
-
-        total +=
-          Number(x.value || 0) *
-          Number(x.dataset.price || 0);
-
-      }
-    );
-
-
-  document.getElementById(
-    "builderTotal"
-  ).textContent =
-    money(total);
-
+  let total=0;document.querySelectorAll("[data-builder]").forEach(x=>total+=Number(x.value||0)*Number(x.dataset.price||0));
+  document.getElementById("builderTotal").textContent=money(total);
 }
-
-
-document
-  .querySelectorAll("[data-builder]")
-  .forEach(
-    x =>
-      x.addEventListener(
-        "input",
-        builderTotal
-      )
-  );
-
+document.querySelectorAll("[data-builder]").forEach(x=>x.addEventListener("input",builderTotal));
 
 function addCustomToCart(){
+  let parts=[],total=0;
+  document.querySelectorAll("[data-builder]").forEach(x=>{
+    const q=Number(x.value||0);if(q){parts.push(`${x.dataset.builder}: ${q}`);total+=q*Number(x.dataset.price||0);}
+  });
+  const notes=document.getElementById("builderNotes").value.trim();if(notes)parts.push("Notes: "+notes);
+  if(!parts.length){alert("Please select at least one item for your custom order.");return;}
+  addToCart("Custom-Made Small Chops",total,parts.join(" · "));
+}
 
-  let parts = [];
-  let total = 0;
+/* ---------- Ready-to-fry quantity selector ---------- */
+function openPuffMix(){document.getElementById("puffModal").classList.add("active");}
+function closePuffMix(){document.getElementById("puffModal").classList.remove("active");}
+function addPuffMixToCart(){
+  const s=document.getElementById("puffSize"),size=s.value,price=Number(s.options[s.selectedIndex].dataset.price),qty=Math.max(1,Number(document.getElementById("puffQty").value||1));
+  addToCart(`Puff-Puff Mix (${size==="500"?"500g":"1kg"})`,price,`Quantity: ${qty}`);
+  for(let i=1;i<qty;i++)addToCart(`Puff-Puff Mix (${size==="500"?"500g":"1kg"})`,price,`Quantity: ${qty}`);
+  closePuffMix();
+}
 
-
-  document
-    .querySelectorAll("[data-builder]")
-    .forEach(
-      x => {
-
-        const q =
-          Number(x.value || 0);
-
-        if(q){
-
-          parts.push(
-            `${x.dataset.builder}: ${q}`
-          );
-
-          total +=
-            q *
-            Number(x.dataset.price || 0);
-
-        }
-
-      }
-    );
-
-
-  const notes =
-    document
-      .getElementById("builderNotes")
-      .value
-      .trim();
-
-
-  if(notes){
-
-    parts.push(
-      "Notes: " + notes
-    );
-
+/* ---------- Signature packages ---------- */
+const PACKAGE_DATA={
+  "Classic-Mix":{
+    description:"1 samosa + 1 spring roll + 3 puff-puff + protein of choice. Optional drink.",
+    base:1100
+  },
+  "Deluxe-Mix":{
+    description:"1 samosa + 1 spring roll + 3 puff-puff + 3 banana balls + protein of choice. Optional drink.",
+    base:1400
   }
-
-
-  if(!parts.length){
-
-    alert(
-      "Please select at least one item for your custom order."
-    );
-
-    return;
-
-  }
-
-
-  addToCart(
-    "Custom-Made Small Chops",
-    total,
-    parts.join(" · ")
-  );
-
+};
+const PROTEINS={Beef:1000,Chicken:1200,Gizzard:500,Turkey:2500};
+const DRINKS=["None","Sobo","Yoghurt","Tigernut"];
+function openPackage(name){
+  currentPackage=name;const p=PACKAGE_DATA[name];
+  document.getElementById("packageTitle").textContent=name;
+  document.getElementById("packageDescription").textContent=p.description;
+  document.getElementById("packageOptions").innerHTML=
+    `<div class="package-option"><strong>Included</strong><p class="small-muted">${escapeHtml(p.description)}</p></div>
+    <div class="fg"><label>Protein of choice</label><select id="packageProtein" onchange="updatePackageTotal()">${Object.keys(PROTEINS).map(k=>`<option value="${k}">${k} — ${money(PROTEINS[k])}</option>`).join("")}</select></div>
+    <div class="fg"><label>Optional drink</label><select id="packageDrink"><option>None</option><option>Sobo — price to be announced</option><option>Yoghurt — price to be announced</option><option>Tigernut — price to be announced</option></select></div>
+    <div class="fg"><label>Quantity</label><input id="packageQty" type="number" min="1" value="1" onchange="updatePackageTotal()"></div>
+    <p class="small-muted">Drink prices are currently to be announced, so a selected drink is recorded as a request and is not added to the estimated total.</p>`;
+  updatePackageTotal();document.getElementById("packageModal").classList.add("active");
+}
+function closePackage(){document.getElementById("packageModal").classList.remove("active");currentPackage=null;}
+function updatePackageTotal(){
+  if(!currentPackage)return;
+  const protein=document.getElementById("packageProtein").value,qty=Math.max(1,Number(document.getElementById("packageQty").value||1));
+  const total=(PACKAGE_DATA[currentPackage].base+PROTEINS[protein])*qty;
+  document.getElementById("packageTotal").textContent=`Estimated Total: ${money(total)}`;
+}
+function addPackageToCart(){
+  if(!currentPackage)return;
+  const protein=document.getElementById("packageProtein").value;
+  const drink=document.getElementById("packageDrink").value;
+  const qty=Math.max(1,Number(document.getElementById("packageQty").value||1));
+  const price=PACKAGE_DATA[currentPackage].base+PROTEINS[protein];
+  const meta=`Protein: ${protein}${drink!=="None"?" · Optional drink: "+drink:""} · Quantity: ${qty}`;
+  for(let i=0;i<qty;i++)addToCart(currentPackage,price,meta);
+  closePackage();
 }
 
-
-/* =========================
-   DRINK REQUEST
-========================= */
-
-function openDrinkRequest(name){
-
-  selectedDrinkRequest = name;
-
-  openModal();
-
-  document.getElementById(
-    "oNotes"
-  ).value =
-    `Drink request: ${name}. Please advise available size and price.`;
-
-}
-
-
-/* =========================
-   MODAL
-========================= */
-
-function openModal(){
-
-  document
-    .getElementById("modal")
-    .classList.add("active");
-
-  showStep("step1");
-
-}
-
-
-function closeModal(){
-
-  document
-    .getElementById("modal")
-    .classList.remove("active");
-
-}
-
-
+/* ---------- Order modal ---------- */
+function openModal(){document.getElementById("modal").classList.add("active");showStep("step1");}
+function closeModal(){document.getElementById("modal").classList.remove("active");}
 function showStep(id){
-
-  [
-    "step1",
-    "step2",
-    "step3"
-  ].forEach(
-    x =>
-      document
-        .getElementById(x)
-        .classList.remove("active")
-  );
-
-
-  document
-    .getElementById(id)
-    .classList.add("active");
-
-
-  document
-    .querySelectorAll(".modal-step-lbl")
-    .forEach(
-      x =>
-        x.classList.remove("active")
-    );
-
-
-  const map = {
-
-    step1:"slbl1",
-    step2:"slbl2",
-    step3:"slbl3"
-
-  };
-
-
-  document
-    .getElementById(map[id])
-    .classList.add("active");
-
+  ["step1","step2","step3","step4"].forEach(x=>document.getElementById(x).classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".modal-step-lbl").forEach(x=>x.classList.remove("active"));
+  const map={step1:"slbl1",step2:"slbl2",step3:"slbl3",step4:"slbl4"};document.getElementById(map[id]).classList.add("active");
 }
-
-
-function openCartCheckout(){
-
-  if(!cart.length){
-
-    return;
-
-  }
-
-  toggleCart();
-
-  openModal();
-
-}
-
-
-/* =========================
-   ORDER REVIEW
-========================= */
+function openCartCheckout(){if(!cart.length)return;toggleCart();openModal();}
 
 function goToReview(){
-
-  const name =
-    document
-      .getElementById("oName")
-      .value
-      .trim();
-
-
-  const phone =
-    document
-      .getElementById("oPhone")
-      .value
-      .trim();
-
-
-  const desiredDate =
-    document
-      .getElementById("oDate")
-      .value;
-
-
-  if(
-    !name ||
-    !phone ||
-    !desiredDate
-  ){
-
-    alert(
-      "Please provide your full name, phone/WhatsApp number and desired date."
-    );
-
-    return;
-
-  }
-
-
-  const date =
-    new Date(
-      desiredDate + "T12:00:00"
-    ).toLocaleDateString(
-      "en-GB",
-      {
-        day:"numeric",
-        month:"long",
-        year:"numeric"
-      }
-    );
-
-
-  const total =
-    cart.reduce(
-      (a,x) =>
-        a + x.price * x.qty,
-      0
-    );
-
-
-  document.getElementById(
-    "reviewBox"
-  ).innerHTML = `
-
-    <div
-      style="
-        background:#fbf7ed;
-        padding:15px;
-        border-radius:10px;
-      "
-    >
-
-      ${
-        cart.map(
-          x => `
-
-          <p style="margin:5px 0">
-
-            <strong>
-              ${escapeHtml(x.name)}
-            </strong>
-
-            × ${x.qty}
-
-            —
-            ${money(x.price * x.qty)}
-
-            ${
-              x.meta
-              ? `<br><small>${escapeHtml(x.meta)}</small>`
-              : ""
-            }
-
-          </p>
-
-          `
-        ).join("")
-      }
-
-
-      <hr>
-
-
-      <p>
-        <strong>
-          Total: ${money(total)}
-        </strong>
-      </p>
-
-
-      <p>
-        👤 ${escapeHtml(name)}
-        ·
-        📞 ${escapeHtml(phone)}
-        ·
-        📅 ${date}
-      </p>
-
-    </div>
-
-  `;
-
-
+  const name=document.getElementById("oName").value.trim(),phone=document.getElementById("oPhone").value.trim(),desiredDate=document.getElementById("oDate").value;
+  if(!name||!phone||!desiredDate){alert("Please provide your full name, phone/WhatsApp number and desired date.");return;}
+  const date=new Date(desiredDate+"T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+  const total=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  document.getElementById("reviewBox").innerHTML=`<div style="background:#fbf7ed;padding:15px;border-radius:10px">
+  ${cart.map(x=>`<p style="margin:5px 0"><strong>${escapeHtml(x.name)}</strong> × ${x.qty} — ${money(x.price*x.qty)}${x.meta?`<br><small>${escapeHtml(x.meta)}</small>`:""}</p>`).join("")}
+  <hr><p><strong>Total: ${money(total)}</strong></p><p>👤 ${escapeHtml(name)} · 📞 ${escapeHtml(phone)} · 📅 ${date}</p></div>`;
   showStep("step2");
-
 }
 
+function createLocalOrderRef(){return "SILA-"+Date.now().toString().slice(-8);}
 
-/* =========================
-   SUBMIT ORDER
-========================= */
+async function submitOrderRequest(){
+  if(!cart.length){alert("Your cart is empty.");return;}
+  const name=document.getElementById("oName").value.trim(),phone=document.getElementById("oPhone").value.trim(),desiredDate=document.getElementById("oDate").value,notes=document.getElementById("oNotes").value.trim();
+  const total=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  const ref=createLocalOrderRef();
+  const orderPayload={
+    order_code:ref,customer_name:name,customer_phone:phone,desired_date:desiredDate,
+    notes,items:cart.map(x=>({name:x.name,price:x.price,qty:x.qty,meta:x.meta})),estimated_total:total
+  };
 
-function submitOrderRequest(){
-
-  const total =
-    cart.reduce(
-      (a,x) =>
-        a + x.price * x.qty,
-      0
-    );
-
-
-  const name =
-    document
-      .getElementById("oName")
-      .value
-      .trim();
-
-
-  const phone =
-    document
-      .getElementById("oPhone")
-      .value
-      .trim();
-
-
-  const desiredDate =
-    document
-      .getElementById("oDate")
-      .value;
-
-
-  const notes =
-    document
-      .getElementById("oNotes")
-      .value
-      .trim();
-
-
-  const ref =
-    "SILA-" +
-    Date.now()
-      .toString()
-      .slice(-8);
-
-
-  document.getElementById(
-    "confirmationBox"
-  ).innerHTML = `
-
-    <div
-      style="
-        background:#fbf7ed;
-        padding:14px;
-        border-radius:10px;
-        text-align:left;
-      "
-    >
-
-      <strong>
-        Request code:
-      </strong>
-
-      ${ref}
-
-      <br>
-
-
-      <strong>
-        Estimated total:
-      </strong>
-
-      ${money(total)}
-
-      <br>
-
-
-      <strong>
-        Next step:
-      </strong>
-
-      Sila will contact you with payment instructions after review.
-
-      <br><br>
-
-
-      <strong>
-        Payment policy:
-      </strong>
-
-      Full payment below ₦50,000;
-      85% deposit for bulk orders above ₦50,000.
-
-    </div>
-
-  `;
-
-
-  localStorage.setItem(
-    "lastSilaOrder",
-    JSON.stringify({
-      ref,
-      total,
-      name,
-      phone,
-      desiredDate,
-      notes,
-      cart
-    })
-  );
-
-
-  cart = [];
-
-  saveCart();
-
-  showStep("step3");
-
-}
-
-
-/* =========================
-   CONSULTATION
-========================= */
-
-function submitConsult(){
-
-  const phone =
-    document
-      .getElementById("cPhone")
-      .value
-      .trim();
-
-
-  if(!phone){
-
-    alert(
-      "Please enter your phone / WhatsApp number."
-    );
-
-    return;
-
-  }
-
-
-  alert(
-    "Thank you. Sila's Kitchen and More will contact you about your consultation."
-  );
-
-}
-
-
-/* =========================
-   MODAL OUTSIDE CLICK
-========================= */
-
-document
-  .getElementById("modal")
-  .addEventListener(
-    "click",
-    e => {
-
-      if(
-        e.target ===
-        document.getElementById("modal")
-      ){
-
-        closeModal();
-
-      }
-
+  const msg=document.getElementById("confirmationBox");
+  try{
+    if(sb){
+      /* Existing deployed SQL security-definer function from Batch 3B. */
+      const {data,error}=await sb.rpc("submit_customer_order",{p_order_code:ref,p_customer_name:name,p_customer_phone:phone,p_desired_date:desiredDate,p_notes:notes,p_items:orderPayload.items,p_estimated_total:total});
+      if(error)throw error;
+      currentOrder={...orderPayload,backend:data};
+    }else{
+      currentOrder=orderPayload;
     }
-  );
+    localStorage.setItem("lastSilaOrder",JSON.stringify(currentOrder));
+    cart=[];saveCart();
+    msg.innerHTML=`<div class="status-box"><strong>Order code:</strong> ${escapeHtml(ref)}<br><strong>Estimated total:</strong> ${money(total)}<br><br>Sila will review your request and, after approval, generate a payment code.</div>
+    <div class="whatsapp-box"><strong>Keep your order code.</strong><p class="small-muted">You can communicate with Sila through WhatsApp and quote this order code.</p><button class="whatsapp-btn" style="width:100%" onclick="sendOrderToWhatsApp()">💬 Continue on WhatsApp</button></div>`;
+    showStep("step4");
+  }catch(err){
+    console.error(err);
+    /* Do not falsely report success when Supabase is configured but the request failed. */
+    alert("The order could not be submitted. Please try again or contact Sila on WhatsApp.");
+  }
+}
 
+function sendOrderToWhatsApp(){
+  const o=currentOrder||JSON.parse(localStorage.getItem("lastSilaOrder")||"null");
+  if(!o)return;
+  const text=`Hello Sila's Kitchen and More. I have submitted an order request.\n\nOrder code: ${o.order_code||o.orderCode}\nName: ${o.customer_name||o.name}\nPhone: ${o.customer_phone||o.phone}\nDesired date: ${o.desired_date||o.desiredDate}\nEstimated total: ${money(o.estimated_total||o.total)}\n\nPlease review my order and send my payment instructions/payment code when approved.`;
+  window.open(`https://wa.me/${SILA_WHATSAPP}?text=${encodeURIComponent(text)}`,"_blank");
+}
 
-/* =========================
-   INITIALIZE
-========================= */
+function continueToPayment(){
+  const order=JSON.parse(localStorage.getItem("lastSilaOrder")||"null")||currentOrder;
+  if(!order){alert("No recent order was found.");return;}
+  currentOrder=order;
+  document.getElementById("paymentStatusBox").innerHTML=`<div class="status-box"><strong>Order code:</strong> ${escapeHtml(order.order_code||order.orderCode)}<br><span class="small-muted">Enter the payment code sent by Sila after approval.</span></div>`;
+  showStep("step3");
+}
 
-buildGallery();
+/* ---------- Payment status / receipt ---------- */
+function openPaymentForOrder(order){
+  currentOrder=order;showStep("step3");
+  document.getElementById("paymentStatusBox").innerHTML=`<div class="status-box"><strong>Order code:</strong> ${escapeHtml(order.order_code||order.orderCode)}<br><span class="small-muted">Payment code should be supplied by Sila after order approval.</span></div>`;
+}
+function showPaymentCodeStatus(data){
+  if(!data)return;
+  const code=data.payment_code||data.paymentCode||"";
+  const status=data.status||"";
+  document.getElementById("paymentStatusBox").innerHTML=`<div class="status-box">
+  <strong>Order:</strong> ${escapeHtml(data.order_code||"")}<br>
+  <strong>Status:</strong> <span class="status-pill ${status.toLowerCase().includes("paid")||status.toLowerCase().includes("verified")?"success":"warn"}">${escapeHtml(status||"Pending")}</span>
+  ${code?`<br><br><strong>Payment code:</strong> <strong>${escapeHtml(code)}</strong>`:""}
+  ${data.amount_due?`<br><strong>Amount due:</strong> ${money(data.amount_due)}`:""}
+  </div>`;
+}
 
-renderCart();
+async function lookupOrderStatus(){
+  const orderCode=document.getElementById("statusOrderCode").value.trim(),paymentCode=document.getElementById("statusPaymentCode").value.trim();
+  const result=document.getElementById("statusResult");
+  if(!orderCode&&!paymentCode){result.innerHTML='<p class="error-text">Enter an order code or payment code.</p>';return;}
+  if(!sb){result.innerHTML='<p class="error-text">Supabase is not configured in this index yet.</p>';return;}
+  result.innerHTML='<p class="small-muted">Checking...</p>';
+  try{
+    const {data,error}=await sb.rpc("get_order_status",{p_order_code:orderCode||null,p_payment_code:paymentCode||null});
+    if(error)throw error;
+    const row=Array.isArray(data)?data[0]:data;
+    if(!row){result.innerHTML='<p class="error-text">No matching order/payment record was found.</p>';return;}
+    showPaymentCodeStatus(row);result.innerHTML=document.getElementById("paymentStatusBox").outerHTML;
+  }catch(err){console.error(err);result.innerHTML='<p class="error-text">Status lookup failed. Please contact Sila on WhatsApp.</p>';}
+}
+function openStatus(){document.getElementById("statusModal").classList.add("active");}
+function closeStatus(){document.getElementById("statusModal").classList.remove("active");}
 
-builderTotal();
+async function submitReceiptPayment(){
+  const order=JSON.parse(localStorage.getItem("lastSilaOrder")||"null")||currentOrder;
+  const amount=Number(document.getElementById("paymentAmount").value||0),method=document.getElementById("paymentMethod").value,tx=document.getElementById("transactionReference").value.trim(),file=document.getElementById("receiptFile").files[0];
+  const msg=document.getElementById("receiptMsg");
+  if(!order){msg.innerHTML='<p class="error-text">No recent order was found. Use your order code and contact Sila if needed.</p>';return;}
+  if(!amount||!method||!tx||!file){msg.innerHTML='<p class="error-text">Please provide payment amount, payment method, transaction reference and receipt.</p>';return;}
+  if(file.size>10*1024*1024){msg.innerHTML='<p class="error-text">Receipt must not exceed 10MB.</p>';return;}
+  if(!sb){msg.innerHTML='<p class="error-text">Supabase is not configured in this index yet.</p>';return;}
 
+  msg.innerHTML='<p class="small-muted">Uploading receipt and submitting payment...</p>';
+  try{
+    const orderCode=order.order_code||order.orderCode;
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+    const path=`${orderCode}/${crypto.randomUUID()}-${safeName}`;
+    const {error:uploadError}=await sb.storage.from(RECEIPT_BUCKET).upload(path,file,{upsert:false,contentType:file.type});
+    if(uploadError)throw uploadError;
+
+    /* Record payment. The SQL function receives the storage path; Sila/admin can retrieve the private receipt from Storage. */
+    const {data,error}=await sb.rpc("submit_payment",{p_order_code:orderCode,p_payment_code:document.getElementById("paymentCodeInput").value.trim()||null,p_amount:amount,p_payment_method:method,p_transaction_reference:tx,p_receipt_path:path});
+    if(error)throw error;
+
+    document.getElementById("confirmationTitle").textContent="Payment Submitted";
+    document.getElementById("confirmationText").textContent="Your receipt has been securely uploaded and your payment has been submitted for verification.";
+    document.getElementById("confirmationBox").innerHTML=`<div class="status-box"><strong>Order code:</strong> ${escapeHtml(orderCode)}<br><strong>Transaction reference:</strong> ${escapeHtml(tx)}<br><strong>Amount submitted:</strong> ${money(amount)}<br><br>Sila will verify the payment and confirm the order.</div>
+    <div class="whatsapp-box"><strong>Want to communicate directly?</strong><p class="small-muted">You can also message Sila on WhatsApp and quote your order code.</p><button class="whatsapp-btn" style="width:100%" onclick="sendPaymentUpdateViaWhatsApp()">💬 Message Sila on WhatsApp</button></div>`;
+    showStep("step4");
+  }catch(err){
+    console.error(err);msg.innerHTML='<p class="error-text">Payment/receipt submission failed. The receipt may already have uploaded; please contact Sila before retrying.</p>';
+  }
+}
+
+function sendReceiptViaWhatsApp(){
+  const order=JSON.parse(localStorage.getItem("lastSilaOrder")||"null")||currentOrder;
+  const orderCode=order?.order_code||order?.orderCode||"Not supplied";
+  const paymentCode=document.getElementById("paymentCodeInput").value.trim()||"Not supplied";
+  const amount=document.getElementById("paymentAmount").value||"Not supplied";
+  const tx=document.getElementById("transactionReference").value.trim()||"Not supplied";
+  const method=document.getElementById("paymentMethod").value||"Not supplied";
+  const text=`Hello Sila's Kitchen and More. I am sending my payment receipt through WhatsApp.\n\nOrder code: ${orderCode}\nPayment code: ${paymentCode}\nAmount paid: ${amount}\nPayment method: ${method}\nTransaction reference: ${tx}\n\nI will attach the receipt to this WhatsApp message.`;
+  window.open(`https://wa.me/${SILA_WHATSAPP}?text=${encodeURIComponent(text)}`,"_blank");
+}
+function sendPaymentUpdateViaWhatsApp(){
+  const order=JSON.parse(localStorage.getItem("lastSilaOrder")||"null")||currentOrder;
+  const text=`Hello Sila's Kitchen and More. I have submitted my payment.\n\nOrder code: ${order?.order_code||order?.orderCode||"Not supplied"}\nPayment code: ${document.getElementById("paymentCodeInput").value.trim()||"Not supplied"}\nPlease confirm receipt and payment verification.`;
+  window.open(`https://wa.me/${SILA_WHATSAPP}?text=${encodeURIComponent(text)}`,"_blank");
+}
+
+/* ---------- Drinks ---------- */
+function openDrinkRequest(name){selectedDrinkRequest=name;openModal();document.getElementById("oNotes").value=`Drink request: ${name}. Please advise available size and price.`;}
+
+/* ---------- Consultation ---------- */
+function submitConsult(){
+  const phone=document.getElementById("cPhone").value.trim();if(!phone){alert("Please enter your phone / WhatsApp number.");return;}
+  const text=`Hello Sila's Kitchen and More. I would like a free consultation.\n\nName: ${document.getElementById("cFirst").value} ${document.getElementById("cLast").value}\nPhone: ${phone}\nEvent: ${document.getElementById("cEvent").value}\nDate: ${document.getElementById("cDate").value}\nGuests: ${document.getElementById("cGuests").value}\nNotes: ${document.getElementById("cNotes").value}`;
+  window.open(`https://wa.me/${SILA_WHATSAPP}?text=${encodeURIComponent(text)}`,"_blank");
+}
+
+/* ---------- Initialization ---------- */
+buildGallery();renderCart();builderTotal();
+
+document.getElementById("modal").addEventListener("click",e=>{if(e.target===document.getElementById("modal"))closeModal();});
+document.getElementById("packageModal").addEventListener("click",e=>{if(e.target===document.getElementById("packageModal"))closePackage();});
+document.getElementById("puffModal").addEventListener("click",e=>{if(e.target===document.getElementById("puffModal"))closePuffMix();});
+document.getElementById("statusModal").addEventListener("click",e=>{if(e.target===document.getElementById("statusModal"))closeStatus();});
+
+/* Expose a simple customer status link through the Payment section if desired. */
 </script>
-
 </body>
 </html>
