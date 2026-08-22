@@ -130,24 +130,16 @@ h1{font-family:Georgia,serif;font-size:clamp(3rem,6vw,5.5rem);line-height:.98;ma
 <button class="menu-tab" onclick="menuTab('pastry',this)">🥐 Pastries</button>
 <button class="menu-tab" onclick="menuTab('drinks',this)">🥤 Drinks</button>
 </div>
+<div id="menuDataNotice" class="menu-data-notice" role="status" aria-live="polite">
+  Menu prices and availability are managed by Sila from the admin dashboard.
+</div>
+
 
 <div id="panel-rtf" class="menu-panel active"><div class="menu-cat-h">🧊 Signature Ready-to-Fry Small Chops</div><p class="menu-cat-p">Freshly prepared, unfried and ready for you to cook.</p>
-<div class="menu-grid">
-<div class="mcard"><div class="mcard-top"><img src="menu-spring-rolls.JPG" alt="Spring Rolls" loading="lazy"></div><div class="mcard-body"><h3>Spring Rolls Only (×10)</h3><p>Ten generously filled spring rolls, ready to fry.</p></div><div class="mcard-foot"><span class="price">₦2,500</span><button class="obtn" onclick="addToCart('10 Spring Rolls',2500)">Add</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-samosas.JPG" alt="Samosas" loading="lazy"></div><div class="mcard-body"><h3>Samosas Only (×10)</h3><p>Ten savoury samosas, spiced to perfection.</p></div><div class="mcard-foot"><span class="price">₦3,000</span><button class="obtn" onclick="addToCart('10 Samosas',3000)">Add</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-puff-puff-mix.JPG" alt="Puff Puff Mix" loading="lazy"></div><div class="mcard-body"><h3>Puff-Puff Mix</h3><p>Pre-made mix for fresh puff-puff at home. Choose 500g or 1kg; quantities can be increased.</p><p><strong>500g ₦2,000 · 1kg ₦4,000</strong></p></div><div class="mcard-foot"><span class="price">From ₦2,000</span><button class="obtn" onclick="openPuffMix()">Add</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-samosa-spring-roll-mix.JPG" alt="Samosa Spring Roll Mix" loading="lazy"></div><div class="mcard-body"><h3>Samosa-Spring Rolls Mix</h3><p>A convenient combination of samosas and spring rolls prepared ready-to-fry.</p><p><strong>10 pieces</strong></p></div><div class="mcard-foot"><span class="price">₦2,500</span><button class="obtn" onclick="addToCart('Samosa-Spring Rolls Mix (10 pieces)',2500)">Add</button></div></div>
-</div></div>
+<div class="menu-grid" id="db-menu-rtf"><div class="empty">Loading menu…</div></div></div>
 
 <div id="panel-fried" class="menu-panel"><div class="menu-cat-h">🍟 Fried Small Chops & Packages</div><p class="menu-cat-p">Choose one of Sila's signature packages, or build your own combination.</p>
-<div class="menu-grid">
-<div class="mcard"><div class="mcard-top"><img src="menu-deluxe-mix.JPG" alt="Deluxe Mix" loading="lazy"></div><div class="mcard-body"><h3>Deluxe-Mix</h3><p>1 samosa, 1 spring roll, 3 puff-puff, 3 banana balls and protein of choice. Optional drink.</p></div><div class="mcard-foot"><span class="price">From ₦2,400</span><button class="obtn" onclick="openPackage('Deluxe-Mix')">Customize</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-classic-mix.JPG" alt="Classic Mix" loading="lazy"></div><div class="mcard-body"><h3>Classic-Mix</h3><p>1 samosa, 1 spring roll, 3 puff-puff and protein of choice. Optional drink.</p></div><div class="mcard-foot"><span class="price">From ₦1,600</span><button class="obtn" onclick="openPackage('Classic-Mix')">Customize</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-small-chops-fusion.JPG" alt="Small Chops Fusion" loading="lazy"></div><div class="mcard-body"><h3>Small Chops Fusion</h3><p>A generous fried small-chops combination prepared fresh for your event or celebration.</p></div><div class="mcard-foot"><span class="price">₦6,000</span><button class="obtn" onclick="addToCart('Small Chops Fusion',6000)">Add</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-money-bag.jpg" alt="Money Bag" loading="lazy"></div><div class="mcard-body"><h3>Fried Money Bag (×10)</h3><p>Ten fried money bags prepared fresh for your order.</p></div><div class="mcard-foot"><span class="price">₦3,500</span><button class="obtn" onclick="addToCart('Fried Money Bag (10 pieces)',3500)">Add</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-corn-dog.jpg" alt="Corn Dog" loading="lazy"></div><div class="mcard-body"><h3>Corn Dog</h3><p>A freshly fried corn dog, ideal for individual orders, parties and celebrations.</p></div><div class="mcard-foot"><span class="price">₦700</span><button class="obtn" onclick="addToCart('Corn Dog',700)">Add</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-puff-puff.jpg" alt="Fried Puff Puff" loading="lazy"></div><div class="mcard-body"><h3>Fried Puff-Puff</h3><p>Freshly fried puff-puff available at ₦100 per ball. Order as many as needed.</p></div><div class="mcard-foot"><span class="price">₦100 / ball</span><button class="obtn" onclick="addToCart('Fried Puff-Puff',100)">Add</button></div></div>
-</div>
+<div class="menu-grid" id="db-menu-fried"><div class="empty">Loading menu…</div></div>
 
 <div class="builder"><h3>Build Your Own Custom Small Chops</h3><p class="sec-p">This is a custom ordering tool, not a package. Select the quantities you want and pricing is calculated automatically.</p>
 <div class="builder-grid">
@@ -177,19 +169,9 @@ h1{font-family:Georgia,serif;font-size:clamp(3rem,6vw,5.5rem);line-height:.98;ma
 <div class="menu-note">✨ <strong>Special custom-made orders are available based on request.</strong> For large events, contact us for tailored quantities and requirements.</div>
 </div>
 
-<div id="panel-pastry" class="menu-panel"><div class="menu-cat-h">🥐 Pastries</div><p class="menu-cat-p">Freshly baked pastries for events, gifting or personal indulgence.</p><div class="menu-grid">
-<div class="mcard"><div class="mcard-top"><img src="menu-milk-donut.jpg" alt="Milk Coated Donut" loading="lazy"></div><div class="mcard-body"><h3>Milk Coated Donut</h3><p>Soft donuts with a smooth milk coating. Box of 3.</p></div><div class="mcard-foot"><span class="price">₦3,500 / box</span><button class="obtn" onclick="addToCart('Milk Coated Donut (Box of 3)',3500)">Add</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-jam-donut.jpg" alt="Sugar Coated Jam Donut" loading="lazy"></div><div class="mcard-body"><h3>Sugar Coated Donut with Jam</h3><p>Sugar-coated donuts filled with jam. Box of 3.</p></div><div class="mcard-foot"><span class="price">₦3,000 / box</span><button class="obtn" onclick="addToCart('Sugar Coated Jam Donut (Box of 3)',3000)">Add</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-classic-donut.jpg" alt="Donut with Jam" loading="lazy"></div><div class="mcard-body"><h3>Donut with Jam</h3><p>Classic donut filled with jam. Box of 3.</p></div><div class="mcard-foot"><span class="price">₦2,500 / box</span><button class="obtn" onclick="addToCart('Donut with Jam (Box of 3)',2500)">Add</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-meat-pie.jpg" alt="Meat Pie" loading="lazy"></div><div class="mcard-body"><h3>Meat Pie</h3><p>Golden flaky pastry filled with seasoned minced meat.</p></div><div class="mcard-foot"><span class="price">₦1,000 / piece</span><button class="obtn" onclick="addToCart('Meat Pie',1000)">Add</button></div></div>
-<div class="mcard"><div class="mcard-top"><img src="menu-egg-roll.jpg" alt="Egg Roll" loading="lazy"></div><div class="mcard-body"><h3>Egg Roll</h3><p>Soft egg wrapped in lightly sweetened pastry dough.</p></div><div class="mcard-foot"><span class="price">₦700 / piece</span><button class="obtn" onclick="addToCart('Egg Roll',700)">Add</button></div></div>
-</div></div>
+<div id="panel-pastry" class="menu-panel"><div class="menu-cat-h">🥐 Pastries</div><p class="menu-cat-p">Freshly baked pastries for events, gifting or personal indulgence.</p><div class="menu-grid" id="db-menu-pastry"><div class="empty">Loading menu…</div></div></div>
 
-<div id="panel-drinks" class="menu-panel"><div class="menu-cat-h">🥤 Drinks</div><p class="menu-cat-p">Sobo, yoghurt and tigernut drinks are available by request.</p><div class="menu-grid">
-<div class="mcard"><div class="mcard-body"><h3>Sobo</h3><p>Refreshing Nigerian hibiscus drink, prepared for events and personal orders.</p><p><strong>25cl · 50cl · 75cl · 100cl</strong></p></div><div class="mcard-foot"><span class="price">Price to be announced</span><button class="obtn" onclick="openDrinkRequest('Sobo')">Request</button></div></div>
-<div class="mcard"><div class="mcard-body"><h3>Yoghurt</h3><p>Creamy, refreshing yoghurt drink suitable for celebrations and events.</p><p><strong>25cl · 50cl · 75cl · 100cl</strong></p></div><div class="mcard-foot"><span class="price">Price to be announced</span><button class="obtn" onclick="openDrinkRequest('Yoghurt')">Request</button></div></div>
-<div class="mcard"><div class="mcard-body"><h3>Tigernut</h3><p>Refreshing tigernut drink prepared for events and special occasions.</p><p><strong>25cl · 50cl · 75cl · 100cl</strong></p></div><div class="mcard-foot"><span class="price">Price to be announced</span><button class="obtn" onclick="openDrinkRequest('Tigernut')">Request</button></div></div>
-</div><div class="menu-note">25cl, 50cl, 75cl and 100cl prices will be announced soon. Other sizes are determined based on request.</div></div>
+<div id="panel-drinks" class="menu-panel"><div class="menu-cat-h">🥤 Drinks</div><p class="menu-cat-p">Sobo, yoghurt and tigernut drinks are available by request.</p><div class="menu-grid" id="db-menu-drinks"><div class="empty">Loading menu…</div></div><div class="menu-note">25cl, 50cl, 75cl and 100cl prices will be announced soon. Other sizes are determined based on request.</div></div>
 </div></section>
 
 <section id="about"><div class="container about-grid"><div class="about-logo-col"><div class="about-logo-ring"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></div><p class="about-quote">"Quality Service Is Our Benchmark"</p></div>
@@ -672,6 +654,7 @@ document.getElementById("puffModal").addEventListener("click",e=>{if(e.target===
 document.getElementById("statusModal").addEventListener("click",e=>{if(e.target===document.getElementById("statusModal"))closeStatus();});
 
 /* Expose a simple customer status link through the Payment section if desired. */
+
+loadDatabaseMenu();
 </script>
 </body>
-</html>
