@@ -1,0 +1,2881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Sila's Kitchen | Order Operations</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --gold:#b8860b;
+  --gold2:#d6aa45;
+  --ink:#17140f;
+  --muted:#71695e;
+  --cream:#fbf7ed;
+  --paper:#fffdf8;
+  --line:#e6dece;
+  --dark:#15120e;
+  --green:#237a43;
+  --red:#b92d2d;
+  --blue:#2557a7;
+  --orange:#b35c00;
+  --shadow:0 14px 40px rgba(30,20,8,.10);
+
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+}
+
+button,
+input,
+select,
+textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+button:disabled{
+  cursor:not-allowed;
+  opacity:.55;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+/* ---------------------------------------------------------
+   TOP BAR
+--------------------------------------------------------- */
+
+.topbar{
+  height:70px;
+  background:var(--dark);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:900;
+}
+
+.brand-mark{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:contain;
+  background:#fff;
+}
+
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.user-email{
+  font-size:.78rem;
+  color:#ddd;
+}
+
+/* ---------------------------------------------------------
+   LAYOUT
+--------------------------------------------------------- */
+
+.layout{
+  display:grid;
+  grid-template-columns:235px 1fr;
+  min-height:calc(100vh - 70px);
+}
+
+.sidebar{
+  background:#fff;
+  border-right:1px solid var(--line);
+  padding:22px 14px;
+}
+
+.navbtn{
+  width:100%;
+  text-align:left;
+  border:0;
+  background:transparent;
+  padding:12px 14px;
+  border-radius:10px;
+  font-weight:800;
+  color:#574f45;
+  margin-bottom:5px;
+}
+
+.navbtn:hover,
+.navbtn.active{
+  background:#fff6df;
+  color:var(--gold);
+}
+
+.main{
+  padding:28px;
+  max-width:1500px;
+  width:100%;
+  margin:auto;
+}
+
+/* ---------------------------------------------------------
+   PAGE
+--------------------------------------------------------- */
+
+.page-title{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:22px;
+}
+
+.page-title h1{
+  font:700 clamp(2rem,4vw,3rem) Georgia,serif;
+  margin:0 0 5px;
+}
+
+.page-title p{
+  margin:0;
+  color:var(--muted);
+}
+
+/* ---------------------------------------------------------
+   STATS
+--------------------------------------------------------- */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:16px;
+  margin-bottom:25px;
+}
+
+.stat,
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+}
+
+.stat{
+  padding:18px;
+}
+
+.stat .label{
+  color:var(--muted);
+  font-size:.72rem;
+  font-weight:900;
+}
+
+.stat .value{
+  font-size:1.7rem;
+  font-weight:900;
+  margin-top:7px;
+}
+
+/* ---------------------------------------------------------
+   BUTTONS
+--------------------------------------------------------- */
+
+.btn{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:9px;
+  padding:10px 14px;
+  font-weight:800;
+}
+
+.btn:hover{
+  border-color:var(--gold);
+}
+
+.btn-primary{
+  background:var(--gold);
+  border-color:var(--gold);
+  color:#fff;
+}
+
+.btn-dark{
+  background:var(--dark);
+  border-color:var(--dark);
+  color:#fff;
+}
+
+.btn-danger{
+  color:#fff;
+  background:var(--red);
+  border-color:var(--red);
+}
+
+.btn-success{
+  color:#fff;
+  background:var(--green);
+  border-color:var(--green);
+}
+
+.btn-whatsapp{
+  color:#fff;
+  background:#128c7e;
+  border-color:#128c7e;
+}
+
+.btn-small{
+  padding:7px 9px;
+  font-size:.78rem;
+}
+
+/* ---------------------------------------------------------
+   TOOLBAR
+--------------------------------------------------------- */
+
+.card{
+  padding:20px;
+}
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+
+.toolbar-left,
+.toolbar-right{
+  display:flex;
+  gap:9px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+input,
+select,
+textarea{
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:10px 11px;
+  background:#fff;
+  color:var(--ink);
+  width:100%;
+}
+
+.search{
+  width:300px;
+}
+
+/* ---------------------------------------------------------
+   TABLE
+--------------------------------------------------------- */
+
+.table-wrap{
+  overflow:auto;
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1050px;
+}
+
+.table th,
+.table td{
+  text-align:left;
+  padding:13px 10px;
+  border-bottom:1px solid var(--line);
+  vertical-align:middle;
+}
+
+.table th{
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted);
+}
+
+.order-number{
+  font-weight:900;
+  color:var(--gold);
+}
+
+.customer-name{
+  font-weight:800;
+}
+
+.customer-phone{
+  color:var(--muted);
+  font-size:.78rem;
+}
+
+/* ---------------------------------------------------------
+   BADGES
+--------------------------------------------------------- */
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:.68rem;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.status-pending_review{
+  background:#fff1d7;
+  color:#986000;
+}
+
+.status-approved{
+  background:#e7f0ff;
+  color:#2557a7;
+}
+
+.status-payment_pending{
+  background:#fff1d7;
+  color:#a65d00;
+}
+
+.status-paid{
+  background:#e8f6ed;
+  color:var(--green);
+}
+
+.status-completed{
+  background:#e8f6ed;
+  color:var(--green);
+}
+
+.status-rejected{
+  background:#f6e8e8;
+  color:var(--red);
+}
+
+.status-cancelled{
+  background:#eee;
+  color:#666;
+}
+
+.status-default{
+  background:#f3f0e9;
+  color:#665d50;
+}
+
+/* ---------------------------------------------------------
+   EMPTY
+--------------------------------------------------------- */
+
+.empty{
+  padding:45px 15px;
+  text-align:center;
+  color:var(--muted);
+}
+
+/* ---------------------------------------------------------
+   MODAL
+--------------------------------------------------------- */
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:50;
+  padding:18px;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal.open{
+  display:flex;
+}
+
+.modal-box{
+  width:min(900px,100%);
+  max-height:94vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:18px;
+  padding:25px;
+  position:relative;
+}
+
+.modal-box h2{
+  font:700 1.8rem Georgia,serif;
+  margin:0 0 5px;
+}
+
+.modal-subtitle{
+  color:var(--muted);
+  margin:0 0 20px;
+  font-size:.85rem;
+}
+
+.close{
+  position:absolute;
+  right:14px;
+  top:10px;
+  border:0;
+  background:none;
+  font-size:1.8rem;
+}
+
+/* ---------------------------------------------------------
+   ORDER DETAIL
+--------------------------------------------------------- */
+
+.detail-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.detail-box{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+  background:var(--paper);
+}
+
+.detail-label{
+  font-size:.68rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted);
+  font-weight:900;
+  margin-bottom:5px;
+}
+
+.detail-value{
+  font-weight:800;
+}
+
+.items-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+.items-table th,
+.items-table td{
+  padding:10px 7px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+}
+
+.items-table th{
+  font-size:.7rem;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+
+.total-box{
+  margin-top:15px;
+  padding:15px;
+  border-radius:12px;
+  background:#fff8e8;
+  border:1px solid #ead9ad;
+}
+
+.total-row{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  margin:7px 0;
+}
+
+.total-row.final{
+  font-size:1.15rem;
+  font-weight:900;
+  padding-top:9px;
+  border-top:1px solid #ddcda3;
+}
+
+.payment-code{
+  margin-top:15px;
+  padding:18px;
+  border-radius:12px;
+  background:#f5f8ff;
+  border:1px solid #d6e1f7;
+}
+
+.payment-code-value{
+  font-size:1.7rem;
+  font-weight:900;
+  letter-spacing:.08em;
+  color:var(--blue);
+  margin:7px 0;
+  word-break:break-word;
+}
+
+.action-bar{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:20px;
+  padding-top:18px;
+  border-top:1px solid var(--line);
+}
+
+/* ---------------------------------------------------------
+   HISTORY
+--------------------------------------------------------- */
+
+.history{
+  margin-top:20px;
+}
+
+.history-item{
+  display:grid;
+  grid-template-columns:150px 1fr;
+  gap:12px;
+  padding:11px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.history-date{
+  color:var(--muted);
+  font-size:.75rem;
+}
+
+.history-note{
+  font-size:.84rem;
+}
+
+/* ---------------------------------------------------------
+   LOGIN
+--------------------------------------------------------- */
+
+.login{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:
+    radial-gradient(
+      circle at 70% 20%,
+      rgba(214,170,69,.22),
+      transparent 35%
+    ),
+    var(--cream);
+}
+
+.login-box{
+  width:min(430px,100%);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:30px;
+  box-shadow:var(--shadow);
+}
+
+.login-logo{
+  width:80px;
+  height:80px;
+  object-fit:contain;
+  border-radius:50%;
+  display:block;
+  margin:0 auto 14px;
+}
+
+.login-box h1{
+  text-align:center;
+  font:700 2rem Georgia,serif;
+  margin:0;
+}
+
+.login-box p{
+  text-align:center;
+  color:var(--muted);
+  font-size:.88rem;
+}
+
+.login-form{
+  margin-top:25px;
+}
+
+.login-form .field{
+  margin-bottom:13px;
+}
+
+.field label{
+  display:block;
+  font-size:.75rem;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.login-error{
+  color:var(--red);
+  font-size:.82rem;
+  min-height:20px;
+  margin:8px 0;
+}
+
+/* ---------------------------------------------------------
+   TOAST
+--------------------------------------------------------- */
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:80;
+  max-width:420px;
+  background:var(--dark);
+  color:#fff;
+  padding:13px 16px;
+  border-radius:10px;
+  box-shadow:var(--shadow);
+  display:none;
+}
+
+.toast.show{
+  display:block;
+}
+
+.toast.error{
+  background:var(--red);
+}
+
+.toast.success{
+  background:var(--green);
+}
+
+/* ---------------------------------------------------------
+   MOBILE
+--------------------------------------------------------- */
+
+@media(max-width:1100px){
+  .stats{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media(max-width:900px){
+
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    display:flex;
+    gap:5px;
+    overflow:auto;
+    border-right:0;
+    border-bottom:1px solid var(--line);
+    padding:10px;
+  }
+
+  .navbtn{
+    width:auto;
+    white-space:nowrap;
+    margin:0;
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .detail-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:600px){
+
+  .topbar{
+    padding:0 15px;
+  }
+
+  .user-email{
+    display:none;
+  }
+
+  .main{
+    padding:18px;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .search{
+    width:100%;
+  }
+
+  .page-title{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .history-item{
+    grid-template-columns:1fr;
+    gap:4px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =======================================================
+     LOGIN
+======================================================= -->
+
+<div id="loginView" class="login">
+
+  <div class="login-box">
+
+    <img
+      class="login-logo"
+      src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg"
+      alt="Sila's Kitchen"
+    >
+
+    <h1>Sila Admin</h1>
+
+    <p>
+      Order operations and customer communication
+    </p>
+
+    <form id="loginForm" class="login-form">
+
+      <div class="field">
+        <label>Email</label>
+        <input
+          id="loginEmail"
+          type="email"
+          required
+          autocomplete="username"
+        >
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input
+          id="loginPassword"
+          type="password"
+          required
+          autocomplete="current-password"
+        >
+      </div>
+
+      <div id="loginError" class="login-error"></div>
+
+      <button
+        class="btn btn-primary"
+        style="width:100%"
+        type="submit"
+      >
+        Sign in
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- =======================================================
+     APPLICATION
+======================================================= -->
+
+<div id="appView" style="display:none">
+
+<header class="topbar">
+
+  <div class="brand">
+
+    <img
+      class="brand-mark"
+      src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg"
+      alt=""
+    >
+
+    <span>Sila Admin</span>
+
+  </div>
+
+  <div class="top-actions">
+
+    <span id="userEmail" class="user-email"></span>
+
+    <a
+      class="btn"
+      href="index.html"
+      target="_blank"
+      style="color:#fff;border-color:#666"
+    >
+      View Website
+    </a>
+
+    <a
+      class="btn"
+      href="admin.html"
+      style="color:#fff;border-color:#666"
+    >
+      Menu Admin
+    </a>
+
+    <button
+      id="logoutBtn"
+      class="btn"
+      style="color:#fff;border-color:#666;background:transparent"
+    >
+      Sign out
+    </button>
+
+  </div>
+
+</header>
+
+
+<div class="layout">
+
+<aside class="sidebar">
+
+  <button
+    class="navbtn active"
+    data-section="orders"
+  >
+    Order Operations
+  </button>
+
+  <button
+    class="navbtn"
+    data-section="dashboard"
+  >
+    Order Dashboard
+  </button>
+
+</aside>
+
+
+<main class="main">
+
+
+<!-- =======================================================
+     ORDERS
+======================================================= -->
+
+<section
+  id="section-orders"
+  class="section active"
+>
+
+  <div class="page-title">
+
+    <div>
+
+      <h1>Order Operations</h1>
+
+      <p>
+        Review customer orders, approve payment,
+        generate payment codes and communicate with customers.
+      </p>
+
+    </div>
+
+    <button
+      id="refreshBtn"
+      class="btn"
+    >
+      Refresh
+    </button>
+
+  </div>
+
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="label">TOTAL ORDERS</div>
+      <div id="statTotal" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">PENDING REVIEW</div>
+      <div id="statPending" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">PAYMENT PENDING</div>
+      <div id="statPayment" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">PAID</div>
+      <div id="statPaid" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">TOTAL VALUE</div>
+      <div id="statValue" class="value">—</div>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="toolbar">
+
+      <div class="toolbar-left">
+
+        <input
+          id="searchInput"
+          class="search"
+          placeholder="Search order, customer or phone…"
+        >
+
+        <select
+          id="statusFilter"
+          style="width:180px"
+        >
+          <option value="">All statuses</option>
+          <option value="pending_review">Pending review</option>
+          <option value="approved">Approved</option>
+          <option value="payment_pending">Payment pending</option>
+          <option value="paid">Paid</option>
+          <option value="completed">Completed</option>
+          <option value="rejected">Rejected</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+
+      </div>
+
+      <div class="toolbar-right">
+
+        <button
+          id="refreshBtn2"
+          class="btn"
+        >
+          Refresh Orders
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-wrap">
+
+      <table class="table">
+
+        <thead>
+
+          <tr>
+
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="orderRows">
+
+          <tr>
+            <td
+              colspan="8"
+              class="empty"
+            >
+              Loading orders…
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =======================================================
+     DASHBOARD
+======================================================= -->
+
+<section
+  id="section-dashboard"
+  class="section"
+>
+
+  <div class="page-title">
+
+    <div>
+
+      <h1>Order Dashboard</h1>
+
+      <p>
+        Operational summary of Sila's current orders.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3 style="margin-top:0">
+      WhatsApp-first workflow
+    </h3>
+
+    <p style="color:var(--muted);line-height:1.7">
+
+      Customer orders can continue to originate from the
+      website, while Sila uses this dashboard to review the
+      request, approve it, generate the payment code and
+      communicate directly with the customer through WhatsApp.
+
+    </p>
+
+    <p style="color:var(--muted);line-height:1.7">
+
+      The website remains the system of record for orders,
+      products, payment information and order status.
+
+    </p>
+
+  </div>
+
+</section>
+
+
+</main>
+
+</div>
+
+</div>
+
+
+<!-- =======================================================
+     ORDER DETAIL MODAL
+======================================================= -->
+
+<div
+  id="orderModal"
+  class="modal"
+>
+
+  <div class="modal-box">
+
+    <button
+      class="close"
+      id="closeOrderModal"
+      aria-label="Close"
+    >
+      ×
+    </button>
+
+    <h2 id="detailOrderCode">
+      Order
+    </h2>
+
+    <p
+      id="detailSubtitle"
+      class="modal-subtitle"
+    >
+      Order details
+    </p>
+
+
+    <div
+      id="orderDetailContent"
+    >
+      Loading…
+    </div>
+
+  </div>
+
+</div>
+
+
+<div
+  id="toast"
+  class="toast"
+></div>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE CONFIGURATION
+========================================================= */
+
+const SUPABASE_URL =
+  "https://mmrvwfoxbnskqwssgmkd.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tcnZ3Zm94Ym5za3F3c3NnbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjE0MjIsImV4cCI6MjEwMjc5NzQyMn0.ARdHxQhdrpJn0jsWigBocWTS6J6wquroIYLuJ1qcN1M";
+
+
+const hasConfig =
+  SUPABASE_URL.startsWith("https://") &&
+  !SUPABASE_URL.includes("YOUR_") &&
+  SUPABASE_ANON_KEY &&
+  !SUPABASE_ANON_KEY.includes("YOUR_");
+
+
+const supabaseClient =
+  hasConfig
+    ? window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      )
+    : null;
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let orders = [];
+let selectedOrder = null;
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+const $ = id =>
+  document.getElementById(id);
+
+
+function toast(
+  message,
+  type = "success"
+){
+
+  const el = $("toast");
+
+  el.textContent = message;
+
+  el.className =
+    `toast show ${type}`;
+
+  clearTimeout(
+    window.__toastTimer
+  );
+
+  window.__toastTimer =
+    setTimeout(
+      () => {
+        el.className = "toast";
+      },
+      4000
+    );
+}
+
+
+function money(value){
+
+  return "₦" +
+    Number(value || 0)
+      .toLocaleString(
+        "en-NG",
+        {
+          minimumFractionDigits:2,
+          maximumFractionDigits:2
+        }
+      );
+}
+
+
+function esc(value){
+
+  return String(value ?? "")
+    .replace(
+      /[&<>"']/g,
+      c => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+      }[c])
+    );
+}
+
+
+function normalizePhone(phone){
+
+  let value =
+    String(phone || "")
+      .replace(/\D/g,"");
+
+  if(value.startsWith("0")){
+    value =
+      "234" +
+      value.slice(1);
+  }
+
+  if(!value.startsWith("234")){
+    value =
+      "234" + value;
+  }
+
+  return value;
+}
+
+
+function statusLabel(status){
+
+  return String(status || "unknown")
+    .replace(/_/g," ")
+    .replace(/\b\w/g,m => m.toUpperCase());
+}
+
+
+function statusClass(status){
+
+  const safe =
+    String(status || "")
+      .toLowerCase()
+      .replace(/[^a-z_]/g,"");
+
+  const known = [
+    "pending_review",
+    "approved",
+    "payment_pending",
+    "paid",
+    "completed",
+    "rejected",
+    "cancelled"
+  ];
+
+  return known.includes(safe)
+    ? `status-${safe}`
+    : "status-default";
+}
+
+
+function formatDate(value){
+
+  if(!value) return "—";
+
+  const date =
+    new Date(value);
+
+  if(Number.isNaN(date.getTime()))
+    return esc(value);
+
+  return date.toLocaleDateString(
+    "en-NG",
+    {
+      year:"numeric",
+      month:"short",
+      day:"numeric"
+    }
+  );
+}
+
+
+function formatDateTime(value){
+
+  if(!value) return "—";
+
+  const date =
+    new Date(value);
+
+  if(Number.isNaN(date.getTime()))
+    return esc(value);
+
+  return date.toLocaleString(
+    "en-NG",
+    {
+      year:"numeric",
+      month:"short",
+      day:"numeric",
+      hour:"2-digit",
+      minute:"2-digit"
+    }
+  );
+}
+
+
+/* =========================================================
+   AUTHENTICATION
+========================================================= */
+
+async function requireAdmin(){
+
+  if(!supabaseClient){
+
+    $("loginError").textContent =
+      "Configure the Supabase URL and anon key.";
+
+    return false;
+  }
+
+
+  const {
+    data:{session}
+  } =
+    await supabaseClient.auth.getSession();
+
+
+  if(!session)
+    return false;
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("admin_users")
+      .select("user_id,is_active")
+      .eq(
+        "user_id",
+        session.user.id
+      )
+      .eq(
+        "is_active",
+        true
+      )
+      .maybeSingle();
+
+
+  if(error || !data){
+
+    await supabaseClient.auth.signOut();
+
+    $("loginError").textContent =
+      "This account is not registered as a Sila administrator.";
+
+    return false;
+  }
+
+
+  $("loginView").style.display =
+    "none";
+
+  $("appView").style.display =
+    "block";
+
+  $("userEmail").textContent =
+    session.user.email || "";
+
+  return true;
+}
+
+
+/* =========================================================
+   LOAD ORDERS
+========================================================= */
+
+async function loadOrders(){
+
+  if(!supabaseClient)
+    return;
+
+
+  $("orderRows").innerHTML = `
+    <tr>
+      <td colspan="8" class="empty">
+        Loading orders…
+      </td>
+    </tr>
+  `;
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("orders")
+      .select(`
+        id,
+        order_code,
+        customer_name,
+        customer_phone,
+        desired_date,
+        notes,
+        subtotal,
+        payment_type,
+        payment_percent,
+        amount_due,
+        status,
+        confirmation_code,
+        created_at,
+        updated_at
+      `)
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+
+  if(error){
+
+    $("orderRows").innerHTML = `
+      <tr>
+        <td
+          colspan="8"
+          class="empty"
+        >
+          ${esc(error.message)}
+        </td>
+      </tr>
+    `;
+
+    toast(
+      error.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  orders =
+    data || [];
+
+
+  renderOrders();
+
+  updateStats();
+}
+
+
+/* =========================================================
+   RENDER ORDERS
+========================================================= */
+
+function renderOrders(){
+
+  const search =
+    $("searchInput")
+      .value
+      .trim()
+      .toLowerCase();
+
+  const status =
+    $("statusFilter").value;
+
+
+  const filtered =
+    orders.filter(order => {
+
+      const searchable =
+        [
+          order.order_code,
+          order.customer_name,
+          order.customer_phone,
+          order.status
+        ]
+        .join(" ")
+        .toLowerCase();
+
+
+      return (
+        (!search ||
+          searchable.includes(search))
+        &&
+        (!status ||
+          order.status === status)
+      );
+
+    });
+
+
+  if(!filtered.length){
+
+    $("orderRows").innerHTML = `
+      <tr>
+        <td
+          colspan="8"
+          class="empty"
+        >
+          No orders match your filters.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+
+  $("orderRows").innerHTML =
+    filtered.map(order => `
+
+      <tr>
+
+        <td>
+
+          <div class="order-number">
+            ${esc(order.order_code)}
+          </div>
+
+        </td>
+
+
+        <td>
+
+          <div class="customer-name">
+            ${esc(order.customer_name)}
+          </div>
+
+          <div class="customer-phone">
+            ${esc(order.customer_phone)}
+          </div>
+
+        </td>
+
+
+        <td>
+          ${formatDate(order.desired_date)}
+        </td>
+
+
+        <td>
+
+          <strong>
+            ${money(order.subtotal)}
+          </strong>
+
+        </td>
+
+
+        <td>
+
+          ${money(order.amount_due)}
+
+          <div
+            style="
+              font-size:.7rem;
+              color:var(--muted);
+              margin-top:3px;
+            "
+          >
+            ${esc(order.payment_type || "full")}
+            ·
+            ${esc(order.payment_percent ?? 100)}%
+          </div>
+
+        </td>
+
+
+        <td>
+
+          <span
+            class="badge ${statusClass(order.status)}"
+          >
+            ${esc(statusLabel(order.status))}
+          </span>
+
+        </td>
+
+
+        <td>
+          ${formatDateTime(order.created_at)}
+        </td>
+
+
+        <td>
+
+          <button
+            class="btn btn-small"
+            onclick="openOrder('${esc(order.id)}')"
+          >
+            Review
+          </button>
+
+        </td>
+
+      </tr>
+
+    `).join("");
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function updateStats(){
+
+  $("statTotal").textContent =
+    orders.length;
+
+
+  $("statPending").textContent =
+    orders.filter(
+      x => x.status === "pending_review"
+    ).length;
+
+
+  $("statPayment").textContent =
+    orders.filter(
+      x =>
+        x.status === "approved" ||
+        x.status === "payment_pending"
+    ).length;
+
+
+  $("statPaid").textContent =
+    orders.filter(
+      x =>
+        x.status === "paid" ||
+        x.status === "completed"
+    ).length;
+
+
+  const total =
+    orders.reduce(
+      (sum, order) =>
+        sum +
+        Number(order.subtotal || 0),
+      0
+    );
+
+
+  $("statValue").textContent =
+    money(total);
+}
+
+
+/* =========================================================
+   ORDER DETAIL
+========================================================= */
+
+window.openOrder =
+  async function(id){
+
+    const order =
+      orders.find(
+        x => x.id === id
+      );
+
+
+    if(!order)
+      return;
+
+
+    selectedOrder =
+      order;
+
+
+    $("detailOrderCode").textContent =
+      order.order_code;
+
+
+    $("detailSubtitle").textContent =
+      `${order.customer_name} · ${order.customer_phone}`;
+
+
+    $("orderModal")
+      .classList
+      .add("open");
+
+
+    $("orderDetailContent").innerHTML =
+      `
+        <div class="empty">
+          Loading order details…
+        </div>
+      `;
+
+
+    let items = [];
+    let history = [];
+
+
+    const itemsResult =
+      await supabaseClient
+        .from("order_items")
+        .select(`
+          id,
+          item_name,
+          quantity,
+          unit_price,
+          line_total,
+          metadata,
+          created_at
+        `)
+        .eq(
+          "order_id",
+          order.id
+        )
+        .order(
+          "created_at",
+          {ascending:true}
+        );
+
+
+    if(itemsResult.error){
+
+      toast(
+        itemsResult.error.message,
+        "error"
+      );
+
+    }else{
+
+      items =
+        itemsResult.data || [];
+
+    }
+
+
+    const historyResult =
+      await supabaseClient
+        .from("order_status_history")
+        .select(`
+          id,
+          old_status,
+          new_status,
+          note,
+          changed_by,
+          created_at
+        `)
+        .eq(
+          "order_id",
+          order.id
+        )
+        .order(
+          "created_at",
+          {ascending:false}
+        );
+
+
+    if(!historyResult.error){
+
+      history =
+        historyResult.data || [];
+
+    }
+
+
+    renderOrderDetail(
+      order,
+      items,
+      history
+    );
+  };
+
+
+function renderOrderDetail(
+  order,
+  items,
+  history
+){
+
+  const itemRows =
+    items.length
+
+      ? items.map(item => `
+
+          <tr>
+
+            <td>
+              <strong>
+                ${esc(item.item_name)}
+              </strong>
+            </td>
+
+            <td>
+              ${esc(item.quantity)}
+            </td>
+
+            <td>
+              ${money(item.unit_price)}
+            </td>
+
+            <td>
+              ${money(item.line_total)}
+            </td>
+
+          </tr>
+
+        `).join("")
+
+      : `
+          <tr>
+            <td
+              colspan="4"
+              style="
+                text-align:center;
+                color:var(--muted);
+              "
+            >
+              No order items found.
+            </td>
+          </tr>
+        `;
+
+
+  const historyHtml =
+    history.length
+
+      ? history.map(item => `
+
+          <div class="history-item">
+
+            <div class="history-date">
+              ${formatDateTime(item.created_at)}
+            </div>
+
+            <div class="history-note">
+
+              <strong>
+                ${esc(
+                  statusLabel(
+                    item.new_status
+                  )
+                )}
+              </strong>
+
+              ${item.changed_by
+                ? `
+                  <span
+                    style="
+                      color:var(--muted);
+                      font-size:.75rem;
+                    "
+                  >
+                    · ${esc(item.changed_by)}
+                  </span>
+                `
+                : ""
+              }
+
+              <div
+                style="
+                  margin-top:4px;
+                  color:var(--muted);
+                "
+              >
+                ${esc(item.note || "")}
+              </div>
+
+            </div>
+
+          </div>
+
+        `).join("")
+
+      : `
+          <div class="empty">
+            No status history recorded.
+          </div>
+        `;
+
+
+  $("orderDetailContent").innerHTML = `
+
+    <div class="detail-grid">
+
+      <div class="detail-box">
+
+        <div class="detail-label">
+          Customer
+        </div>
+
+        <div class="detail-value">
+          ${esc(order.customer_name)}
+        </div>
+
+      </div>
+
+
+      <div class="detail-box">
+
+        <div class="detail-label">
+          Phone
+        </div>
+
+        <div class="detail-value">
+          ${esc(order.customer_phone)}
+        </div>
+
+      </div>
+
+
+      <div class="detail-box">
+
+        <div class="detail-label">
+          Desired Date
+        </div>
+
+        <div class="detail-value">
+          ${formatDate(order.desired_date)}
+        </div>
+
+      </div>
+
+
+      <div class="detail-box">
+
+        <div class="detail-label">
+          Status
+        </div>
+
+        <div class="detail-value">
+
+          <span
+            class="badge ${statusClass(order.status)}"
+          >
+            ${esc(
+              statusLabel(
+                order.status
+              )
+            )}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="detail-box">
+
+        <div class="detail-label">
+          Payment Type
+        </div>
+
+        <div class="detail-value">
+          ${esc(order.payment_type || "full")}
+        </div>
+
+      </div>
+
+
+      <div class="detail-box">
+
+        <div class="detail-label">
+          Payment Percentage
+        </div>
+
+        <div class="detail-value">
+          ${esc(order.payment_percent ?? 100)}%
+        </div>
+
+      </div>
+
+
+      <div class="detail-box">
+
+        <div class="detail-label">
+          Order Created
+        </div>
+
+        <div class="detail-value">
+          ${formatDateTime(order.created_at)}
+        </div>
+
+      </div>
+
+
+      <div class="detail-box">
+
+        <div class="detail-label">
+          Last Updated
+        </div>
+
+        <div class="detail-value">
+          ${formatDateTime(order.updated_at)}
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="detail-box">
+
+      <div class="detail-label">
+        Customer Notes
+      </div>
+
+      <div
+        style="
+          line-height:1.7;
+          white-space:pre-wrap;
+        "
+      >
+        ${esc(order.notes || "No customer notes.")}
+      </div>
+
+    </div>
+
+
+    <h3 style="margin-top:25px">
+      Ordered Items
+    </h3>
+
+
+    <div class="table-wrap">
+
+      <table class="items-table">
+
+        <thead>
+
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+          ${itemRows}
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <div class="total-box">
+
+      <div class="total-row">
+
+        <span>
+          Order subtotal
+        </span>
+
+        <strong>
+          ${money(order.subtotal)}
+        </strong>
+
+      </div>
+
+
+      <div class="total-row">
+
+        <span>
+          Amount currently due
+        </span>
+
+        <strong>
+          ${money(order.amount_due)}
+        </strong>
+
+      </div>
+
+
+      <div class="total-row final">
+
+        <span>
+          Order amount
+        </span>
+
+        <strong>
+          ${money(order.subtotal)}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    ${
+      order.confirmation_code
+
+      ? `
+
+        <div class="payment-code">
+
+          <div class="detail-label">
+            Payment Code
+          </div>
+
+          <div
+            id="paymentCodeValue"
+            class="payment-code-value"
+          >
+            ${esc(order.confirmation_code)}
+          </div>
+
+          <button
+            class="btn btn-small"
+            onclick="copyPaymentCode()"
+          >
+            Copy Payment Code
+          </button>
+
+        </div>
+
+      `
+
+      : ""
+    }
+
+
+    <div class="action-bar">
+
+      ${
+        order.status === "pending_review"
+
+        ? `
+
+          <button
+            id="approveBtn"
+            class="btn btn-success"
+            onclick="approveOrder('${esc(order.id)}')"
+          >
+            Approve for Payment
+          </button>
+
+        `
+
+        : ""
+      }
+
+
+      <button
+        class="btn btn-primary"
+        onclick="generatePaymentCode('${esc(order.id)}')"
+      >
+        Generate Payment Code
+      </button>
+
+
+      <button
+        class="btn btn-whatsapp"
+        onclick="openCustomerWhatsApp('${esc(order.id)}')"
+      >
+        WhatsApp Customer
+      </button>
+
+
+      <button
+        class="btn btn-dark"
+        onclick="sendPaymentInstructions('${esc(order.id)}')"
+      >
+        Send Payment Instructions
+      </button>
+
+    </div>
+
+
+    <div class="history">
+
+      <h3>
+        Order History
+      </h3>
+
+      ${historyHtml}
+
+    </div>
+
+  `;
+}
+
+
+/* =========================================================
+   APPROVE ORDER
+========================================================= */
+
+window.approveOrder =
+  async function(id){
+
+    const order =
+      orders.find(
+        x => x.id === id
+      );
+
+
+    if(!order)
+      return;
+
+
+    const hours =
+      prompt(
+        "How many hours should the customer have to make payment?",
+        "24"
+      );
+
+
+    if(hours === null)
+      return;
+
+
+    const paymentDueHours =
+      Number(hours);
+
+
+    if(
+      !Number.isInteger(
+        paymentDueHours
+      )
+      ||
+      paymentDueHours <= 0
+    ){
+
+      toast(
+        "Enter a valid number of payment hours.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const button =
+      $("approveBtn");
+
+
+    if(button){
+
+      button.disabled = true;
+      button.textContent = "Approving…";
+
+    }
+
+
+    try{
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.rpc(
+          "approve_order_for_payment",
+          {
+            p_order_id:id,
+            p_payment_due_hours:
+              paymentDueHours
+          }
+        );
+
+
+      if(error)
+        throw error;
+
+
+      toast(
+        "Order approved for payment.",
+        "success"
+      );
+
+
+      await loadOrders();
+
+
+      const updated =
+        orders.find(
+          x => x.id === id
+        );
+
+
+      if(updated){
+
+        selectedOrder =
+          updated;
+
+        await openOrder(id);
+
+      }
+
+
+    }catch(error){
+
+      toast(
+        error.message ||
+        "Could not approve order.",
+        "error"
+      );
+
+    }finally{
+
+      if(button){
+
+        button.disabled = false;
+        button.textContent =
+          "Approve for Payment";
+
+      }
+
+    }
+  };
+
+
+/* =========================================================
+   GENERATE PAYMENT CODE
+========================================================= */
+
+window.generatePaymentCode =
+  async function(id){
+
+    const order =
+      orders.find(
+        x => x.id === id
+      );
+
+
+    if(!order)
+      return;
+
+
+    if(
+      !confirm(
+        "Generate a payment code for this order?"
+      )
+    )
+      return;
+
+
+    try{
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.rpc(
+          "generate_payment_code"
+        );
+
+
+      if(error)
+        throw error;
+
+
+      /*
+       * The current database exposes
+       * generate_payment_code() without
+       * parameters.
+       *
+       * We therefore use its returned
+       * value as the payment code and
+       * store it in orders.confirmation_code.
+       */
+
+      let code = data;
+
+
+      if(
+        typeof data === "object" &&
+        data !== null
+      ){
+
+        code =
+          data.payment_code ||
+          data.confirmation_code ||
+          data.code ||
+          data.result;
+
+      }
+
+
+      if(
+        code === null ||
+        code === undefined ||
+        String(code).trim() === ""
+      ){
+
+        throw new Error(
+          "The payment-code function did not return a payment code."
+        );
+
+      }
+
+
+      code =
+        String(code)
+          .trim();
+
+
+      const {
+        error:updateError
+      } =
+        await supabaseClient
+          .from("orders")
+          .update({
+            confirmation_code:code
+          })
+          .eq(
+            "id",
+            id
+          );
+
+
+      if(updateError)
+        throw updateError;
+
+
+      toast(
+        "Payment code generated successfully.",
+        "success"
+      );
+
+
+      await loadOrders();
+
+      await openOrder(id);
+
+
+    }catch(error){
+
+      toast(
+        error.message ||
+        "Could not generate payment code.",
+        "error"
+      );
+
+    }
+  };
+
+
+/* =========================================================
+   COPY PAYMENT CODE
+========================================================= */
+
+window.copyPaymentCode =
+  async function(){
+
+    if(
+      !selectedOrder ||
+      !selectedOrder.confirmation_code
+    ){
+
+      toast(
+        "No payment code is available.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    try{
+
+      await navigator.clipboard.writeText(
+        selectedOrder.confirmation_code
+      );
+
+
+      toast(
+        "Payment code copied."
+      );
+
+    }catch(error){
+
+      toast(
+        "Could not copy the payment code.",
+        "error"
+      );
+
+    }
+  };
+
+
+/* =========================================================
+   CUSTOMER WHATSAPP
+========================================================= */
+
+window.openCustomerWhatsApp =
+  function(id){
+
+    const order =
+      orders.find(
+        x => x.id === id
+      );
+
+
+    if(!order)
+      return;
+
+
+    const phone =
+      normalizePhone(
+        order.customer_phone
+      );
+
+
+    const message =
+      [
+        `Hello ${order.customer_name},`,
+        "",
+        `This is Sila's Kitchen and More regarding your order ${order.order_code}.`,
+        "",
+        `Order status: ${statusLabel(order.status)}`,
+        `Order amount: ${money(order.subtotal)}`,
+        `Amount due: ${money(order.amount_due)}`,
+        "",
+        "We are available to assist you with your order.",
+        "",
+        "Thank you."
+      ].join("\n");
+
+
+    const url =
+      `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+
+    window.open(
+      url,
+      "_blank",
+      "noopener"
+    );
+  };
+
+
+/* =========================================================
+   PAYMENT INSTRUCTIONS
+========================================================= */
+
+window.sendPaymentInstructions =
+  function(id){
+
+    const order =
+      orders.find(
+        x => x.id === id
+      );
+
+
+    if(!order)
+      return;
+
+
+    if(!order.confirmation_code){
+
+      toast(
+        "Generate a payment code before sending payment instructions.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const phone =
+      normalizePhone(
+        order.customer_phone
+      );
+
+
+    const message =
+      [
+        `Hello ${order.customer_name},`,
+        "",
+        `Your order ${order.order_code} has been approved for payment.`,
+        "",
+        `Order amount: ${money(order.subtotal)}`,
+        `Amount due now: ${money(order.amount_due)}`,
+        "",
+        `Payment code: ${order.confirmation_code}`,
+        "",
+        "Please complete your payment and submit your payment receipt through the Sila website.",
+        "",
+        "If you need assistance, please reply to this WhatsApp message.",
+        "",
+        "Thank you,",
+        "Sila's Kitchen and More"
+      ].join("\n");
+
+
+    const url =
+      `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+
+    window.open(
+      url,
+      "_blank",
+      "noopener"
+    );
+  };
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function closeOrderModal(){
+
+  $("orderModal")
+    .classList
+    .remove("open");
+
+  selectedOrder = null;
+}
+
+
+$("closeOrderModal")
+  .addEventListener(
+    "click",
+    closeOrderModal
+  );
+
+
+$("orderModal")
+  .addEventListener(
+    "click",
+    event => {
+
+      if(
+        event.target ===
+        $("orderModal")
+      ){
+
+        closeOrderModal();
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showSection(name){
+
+  document
+    .querySelectorAll(".section")
+    .forEach(
+      section =>
+        section.classList.remove(
+          "active"
+        )
+    );
+
+
+  const target =
+    $(`section-${name}`);
+
+
+  if(target)
+    target.classList.add("active");
+
+
+  document
+    .querySelectorAll(".navbtn")
+    .forEach(
+      button =>
+        button.classList.toggle(
+          "active",
+          button.dataset.section === name
+        )
+    );
+}
+
+
+document
+  .querySelectorAll(".navbtn")
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        () =>
+          showSection(
+            button.dataset.section
+          )
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   FILTERS
+========================================================= */
+
+$("searchInput")
+  .addEventListener(
+    "input",
+    renderOrders
+  );
+
+
+$("statusFilter")
+  .addEventListener(
+    "change",
+    renderOrders
+  );
+
+
+$("refreshBtn")
+  .addEventListener(
+    "click",
+    loadOrders
+  );
+
+
+$("refreshBtn2")
+  .addEventListener(
+    "click",
+    loadOrders
+  );
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+$("loginForm")
+  .addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+      $("loginError").textContent =
+        "";
+
+
+      if(!supabaseClient){
+
+        $("loginError").textContent =
+          "Configure Supabase URL and anon key.";
+
+        return;
+      }
+
+
+      const {
+        error
+      } =
+        await supabaseClient.auth
+          .signInWithPassword({
+
+            email:
+              $("loginEmail")
+                .value
+                .trim(),
+
+            password:
+              $("loginPassword")
+                .value
+
+          });
+
+
+      if(error){
+
+        $("loginError").textContent =
+          error.message;
+
+        return;
+      }
+
+
+      const ok =
+        await requireAdmin();
+
+
+      if(ok){
+
+        await loadOrders();
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+$("logoutBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      if(supabaseClient)
+        await supabaseClient.auth.signOut();
+
+      location.reload();
+
+    }
+  );
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+supabaseClient?.auth.onAuthStateChange(
+  async (_event, session) => {
+
+    if(session){
+
+      setTimeout(
+        requireAdmin,
+        0
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+(async function(){
+
+  if(!hasConfig){
+
+    $("loginError").textContent =
+      "Configure SUPABASE_URL and SUPABASE_ANON_KEY.";
+
+    return;
+  }
+
+
+  const ok =
+    await requireAdmin();
+
+
+  if(ok){
+
+    await loadOrders();
+
+  }
+
+})();
+
+</script>
+
+</body>
+</html>
