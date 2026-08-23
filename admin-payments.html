@@ -1,0 +1,3155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Sila's Kitchen | Payment & Receipt Operations</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --gold:#b8860b;
+  --gold2:#d6aa45;
+  --ink:#17140f;
+  --muted:#71695e;
+  --cream:#fbf7ed;
+  --paper:#fffdf8;
+  --line:#e6dece;
+  --dark:#15120e;
+  --green:#237a43;
+  --red:#b92d2d;
+  --orange:#b56a00;
+  --blue:#245b9c;
+  --shadow:0 14px 40px rgba(30,20,8,.10);
+
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+*{
+  box-sizing:border-box
+}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink)
+}
+
+button,
+input,
+select,
+textarea{
+  font:inherit
+}
+
+button{
+  cursor:pointer
+}
+
+button:disabled{
+  cursor:not-allowed;
+  opacity:.55
+}
+
+a{
+  text-decoration:none;
+  color:inherit
+}
+
+/* --------------------------------------------------
+   TOP BAR
+-------------------------------------------------- */
+
+.topbar{
+  min-height:70px;
+  background:var(--dark);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:20
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:900
+}
+
+.brand-mark{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:contain;
+  background:#fff
+}
+
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:12px
+}
+
+.user-email{
+  font-size:.78rem;
+  color:#ddd
+}
+
+/* --------------------------------------------------
+   LAYOUT
+-------------------------------------------------- */
+
+.layout{
+  display:grid;
+  grid-template-columns:235px 1fr;
+  min-height:calc(100vh - 70px)
+}
+
+.sidebar{
+  background:#fff;
+  border-right:1px solid var(--line);
+  padding:22px 14px
+}
+
+.navbtn{
+  width:100%;
+  text-align:left;
+  border:0;
+  background:transparent;
+  padding:12px 14px;
+  border-radius:10px;
+  font-weight:800;
+  color:#574f45;
+  margin-bottom:5px
+}
+
+.navbtn:hover,
+.navbtn.active{
+  background:#fff6df;
+  color:var(--gold)
+}
+
+.main{
+  padding:28px;
+  max-width:1500px;
+  width:100%;
+  margin:auto
+}
+
+/* --------------------------------------------------
+   PAGE
+-------------------------------------------------- */
+
+.page-title{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:22px
+}
+
+.page-title h1{
+  font:700 clamp(2rem,4vw,3rem) Georgia,serif;
+  margin:0 0 5px
+}
+
+.page-title p{
+  margin:0;
+  color:var(--muted)
+}
+
+/* --------------------------------------------------
+   STATS
+-------------------------------------------------- */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:16px;
+  margin-bottom:25px
+}
+
+.stat,
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow)
+}
+
+.stat{
+  padding:20px
+}
+
+.stat .label{
+  color:var(--muted);
+  font-size:.72rem;
+  font-weight:800
+}
+
+.stat .value{
+  font-size:1.8rem;
+  font-weight:900;
+  margin-top:7px
+}
+
+/* --------------------------------------------------
+   CARD / TOOLBAR
+-------------------------------------------------- */
+
+.card{
+  padding:20px
+}
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:18px;
+  flex-wrap:wrap
+}
+
+.toolbar-left,
+.toolbar-right{
+  display:flex;
+  gap:9px;
+  align-items:center;
+  flex-wrap:wrap
+}
+
+input,
+select,
+textarea{
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:10px 11px;
+  background:#fff;
+  color:var(--ink);
+  width:100%
+}
+
+.search{
+  width:280px
+}
+
+/* --------------------------------------------------
+   BUTTONS
+-------------------------------------------------- */
+
+.btn{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:9px;
+  padding:10px 14px;
+  font-weight:800
+}
+
+.btn:hover{
+  border-color:var(--gold)
+}
+
+.btn-primary{
+  background:var(--gold);
+  border-color:var(--gold);
+  color:#fff
+}
+
+.btn-dark{
+  background:var(--dark);
+  border-color:var(--dark);
+  color:#fff
+}
+
+.btn-danger{
+  color:#fff;
+  background:var(--red);
+  border-color:var(--red)
+}
+
+.btn-success{
+  color:#fff;
+  background:var(--green);
+  border-color:var(--green)
+}
+
+.btn-small{
+  padding:7px 9px;
+  font-size:.78rem
+}
+
+/* --------------------------------------------------
+   TABLE
+-------------------------------------------------- */
+
+.table-wrap{
+  overflow:auto
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1050px
+}
+
+.table th,
+.table td{
+  text-align:left;
+  padding:13px 10px;
+  border-bottom:1px solid var(--line);
+  vertical-align:middle
+}
+
+.table th{
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted)
+}
+
+.payment-main{
+  min-width:210px
+}
+
+.payment-main strong{
+  display:block
+}
+
+.payment-main small{
+  display:block;
+  color:var(--muted);
+  margin-top:3px
+}
+
+/* --------------------------------------------------
+   BADGES
+-------------------------------------------------- */
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:.7rem;
+  font-weight:900
+}
+
+.status-pending{
+  background:#fff3d7;
+  color:#956100
+}
+
+.status-verified{
+  background:#e8f6ed;
+  color:var(--green)
+}
+
+.status-rejected{
+  background:#f6e8e8;
+  color:var(--red)
+}
+
+.status-unknown{
+  background:#eee;
+  color:#555
+}
+
+/* --------------------------------------------------
+   RECEIPT
+-------------------------------------------------- */
+
+.receipt-box{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap
+}
+
+.receipt-preview{
+  width:55px;
+  height:55px;
+  object-fit:cover;
+  border-radius:8px;
+  border:1px solid var(--line)
+}
+
+.no-receipt{
+  color:var(--muted);
+  font-size:.78rem
+}
+
+/* --------------------------------------------------
+   EMPTY / LOADING
+-------------------------------------------------- */
+
+.empty{
+  padding:45px 15px;
+  text-align:center;
+  color:var(--muted)
+}
+
+.loading{
+  padding:40px;
+  text-align:center;
+  color:var(--muted)
+}
+
+/* --------------------------------------------------
+   MODAL
+-------------------------------------------------- */
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:50;
+  padding:18px;
+  align-items:center;
+  justify-content:center
+}
+
+.modal.open{
+  display:flex
+}
+
+.modal-box{
+  width:min(720px,100%);
+  max-height:94vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:18px;
+  padding:24px;
+  position:relative
+}
+
+.modal-box h2{
+  font:700 1.8rem Georgia,serif;
+  margin:0 0 18px
+}
+
+.close{
+  position:absolute;
+  right:14px;
+  top:10px;
+  border:0;
+  background:none;
+  font-size:1.8rem
+}
+
+.detail-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:20px
+}
+
+.detail{
+  background:var(--cream);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:12px
+}
+
+.detail.full{
+  grid-column:1/-1
+}
+
+.detail-label{
+  color:var(--muted);
+  font-size:.7rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.05em
+}
+
+.detail-value{
+  margin-top:5px;
+  font-weight:800;
+  word-break:break-word
+}
+
+.receipt-large{
+  width:100%;
+  max-height:450px;
+  object-fit:contain;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#f7f7f7
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:20px;
+  padding-top:15px;
+  border-top:1px solid var(--line)
+}
+
+/* --------------------------------------------------
+   LOGIN
+-------------------------------------------------- */
+
+.login{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:
+    radial-gradient(
+      circle at 70% 20%,
+      rgba(214,170,69,.22),
+      transparent 35%
+    ),
+    var(--cream)
+}
+
+.login-box{
+  width:min(430px,100%);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:30px;
+  box-shadow:var(--shadow)
+}
+
+.login-logo{
+  width:80px;
+  height:80px;
+  object-fit:contain;
+  border-radius:50%;
+  display:block;
+  margin:0 auto 14px
+}
+
+.login-box h1{
+  text-align:center;
+  font:700 2rem Georgia,serif;
+  margin:0
+}
+
+.login-box p{
+  text-align:center;
+  color:var(--muted);
+  font-size:.88rem
+}
+
+.login-form{
+  margin-top:25px
+}
+
+.login-form .field{
+  margin-bottom:13px
+}
+
+.login-error{
+  color:var(--red);
+  font-size:.82rem;
+  min-height:20px;
+  margin:8px 0
+}
+
+/* --------------------------------------------------
+   FORM
+-------------------------------------------------- */
+
+.field label{
+  display:block;
+  font-size:.75rem;
+  font-weight:900;
+  margin-bottom:6px
+}
+
+textarea{
+  resize:vertical;
+  min-height:110px
+}
+
+.help{
+  font-size:.78rem;
+  color:var(--muted);
+  margin-top:7px
+}
+
+/* --------------------------------------------------
+   TOAST
+-------------------------------------------------- */
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:80;
+  max-width:420px;
+  background:var(--dark);
+  color:#fff;
+  padding:13px 16px;
+  border-radius:10px;
+  box-shadow:var(--shadow);
+  display:none
+}
+
+.toast.show{
+  display:block
+}
+
+.toast.error{
+  background:var(--red)
+}
+
+.toast.success{
+  background:var(--green)
+}
+
+/* --------------------------------------------------
+   SECTION
+-------------------------------------------------- */
+
+.section{
+  display:none
+}
+
+.section.active{
+  display:block
+}
+
+/* --------------------------------------------------
+   RESPONSIVE
+-------------------------------------------------- */
+
+@media(max-width:1150px){
+
+  .stats{
+    grid-template-columns:repeat(3,1fr)
+  }
+
+}
+
+@media(max-width:900px){
+
+  .layout{
+    grid-template-columns:1fr
+  }
+
+  .sidebar{
+    display:flex;
+    gap:5px;
+    overflow:auto;
+    border-right:0;
+    border-bottom:1px solid var(--line);
+    padding:10px
+  }
+
+  .navbtn{
+    width:auto;
+    white-space:nowrap;
+    margin:0
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr)
+  }
+
+}
+
+@media(max-width:600px){
+
+  .topbar{
+    padding:0 15px
+  }
+
+  .user-email{
+    display:none
+  }
+
+  .main{
+    padding:18px
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr
+  }
+
+  .detail-grid{
+    grid-template-columns:1fr
+  }
+
+  .detail.full{
+    grid-column:auto
+  }
+
+  .search{
+    width:100%
+  }
+
+  .page-title{
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- ==================================================
+     LOGIN
+================================================== -->
+
+<div id="loginView" class="login">
+
+  <div class="login-box">
+
+    <img
+      class="login-logo"
+      src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg"
+      alt="Sila's Kitchen"
+    >
+
+    <h1>Sila Admin</h1>
+
+    <p>Payment & receipt operations</p>
+
+    <form id="loginForm" class="login-form">
+
+      <div class="field">
+        <label>Email</label>
+        <input
+          id="loginEmail"
+          type="email"
+          required
+          autocomplete="username"
+        >
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input
+          id="loginPassword"
+          type="password"
+          required
+          autocomplete="current-password"
+        >
+      </div>
+
+      <div id="loginError" class="login-error"></div>
+
+      <button
+        class="btn btn-primary"
+        style="width:100%"
+        type="submit"
+      >
+        Sign in
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- ==================================================
+     APPLICATION
+================================================== -->
+
+<div id="appView" style="display:none">
+
+<header class="topbar">
+
+  <div class="brand">
+
+    <img
+      class="brand-mark"
+      src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg"
+      alt=""
+    >
+
+    <span>Sila Admin</span>
+
+  </div>
+
+  <div class="top-actions">
+
+    <span
+      id="userEmail"
+      class="user-email"
+    ></span>
+
+    <a
+      class="btn"
+      href="admin.html"
+      style="color:#fff;border-color:#666"
+    >
+      Admin Home
+    </a>
+
+    <a
+      class="btn"
+      href="index.html"
+      target="_blank"
+      style="color:#fff;border-color:#666"
+    >
+      View Website
+    </a>
+
+    <button
+      id="logoutBtn"
+      class="btn"
+      style="color:#fff;border-color:#666;background:transparent"
+    >
+      Sign out
+    </button>
+
+  </div>
+
+</header>
+
+
+<div class="layout">
+
+<!-- ==================================================
+     SIDEBAR
+================================================== -->
+
+<aside class="sidebar">
+
+  <button
+    class="navbtn"
+    data-section="dashboard"
+  >
+    Dashboard
+  </button>
+
+  <button
+    class="navbtn active"
+    data-section="payments"
+  >
+    Payments & Receipts
+  </button>
+
+</aside>
+
+
+<!-- ==================================================
+     MAIN
+================================================== -->
+
+<main class="main">
+
+<section
+  id="section-dashboard"
+  class="section"
+>
+
+  <div class="page-title">
+
+    <div>
+
+      <h1>Payment Operations</h1>
+
+      <p>
+        Review customer payments and uploaded receipts.
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="label">TOTAL PAYMENTS</div>
+      <div id="statTotal" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">AWAITING REVIEW</div>
+      <div id="statPending" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">VERIFIED</div>
+      <div id="statVerified" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">REJECTED</div>
+      <div id="statRejected" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">RECEIPTS</div>
+      <div id="statReceipts" class="value">—</div>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h3 style="margin-top:0">
+      Payment & Receipt Workflow
+    </h3>
+
+    <p style="color:var(--muted);line-height:1.7">
+
+      When a customer submits payment, the payment should appear
+      in this operational queue. Sila can inspect the payment,
+      review the receipt, verify or reject the payment, and record
+      an administrative note.
+
+    </p>
+
+    <p style="color:var(--muted);line-height:1.7">
+
+      Verification is performed through the existing
+      <strong>verify_payment</strong> database function, while
+      rejection uses <strong>reject_payment</strong>.
+
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- ==================================================
+     PAYMENTS
+================================================== -->
+
+<section
+  id="section-payments"
+  class="section active"
+>
+
+  <div class="page-title">
+
+    <div>
+
+      <h1>Payments & Receipts</h1>
+
+      <p>
+        Review, verify and manage customer payment submissions.
+      </p>
+
+    </div>
+
+    <button
+      id="refreshBtn"
+      class="btn btn-primary"
+    >
+      Refresh Payments
+    </button>
+
+  </div>
+
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="label">TOTAL PAYMENTS</div>
+      <div id="statTotal2" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">PENDING REVIEW</div>
+      <div id="statPending2" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">VERIFIED</div>
+      <div id="statVerified2" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">REJECTED</div>
+      <div id="statRejected2" class="value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="label">WITH RECEIPT</div>
+      <div id="statReceipts2" class="value">—</div>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="toolbar">
+
+      <div class="toolbar-left">
+
+        <input
+          id="searchInput"
+          class="search"
+          placeholder="Search payment, customer, reference…"
+        >
+
+        <select
+          id="statusFilter"
+          style="width:170px"
+        >
+
+          <option value="">
+            All statuses
+          </option>
+
+          <option value="pending">
+            Pending
+          </option>
+
+          <option value="verified">
+            Verified
+          </option>
+
+          <option value="rejected">
+            Rejected
+          </option>
+
+        </select>
+
+        <select
+          id="receiptFilter"
+          style="width:170px"
+        >
+
+          <option value="">
+            All receipts
+          </option>
+
+          <option value="yes">
+            Receipt uploaded
+          </option>
+
+          <option value="no">
+            No receipt
+          </option>
+
+        </select>
+
+      </div>
+
+      <div class="toolbar-right">
+
+        <span
+          id="lastUpdated"
+          style="font-size:.75rem;color:var(--muted)"
+        ></span>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-wrap">
+
+      <table class="table">
+
+        <thead>
+
+          <tr>
+
+            <th>Payment</th>
+
+            <th>Customer / Order</th>
+
+            <th>Amount</th>
+
+            <th>Method</th>
+
+            <th>Reference</th>
+
+            <th>Receipt</th>
+
+            <th>Status</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="paymentRows">
+
+          <tr>
+
+            <td
+              colspan="8"
+              class="loading"
+            >
+              Loading payments…
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+</div>
+
+</div>
+
+
+<!-- ==================================================
+     PAYMENT DETAIL MODAL
+================================================== -->
+
+<div
+  id="paymentModal"
+  class="modal"
+>
+
+  <div class="modal-box">
+
+    <button
+      class="close"
+      id="closeModal"
+      aria-label="Close"
+    >
+      ×
+    </button>
+
+    <h2>Payment Review</h2>
+
+
+    <div
+      id="paymentDetails"
+      class="detail-grid"
+    ></div>
+
+
+    <div
+      id="receiptContainer"
+      style="display:none;margin-top:10px"
+    >
+
+      <h3>
+        Customer Receipt
+      </h3>
+
+      <img
+        id="receiptImage"
+        class="receipt-large"
+        alt="Customer payment receipt"
+      >
+
+      <div style="margin-top:10px">
+
+        <a
+          id="receiptLink"
+          class="btn"
+          target="_blank"
+          rel="noopener"
+        >
+          Open Receipt
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="adminNoteField"
+      class="field"
+      style="margin-top:20px"
+    >
+
+      <label>
+        Admin note
+      </label>
+
+      <textarea
+        id="adminNote"
+        placeholder="Optional note about this payment..."
+      ></textarea>
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        type="button"
+        class="btn"
+        id="cancelReviewBtn"
+      >
+        Close
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-danger"
+        id="rejectPaymentBtn"
+      >
+        Reject Payment
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-success"
+        id="verifyPaymentBtn"
+      >
+        Verify Payment
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ==================================================
+     REJECTION MODAL
+================================================== -->
+
+<div
+  id="rejectModal"
+  class="modal"
+>
+
+  <div class="modal-box">
+
+    <button
+      class="close"
+      id="closeRejectModal"
+      aria-label="Close"
+    >
+      ×
+    </button>
+
+    <h2>Reject Payment</h2>
+
+    <p style="color:var(--muted)">
+      Enter the reason Sila is rejecting this payment.
+    </p>
+
+    <div class="field">
+
+      <label>
+        Rejection reason *
+      </label>
+
+      <textarea
+        id="rejectionReason"
+        placeholder="Example: Receipt does not match the transaction reference."
+        required
+      ></textarea>
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button
+        type="button"
+        class="btn"
+        id="cancelRejectBtn"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-danger"
+        id="confirmRejectBtn"
+      >
+        Reject Payment
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div
+  id="toast"
+  class="toast"
+></div>
+
+
+<script>
+
+/* ==================================================
+   SUPABASE CONFIGURATION
+================================================== */
+
+const SUPABASE_URL =
+  "https://mmrvwfoxbnskqwssgmkd.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tcnZ3Zm94Ym5za3F3c3NnbWtkIiwicm9sZSI6IkFub24iLCJpYXQiOjE3ODcyMjE0MjIsImV4cCI6MjEwMjc5NzQyMn0.ARdHxQhdrpJn0jsWigBocWTS6J6wquroIYLuJ1qcN1M";
+
+const hasConfig =
+  SUPABASE_URL.startsWith("https://") &&
+  !SUPABASE_URL.includes("YOUR_") &&
+  SUPABASE_ANON_KEY &&
+  !SUPABASE_ANON_KEY.includes("YOUR_");
+
+const supabaseClient =
+  hasConfig
+    ? window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      )
+    : null;
+
+
+/* ==================================================
+   STATE
+================================================== */
+
+let payments = [];
+let selectedPayment = null;
+
+
+/* ==================================================
+   HELPERS
+================================================== */
+
+const $ = id =>
+  document.getElementById(id);
+
+
+function toast(
+  message,
+  type = "success"
+){
+
+  const el = $("toast");
+
+  el.textContent = message;
+
+  el.className =
+    `toast show ${type}`;
+
+  clearTimeout(
+    window.__toastTimer
+  );
+
+  window.__toastTimer =
+    setTimeout(
+      () => {
+        el.className = "toast";
+      },
+      4000
+    );
+}
+
+
+function money(value){
+
+  const number =
+    Number(value || 0);
+
+  return (
+    "₦" +
+    number.toLocaleString(
+      "en-NG",
+      {
+        maximumFractionDigits:2
+      }
+    )
+  );
+}
+
+
+function esc(value){
+
+  return String(
+    value ?? ""
+  ).replace(
+    /[&<>"']/g,
+    c => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[c])
+  );
+
+}
+
+
+/* ==================================================
+   SCHEMA-TOLERANT FIELD READER
+================================================== */
+
+function firstValue(
+  row,
+  candidates,
+  fallback = ""
+){
+
+  for(
+    const key of candidates
+  ){
+
+    if(
+      row &&
+      row[key] !== undefined &&
+      row[key] !== null &&
+      row[key] !== ""
+    ){
+
+      return row[key];
+
+    }
+
+  }
+
+  return fallback;
+}
+
+
+function paymentId(row){
+
+  return firstValue(
+    row,
+    [
+      "id",
+      "payment_id"
+    ]
+  );
+}
+
+
+function paymentStatus(row){
+
+  return String(
+    firstValue(
+      row,
+      [
+        "status",
+        "payment_status"
+      ],
+      "pending"
+    )
+  ).toLowerCase();
+
+}
+
+
+function paymentAmount(row){
+
+  return firstValue(
+    row,
+    [
+      "amount_paid",
+      "amount",
+      "payment_amount"
+    ],
+    0
+  );
+
+}
+
+
+function paymentMethod(row){
+
+  return firstValue(
+    row,
+    [
+      "payment_method",
+      "method"
+    ],
+    "—"
+  );
+
+}
+
+
+function transactionReference(row){
+
+  return firstValue(
+    row,
+    [
+      "transaction_reference",
+      "reference",
+      "transaction_ref"
+    ],
+    "—"
+  );
+
+}
+
+
+function paymentCode(row){
+
+  return firstValue(
+    row,
+    [
+      "payment_code",
+      "confirmation_code",
+      "code"
+    ],
+    "—"
+  );
+
+}
+
+
+function customerName(row){
+
+  return firstValue(
+    row,
+    [
+      "customer_name",
+      "name"
+    ],
+    "—"
+  );
+
+}
+
+
+function customerPhone(row){
+
+  return firstValue(
+    row,
+    [
+      "customer_phone",
+      "phone",
+      "phone_number"
+    ],
+    "—"
+  );
+
+}
+
+
+function orderNumber(row){
+
+  return firstValue(
+    row,
+    [
+      "order_number",
+      "order_code"
+    ],
+    "—"
+  );
+
+}
+
+
+function orderId(row){
+
+  return firstValue(
+    row,
+    [
+      "order_id"
+    ],
+    ""
+  );
+
+}
+
+
+function customerNote(row){
+
+  return firstValue(
+    row,
+    [
+      "customer_note",
+      "customer_notes",
+      "note"
+    ],
+    ""
+  );
+
+}
+
+
+function receiptUrl(row){
+
+  return firstValue(
+    row,
+    [
+      "receipt_url",
+      "receipt_image_url",
+      "receipt",
+      "proof_url",
+      "payment_receipt_url",
+      "image_url"
+    ],
+    ""
+  );
+
+}
+
+
+function createdAt(row){
+
+  return firstValue(
+    row,
+    [
+      "created_at",
+      "submitted_at",
+      "payment_date"
+    ],
+    ""
+  );
+
+}
+
+
+/* ==================================================
+   STATUS UI
+================================================== */
+
+function statusLabel(status){
+
+  if(
+    status === "verified" ||
+    status === "approved" ||
+    status === "paid"
+  ){
+
+    return "Verified";
+
+  }
+
+  if(
+    status === "rejected" ||
+    status === "declined"
+  ){
+
+    return "Rejected";
+
+  }
+
+  return "Pending";
+
+}
+
+
+function statusClass(status){
+
+  const normalized =
+    String(status || "")
+      .toLowerCase();
+
+  if(
+    normalized === "verified" ||
+    normalized === "approved" ||
+    normalized === "paid"
+  ){
+
+    return "status-verified";
+
+  }
+
+  if(
+    normalized === "rejected" ||
+    normalized === "declined"
+  ){
+
+    return "status-rejected";
+
+  }
+
+  return "status-pending";
+
+}
+
+
+/* ==================================================
+   ADMIN AUTHENTICATION
+================================================== */
+
+async function requireAdmin(){
+
+  if(!supabaseClient){
+
+    $("loginError").textContent =
+      "Configure Supabase URL and anon key.";
+
+    return false;
+
+  }
+
+
+  const {
+    data:{
+      session
+    }
+  } =
+    await supabaseClient
+      .auth
+      .getSession();
+
+
+  if(!session){
+
+    return false;
+
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("admin_users")
+      .select("user_id,is_active")
+      .eq(
+        "user_id",
+        session.user.id
+      )
+      .eq(
+        "is_active",
+        true
+      )
+      .maybeSingle();
+
+
+  if(
+    error ||
+    !data
+  ){
+
+    await supabaseClient
+      .auth
+      .signOut();
+
+    $("loginError").textContent =
+      "This account is not registered as a Sila administrator.";
+
+    return false;
+
+  }
+
+
+  $("loginView").style.display =
+    "none";
+
+  $("appView").style.display =
+    "block";
+
+  $("userEmail").textContent =
+    session.user.email || "";
+
+  return true;
+
+}
+
+
+/* ==================================================
+   LOAD PAYMENTS
+================================================== */
+
+async function loadPayments(){
+
+  if(!supabaseClient){
+
+    return;
+
+  }
+
+
+  $("paymentRows").innerHTML = `
+    <tr>
+      <td colspan="8" class="loading">
+        Loading payments…
+      </td>
+    </tr>
+  `;
+
+
+  /*
+    The payment table is intentionally referenced
+    through one configuration variable.
+
+    If your actual table is named differently,
+    change only this value.
+  */
+
+  const PAYMENT_TABLE =
+    "payments";
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from(PAYMENT_TABLE)
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
+
+  if(error){
+
+    $("paymentRows").innerHTML = `
+      <tr>
+        <td colspan="8" class="empty">
+          ${esc(error.message)}
+        </td>
+      </tr>
+    `;
+
+    toast(
+      "Could not load payments: " +
+      error.message,
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  payments =
+    data || [];
+
+
+  renderPayments();
+
+  updateStats();
+
+  $("lastUpdated").textContent =
+    "Updated " +
+    new Date()
+      .toLocaleTimeString(
+        "en-NG",
+        {
+          hour:"2-digit",
+          minute:"2-digit"
+        }
+      );
+
+}
+
+
+/* ==================================================
+   RENDER PAYMENTS
+================================================== */
+
+function renderPayments(){
+
+  const search =
+    $("searchInput")
+      .value
+      .trim()
+      .toLowerCase();
+
+  const statusFilter =
+    $("statusFilter").value;
+
+  const receiptFilter =
+    $("receiptFilter").value;
+
+
+  const filtered =
+    payments.filter(
+      row => {
+
+        const status =
+          paymentStatus(row);
+
+        const receipt =
+          receiptUrl(row);
+
+        const searchable =
+          [
+            paymentId(row),
+            paymentCode(row),
+            customerName(row),
+            customerPhone(row),
+            orderNumber(row),
+            transactionReference(row),
+            paymentMethod(row),
+            customerNote(row)
+          ]
+          .join(" ")
+          .toLowerCase();
+
+
+        const matchesSearch =
+          !search ||
+          searchable.includes(search);
+
+
+        let matchesStatus = true;
+
+
+        if(statusFilter){
+
+          if(
+            statusFilter === "pending"
+          ){
+
+            matchesStatus =
+              ![
+                "verified",
+                "approved",
+                "paid",
+                "rejected",
+                "declined"
+              ].includes(status);
+
+          }
+
+          else if(
+            statusFilter === "verified"
+          ){
+
+            matchesStatus =
+              [
+                "verified",
+                "approved",
+                "paid"
+              ].includes(status);
+
+          }
+
+          else if(
+            statusFilter === "rejected"
+          ){
+
+            matchesStatus =
+              [
+                "rejected",
+                "declined"
+              ].includes(status);
+
+          }
+
+        }
+
+
+        let matchesReceipt = true;
+
+
+        if(
+          receiptFilter === "yes"
+        ){
+
+          matchesReceipt =
+            Boolean(receipt);
+
+        }
+
+
+        if(
+          receiptFilter === "no"
+        ){
+
+          matchesReceipt =
+            !receipt;
+
+        }
+
+
+        return (
+          matchesSearch &&
+          matchesStatus &&
+          matchesReceipt
+        );
+
+      }
+    );
+
+
+  if(!filtered.length){
+
+    $("paymentRows").innerHTML = `
+      <tr>
+        <td
+          colspan="8"
+          class="empty"
+        >
+          No payments match your filters.
+        </td>
+      </tr>
+    `;
+
+    return;
+
+  }
+
+
+  $("paymentRows").innerHTML =
+    filtered
+      .map(
+        row => {
+
+          const id =
+            paymentId(row);
+
+          const receipt =
+            receiptUrl(row);
+
+          const status =
+            paymentStatus(row);
+
+
+          return `
+            <tr>
+
+              <td>
+
+                <div class="payment-main">
+
+                  <strong>
+                    ${esc(
+                      paymentCode(row)
+                    )}
+                  </strong>
+
+                  <small>
+                    ${esc(id)}
+                  </small>
+
+                </div>
+
+              </td>
+
+
+              <td>
+
+                <div class="payment-main">
+
+                  <strong>
+                    ${esc(
+                      customerName(row)
+                    )}
+                  </strong>
+
+                  <small>
+                    ${esc(
+                      customerPhone(row)
+                    )}
+                  </small>
+
+                  <small>
+                    Order:
+                    ${esc(
+                      orderNumber(row)
+                    )}
+                  </small>
+
+                </div>
+
+              </td>
+
+
+              <td>
+
+                <strong>
+                  ${money(
+                    paymentAmount(row)
+                  )}
+                </strong>
+
+              </td>
+
+
+              <td>
+
+                ${esc(
+                  paymentMethod(row)
+                )}
+
+              </td>
+
+
+              <td>
+
+                ${esc(
+                  transactionReference(row)
+                )}
+
+              </td>
+
+
+              <td>
+
+                ${
+                  receipt
+
+                  ?
+
+                  `
+                    <div class="receipt-box">
+
+                      <img
+                        class="receipt-preview"
+                        src="${esc(receipt)}"
+                        alt="Receipt"
+                      >
+
+                      <button
+                        class="btn btn-small"
+                        onclick="openPayment('${esc(id)}')"
+                      >
+                        View
+                      </button>
+
+                    </div>
+                  `
+
+                  :
+
+                  `
+                    <span class="no-receipt">
+                      Not uploaded
+                    </span>
+                  `
+                }
+
+              </td>
+
+
+              <td>
+
+                <span
+                  class="badge ${statusClass(status)}"
+                >
+                  ${statusLabel(status)}
+                </span>
+
+              </td>
+
+
+              <td>
+
+                <button
+                  class="btn btn-small btn-primary"
+                  onclick="openPayment('${esc(id)}')"
+                >
+                  Review
+                </button>
+
+              </td>
+
+            </tr>
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+
+/* ==================================================
+   STATISTICS
+================================================== */
+
+function updateStats(){
+
+  const total =
+    payments.length;
+
+
+  const pending =
+    payments.filter(
+      row => {
+
+        const s =
+          paymentStatus(row);
+
+        return ![
+          "verified",
+          "approved",
+          "paid",
+          "rejected",
+          "declined"
+        ].includes(s);
+
+      }
+    ).length;
+
+
+  const verified =
+    payments.filter(
+      row =>
+        [
+          "verified",
+          "approved",
+          "paid"
+        ].includes(
+          paymentStatus(row)
+        )
+    ).length;
+
+
+  const rejected =
+    payments.filter(
+      row =>
+        [
+          "rejected",
+          "declined"
+        ].includes(
+          paymentStatus(row)
+        )
+    ).length;
+
+
+  const receipts =
+    payments.filter(
+      row =>
+        Boolean(
+          receiptUrl(row)
+        )
+    ).length;
+
+
+  const ids = [
+    ["statTotal",total],
+    ["statPending",pending],
+    ["statVerified",verified],
+    ["statRejected",rejected],
+    ["statReceipts",receipts],
+
+    ["statTotal2",total],
+    ["statPending2",pending],
+    ["statVerified2",verified],
+    ["statRejected2",rejected],
+    ["statReceipts2",receipts]
+  ];
+
+
+  ids.forEach(
+    ([id,value]) => {
+
+      if($(id)){
+        $(id).textContent =
+          value;
+      }
+
+    }
+  );
+
+}
+
+
+/* ==================================================
+   OPEN PAYMENT
+================================================== */
+
+window.openPayment =
+  function(id){
+
+    const payment =
+      payments.find(
+        row =>
+          String(
+            paymentId(row)
+          ) === String(id)
+      );
+
+
+    if(!payment){
+
+      toast(
+        "Payment could not be found.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    selectedPayment =
+      payment;
+
+
+    const receipt =
+      receiptUrl(payment);
+
+
+    $("paymentDetails").innerHTML = `
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Payment Code
+        </div>
+
+        <div class="detail-value">
+          ${esc(
+            paymentCode(payment)
+          )}
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Payment ID
+        </div>
+
+        <div class="detail-value">
+          ${esc(
+            paymentId(payment)
+          )}
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Customer
+        </div>
+
+        <div class="detail-value">
+          ${esc(
+            customerName(payment)
+          )}
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Phone
+        </div>
+
+        <div class="detail-value">
+          ${esc(
+            customerPhone(payment)
+          )}
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Order
+        </div>
+
+        <div class="detail-value">
+          ${esc(
+            orderNumber(payment)
+          )}
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Amount Paid
+        </div>
+
+        <div class="detail-value">
+          ${money(
+            paymentAmount(payment)
+          )}
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Payment Method
+        </div>
+
+        <div class="detail-value">
+          ${esc(
+            paymentMethod(payment)
+          )}
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Transaction Reference
+        </div>
+
+        <div class="detail-value">
+          ${esc(
+            transactionReference(payment)
+          )}
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Status
+        </div>
+
+        <div class="detail-value">
+
+          <span
+            class="badge ${statusClass(
+              paymentStatus(payment)
+            )}"
+          >
+            ${statusLabel(
+              paymentStatus(payment)
+            )}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Submitted
+        </div>
+
+        <div class="detail-value">
+          ${esc(
+            createdAt(payment)
+              ? new Date(
+                  createdAt(payment)
+                ).toLocaleString(
+                  "en-NG"
+                )
+              : "—"
+          )}
+        </div>
+
+      </div>
+
+
+      <div class="detail full">
+
+        <div class="detail-label">
+          Customer Note
+        </div>
+
+        <div class="detail-value">
+          ${esc(
+            customerNote(payment)
+            || "No customer note."
+          )}
+        </div>
+
+      </div>
+
+    `;
+
+
+    if(receipt){
+
+      $("receiptContainer")
+        .style.display =
+          "block";
+
+      $("receiptImage").src =
+        receipt;
+
+      $("receiptLink").href =
+        receipt;
+
+    }
+
+    else{
+
+      $("receiptContainer")
+        .style.display =
+          "none";
+
+      $("receiptImage").src =
+        "";
+
+      $("receiptLink").removeAttribute(
+        "href"
+      );
+
+    }
+
+
+    $("adminNote").value =
+      "";
+
+
+    const status =
+      paymentStatus(payment);
+
+
+    const alreadyVerified =
+      [
+        "verified",
+        "approved",
+        "paid"
+      ].includes(status);
+
+
+    const alreadyRejected =
+      [
+        "rejected",
+        "declined"
+      ].includes(status);
+
+
+    $("verifyPaymentBtn")
+      .disabled =
+        alreadyVerified ||
+        alreadyRejected;
+
+
+    $("rejectPaymentBtn")
+      .disabled =
+        alreadyVerified ||
+        alreadyRejected;
+
+
+    $("paymentModal")
+      .classList
+      .add("open");
+
+  };
+
+
+/* ==================================================
+   VERIFY PAYMENT
+================================================== */
+
+async function verifySelectedPayment(){
+
+  if(!selectedPayment){
+
+    return;
+
+  }
+
+
+  const id =
+    paymentId(
+      selectedPayment
+    );
+
+
+  if(!id){
+
+    toast(
+      "Payment ID is missing.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const note =
+    $("adminNote")
+      .value
+      .trim();
+
+
+  const button =
+    $("verifyPaymentBtn");
+
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "Verifying…";
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .rpc(
+          "verify_payment",
+          {
+            p_payment_id:id,
+            p_admin_note:
+              note || null
+          }
+        );
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    toast(
+      "Payment verified successfully."
+    );
+
+
+    closePaymentModal();
+
+    await loadPayments();
+
+
+    /*
+      Keep the returned RPC result visible
+      in the console during development.
+    */
+
+    console.log(
+      "verify_payment result:",
+      data
+    );
+
+  }
+
+  catch(error){
+
+    toast(
+      error.message ||
+      "Could not verify payment.",
+      "error"
+    );
+
+  }
+
+  finally{
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "Verify Payment";
+
+  }
+
+}
+
+
+/* ==================================================
+   OPEN REJECTION
+================================================== */
+
+function openRejectModal(){
+
+  if(!selectedPayment){
+
+    return;
+
+  }
+
+
+  $("rejectionReason").value =
+    "";
+
+  $("rejectModal")
+    .classList
+    .add("open");
+
+}
+
+
+/* ==================================================
+   REJECT PAYMENT
+================================================== */
+
+async function rejectSelectedPayment(){
+
+  if(!selectedPayment){
+
+    return;
+
+  }
+
+
+  const reason =
+    $("rejectionReason")
+      .value
+      .trim();
+
+
+  if(!reason){
+
+    toast(
+      "Please provide a rejection reason.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const id =
+    paymentId(
+      selectedPayment
+    );
+
+
+  if(!id){
+
+    toast(
+      "Payment ID is missing.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const button =
+    $("confirmRejectBtn");
+
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "Rejecting…";
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .rpc(
+          "reject_payment",
+          {
+            p_payment_id:id,
+            p_reason:reason
+          }
+        );
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    toast(
+      "Payment rejected successfully."
+    );
+
+
+    closeRejectModal();
+
+    closePaymentModal();
+
+    await loadPayments();
+
+
+    console.log(
+      "reject_payment result:",
+      data
+    );
+
+  }
+
+  catch(error){
+
+    toast(
+      error.message ||
+      "Could not reject payment.",
+      "error"
+    );
+
+  }
+
+  finally{
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "Reject Payment";
+
+  }
+
+}
+
+
+/* ==================================================
+   MODAL HELPERS
+================================================== */
+
+function closePaymentModal(){
+
+  $("paymentModal")
+    .classList
+    .remove("open");
+
+}
+
+
+function closeRejectModal(){
+
+  $("rejectModal")
+    .classList
+    .remove("open");
+
+}
+
+
+/* ==================================================
+   NAVIGATION
+================================================== */
+
+function showSection(name){
+
+  document
+    .querySelectorAll(".section")
+    .forEach(
+      section =>
+        section.classList
+          .remove("active")
+    );
+
+
+  const target =
+    $(
+      `section-${name}`
+    );
+
+
+  if(target){
+
+    target.classList
+      .add("active");
+
+  }
+
+
+  document
+    .querySelectorAll(".navbtn")
+    .forEach(
+      button =>
+        button.classList.toggle(
+          "active",
+          button.dataset.section === name
+        )
+    );
+
+}
+
+
+/* ==================================================
+   LOGIN
+================================================== */
+
+$("loginForm")
+  .addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+      $("loginError")
+        .textContent =
+          "";
+
+
+      if(!supabaseClient){
+
+        $("loginError")
+          .textContent =
+            "Configure Supabase URL and anon key.";
+
+        return;
+
+      }
+
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .auth
+          .signInWithPassword({
+
+            email:
+              $("loginEmail")
+                .value
+                .trim(),
+
+            password:
+              $("loginPassword")
+                .value
+
+          });
+
+
+      if(error){
+
+        $("loginError")
+          .textContent =
+            error.message;
+
+        return;
+
+      }
+
+
+      const ok =
+        await requireAdmin();
+
+
+      if(ok){
+
+        await loadPayments();
+
+      }
+
+    }
+  );
+
+
+/* ==================================================
+   LOGOUT
+================================================== */
+
+$("logoutBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      await supabaseClient
+        .auth
+        .signOut();
+
+      location.reload();
+
+    }
+  );
+
+
+/* ==================================================
+   EVENT LISTENERS
+================================================== */
+
+document
+  .querySelectorAll(".navbtn")
+  .forEach(
+    button =>
+      button.addEventListener(
+        "click",
+        () =>
+          showSection(
+            button.dataset.section
+          )
+      )
+  );
+
+
+$("refreshBtn")
+  .addEventListener(
+    "click",
+    loadPayments
+  );
+
+
+$("searchInput")
+  .addEventListener(
+    "input",
+    renderPayments
+  );
+
+
+$("statusFilter")
+  .addEventListener(
+    "change",
+    renderPayments
+  );
+
+
+$("receiptFilter")
+  .addEventListener(
+    "change",
+    renderPayments
+  );
+
+
+$("closeModal")
+  .addEventListener(
+    "click",
+    closePaymentModal
+  );
+
+
+$("cancelReviewBtn")
+  .addEventListener(
+    "click",
+    closePaymentModal
+  );
+
+
+$("verifyPaymentBtn")
+  .addEventListener(
+    "click",
+    verifySelectedPayment
+  );
+
+
+$("rejectPaymentBtn")
+  .addEventListener(
+    "click",
+    openRejectModal
+  );
+
+
+$("closeRejectModal")
+  .addEventListener(
+    "click",
+    closeRejectModal
+  );
+
+
+$("cancelRejectBtn")
+  .addEventListener(
+    "click",
+    closeRejectModal
+  );
+
+
+$("confirmRejectBtn")
+  .addEventListener(
+    "click",
+    rejectSelectedPayment
+  );
+
+
+$("paymentModal")
+  .addEventListener(
+    "click",
+    event => {
+
+      if(
+        event.target ===
+        $("paymentModal")
+      ){
+
+        closePaymentModal();
+
+      }
+
+    }
+  );
+
+
+$("rejectModal")
+  .addEventListener(
+    "click",
+    event => {
+
+      if(
+        event.target ===
+        $("rejectModal")
+      ){
+
+        closeRejectModal();
+
+      }
+
+    }
+  );
+
+
+/* ==================================================
+   AUTH STATE
+================================================== */
+
+supabaseClient?.auth
+  .onAuthStateChange(
+    async (
+      _event,
+      session
+    ) => {
+
+      if(session){
+
+        setTimeout(
+          requireAdmin,
+          0
+        );
+
+      }
+
+    }
+  );
+
+
+/* ==================================================
+   INITIALIZATION
+================================================== */
+
+(async () => {
+
+  if(!hasConfig){
+
+    $("loginError")
+      .textContent =
+        "Configure SUPABASE_URL and SUPABASE_ANON_KEY.";
+
+    return;
+
+  }
+
+
+  const ok =
+    await requireAdmin();
+
+
+  if(ok){
+
+    await loadPayments();
+
+  }
+
+})();
+
+</script>
+
+</body>
+</html>
