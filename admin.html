@@ -21,7 +21,19 @@ function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&l
 function section(s){document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));$(s).classList.add("active");document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.s===s));if(s==="products")loadProducts();if(s==="orders")loadOrders();if(s==="payments")loadPayments()}
 document.querySelectorAll(".nav").forEach(x=>x.onclick=()=>section(x.dataset.s));document.querySelectorAll("[data-close]").forEach(x=>x.onclick=()=>$(x.dataset.close).classList.remove("open"));
 function authMode(m){$("signForm").style.display=m==="login"?"block":"none";$("resetForm").style.display=m==="reset"?"block":"none";$("newForm").style.display=m==="new"?"block":"none";$("forgot").style.display=m==="login"?"block":"none";$("back").style.display=m==="login"?"none":"block";$("authTitle").textContent=m==="login"?"Sila Admin":m==="reset"?"Reset Admin Password":"Set New Password";$("authSub").textContent=m==="login"?"Menu, orders, payments and business operations":"Use your secure administrator account"}
-async function admin(session){if(!session)return false;let r=await sb.from("admin_users").select("user_id,is_active").eq("user_id",session.user.id).eq("is_active",true).maybeSingle();if(r.error||!r.data){await sb.auth.signOut();$("signErr").textContent="This account is not an active Sila administrator.";return false}$("login").style.display="none";$("app").style.display="block";$("user").textContent=session.user.email||"";return true}async function boot(){let r=await sb.auth.getSession();if(location.hash.includes("type=recovery")){authMode("new");return}if(await admin(r.data.session)){await loadProducts();await loadOrders()}}
+async function admin(session){
+  if(!session||!session.user||!session.user.id)return false;
+  let r=await sb.from("admin_users").select("user_id,is_active").eq("user_id",session.user.id).eq("is_active",true).maybeSingle();
+  if(r.error){console.error("admin_users query error:",r.error.message);await sb.auth.signOut();$("signErr").textContent="Login error: "+r.error.message;return false}
+  if(!r.data){await sb.auth.signOut();$("signErr").textContent="This account is not an active Sila administrator.";return false}
+  $("login").style.display="none";$("app").style.display="block";$("user").textContent=session.user.email||"";return true
+}async function boot(){
+  if(location.hash.includes("type=recovery")){authMode("new");return}
+  let r=await sb.auth.getSession();
+  if(r.data&&r.data.session){
+    if(await admin(r.data.session)){await loadProducts();await loadOrders()}
+  }
+}
 $("signForm").onsubmit=async e=>{e.preventDefault();$("signErr").textContent="";let r=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(r.error){$("signErr").textContent=r.error.message;return}if(await admin(r.data.session)){await loadProducts();await loadOrders()}else{$("signErr").textContent="This account is not an active Sila administrator.";}};
 
 /* ── Auth UI handlers ─────────────────────────────────────────────────── */
@@ -55,7 +67,14 @@ $("newForm").onsubmit = async e => {
 };
 
 $("logout").onclick = async () => { await sb.auth.signOut(); location.reload(); };
-sb.auth.onAuthStateChange((e, s) => { if (e === "PASSWORD_RECOVERY") setTimeout(() => authMode("new"), 0); });
+sb.auth.onAuthStateChange(async (e, s) => {
+  if(e==="PASSWORD_RECOVERY"){setTimeout(()=>authMode("new"),0);return}
+  if(e==="SIGNED_IN"&&s){
+    let ok=await admin(s);
+    if(ok){await loadProducts();await loadOrders()}
+  }
+  if(e==="SIGNED_OUT"){$("login").style.display="flex";$("app").style.display="none";}
+});
 
 async function loadProducts(){let r=await sb.from("products").select("*").order("category").order("sort_order").order("name");if(r.error){toast(r.error.message,true);return}products=r.data||[];renderProducts();stats()}
 function renderProducts(){let q=$("prodSearch").value.toLowerCase(),c=$("cat").value,a=$("avail").value,f=products.filter(p=>(!q||`${p.name||""} ${p.description||""}`.toLowerCase().includes(q))&&(!c||p.category===c)&&(a===""||String(p.is_available)===a));$("prodRows").innerHTML=f.length?f.map(p=>`<tr><td><b>${esc(p.name)}</b><div style="font-size:.72rem;color:var(--muted)">${esc(p.price_label||"")}</div></td><td>${esc(p.category)}</td><td><b>${money(p.price)}</b></td><td><span class="badge ${p.is_available?"okb":"badb"}">${p.is_available?"Available":"Unavailable"}</span></td><td>${esc(p.sort_order)}</td><td><button class="btn small" onclick="editProduct('${p.id}')">Edit</button> <button class="btn small" onclick="toggleProduct('${p.id}')">${p.is_available?"Disable":"Enable"}</button> <button class="btn small bad" onclick="archiveProduct('${p.id}')">Archive</button></td></tr>`).join(""):"<tr><td colspan=6 class=empty>No products found.</td></tr>"}
