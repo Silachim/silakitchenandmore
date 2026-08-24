@@ -23,9 +23,11 @@ document.querySelectorAll(".nav").forEach(x=>x.onclick=()=>section(x.dataset.s))
 function authMode(m){$("signForm").style.display=m==="login"?"block":"none";$("resetForm").style.display=m==="reset"?"block":"none";$("newForm").style.display=m==="new"?"block":"none";$("forgot").style.display=m==="login"?"block":"none";$("back").style.display=m==="login"?"none":"block";$("authTitle").textContent=m==="login"?"Sila Admin":m==="reset"?"Reset Admin Password":"Set New Password";$("authSub").textContent=m==="login"?"Menu, orders, payments and business operations":"Use your secure administrator account"}
 async function admin(session){
   if(!session||!session.user||!session.user.id)return false;
+  console.log("admin() checking user ID:",session.user.id);
   let r=await sb.from("admin_users").select("user_id,is_active").eq("user_id",session.user.id).eq("is_active",true).maybeSingle();
+  console.log("admin_users query result:",JSON.stringify(r));
   if(r.error){console.error("admin_users query error:",r.error.message);await sb.auth.signOut();$("signErr").textContent="Login error: "+r.error.message;return false}
-  if(!r.data){await sb.auth.signOut();$("signErr").textContent="This account is not an active Sila administrator.";return false}
+  if(!r.data){await sb.auth.signOut();$("signErr").textContent="This account is not an active Sila administrator. (ID: "+session.user.id+")";return false}
   $("login").style.display="none";$("app").style.display="block";$("user").textContent=session.user.email||"";return true
 }async function boot(){
   if(location.hash.includes("type=recovery")){authMode("new");return}
