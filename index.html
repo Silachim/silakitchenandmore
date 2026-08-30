@@ -392,6 +392,7 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 const SUPABASE_URL = "https://mmrvwfoxbnskqwssgmkd.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tcnZ3Zm94Ym5za3F3c3NnbWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjE0MjIsImV4cCI6MjEwMjc5NzQyMn0.ARdHxQhdrpJn0jsWigBocWTS6J6wquroIYLuJ1qcN1M";
 const RECEIPT_BUCKET = "payment-receipts";
+const GALLERY_BUCKET = "gallery-media";
 const SILA_WHATSAPP = "2348150563651";
 const SILA_LOGO = "https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg";
 
@@ -412,24 +413,15 @@ const CATEGORY_META = {
   drinks:{title:"Drinks",icon:"🥤"}
 };
 
-const GALLERY_PHOTOS=[
-  {src:"gallery-1.jpg",label:"Our Spread"},{src:"gallery-2.jpg",label:"Spring Rolls"},
-  {src:"gallery-3.jpg",label:"Samosas"},{src:"gallery-4.jpg",label:"Puff Puff"},
-  {src:"gallery-5.jpg",label:"Pastries"},{src:"gallery-6.jpg",label:"Event Spread"}
-];
-
-const GALLERY_VIDEOS=[
-  {src:"video-1.mp4",poster:"video-1-thumb.jpg",title:"Behind the Kitchen",sub:"Watch us prepare your order"},
-  {src:"video-2.mp4",poster:"video-2-thumb.jpg",title:"Event Highlights",sub:"Sila's at celebrations"},
-  {src:"video-3.mp4",poster:"video-3-thumb.jpg",title:"Making Puff Puff",sub:"Fresh from the fryer"},
-  {src:"video-4.mp4",poster:"video-4-thumb.jpg",title:"Customer Stories",sub:"What our clients say"}
-];
+const GALLERY_PHOTOS=[];
+const GALLERY_VIDEOS=[];
 
 let cart=JSON.parse(localStorage.getItem("silaCart")||"[]");
 let selectedDrinkRequest="";
 let currentPackage=null;
 let currentOrder=null;
 let databaseProducts=[];
+let databaseGallery=[];
 
 function money(n){
   return "₦"+Number(n||0).toLocaleString("en-NG",{maximumFractionDigits:2});
@@ -519,19 +511,41 @@ function galTab(name,btn){
   btn.classList.add("active");
 }
 
-function buildGallery(){
-  document.getElementById("gphotos").innerHTML=GALLERY_PHOTOS.map(p=>`
-    <div class="g-item" onclick="openLightbox('${p.src}','${escapeHtml(p.label)}')">
-      <img src="${p.src}" loading="lazy" alt="${escapeHtml(p.label)}">
-      <div class="g-label">${escapeHtml(p.label)}</div>
-    </div>`).join("");
+function renderDatabaseGallery(){
+  const photos=document.getElementById("gphotos"),videos=document.getElementById("gvideos");
+  if(!photos||!videos)return;
+  const active=databaseGallery.filter(x=>x.is_active!==false);
+  const photoItems=active.filter(x=>x.media_type==="photo");
+  const videoItems=active.filter(x=>x.media_type==="video");
 
-  document.getElementById("gvideos").innerHTML=GALLERY_VIDEOS.map(v=>`
-    <div class="vid-card">
-      <video src="${v.src}" poster="${v.poster}" controls preload="metadata" style="width:100%;border-radius:8px"></video>
-      <div class="vid-title">${escapeHtml(v.title)}</div>
-      <div class="vid-sub">${escapeHtml(v.sub)}</div>
-    </div>`).join("");
+  if(!photoItems.length){
+    photos.innerHTML='<div class="video-empty"><div style="font-size:2rem;margin-bottom:.6rem">📷</div><strong>Photos coming soon</strong><span>Sila will be adding more food and event photographs here.</span></div>';
+  }else{
+    photos.innerHTML=photoItems.map((item,index)=>`<div class="g-item" onclick="openLightbox('${escapeHtml(item.media_url)}','${escapeHtml(item.title)}')"><img src="${escapeHtml(item.media_url)}" loading="lazy" alt="${escapeHtml(item.title)}" onerror="this.style.opacity='.35'"><div class="g-label">${escapeHtml(item.title)}</div></div>`).join('');
+  }
+
+  if(!videoItems.length){
+    videos.innerHTML='<div class="video-empty"><div style="font-size:2rem;margin-bottom:.6rem">🎬</div><strong>Videos coming soon</strong><span>Sila will be adding behind-the-scenes and event videos here.</span></div>';
+  }else{
+    videos.innerHTML=videoItems.map(item=>`<div class="vid-card"><video src="${escapeHtml(item.media_url)}" ${item.thumbnail_url?`poster="${escapeHtml(item.thumbnail_url)}"`:''} controls preload="metadata" style="width:100%;border-radius:8px"></video><div class="vid-title">${escapeHtml(item.title)}</div><div class="vid-sub">${escapeHtml(item.caption||'')}</div></div>`).join('');
+  }
+}
+
+async function loadDatabaseGallery(){
+  if(!sb){
+    databaseGallery=[];
+    renderDatabaseGallery();
+    return;
+  }
+  const {data,error}=await sb.from("gallery_items").select("id,media_type,title,caption,media_url,thumbnail_url,sort_order,is_active").eq("is_active",true).order("sort_order",{ascending:true}).order("created_at",{ascending:false});
+  if(error){
+    console.error("Sila gallery load error:",error);
+    databaseGallery=[];
+    renderDatabaseGallery();
+    return;
+  }
+  databaseGallery=Array.isArray(data)?data:[];
+  renderDatabaseGallery();
 }
 
 function openLightbox(src,alt){
@@ -1261,7 +1275,7 @@ Notes: ${document.getElementById("cNotes").value}`;
 }
 
 /* ---------- Initialization ---------- */
-buildGallery();
+renderDatabaseGallery();
 renderCart();
 builderTotal();
 
@@ -1284,6 +1298,7 @@ document.getElementById("statusModal").addEventListener("click",e=>{
 
 /* Load the live customer menu after the page DOM exists. */
 loadDatabaseMenu();
+loadDatabaseGallery();
 </script>
 </body>
 </html>
