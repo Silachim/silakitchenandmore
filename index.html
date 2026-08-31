@@ -75,8 +75,11 @@ h1{font-family:Georgia,serif;font-size:clamp(3rem,6vw,5.5rem);line-height:.98;ma
 .menu-cat-p{color:var(--muted)}
 .menu-grid{grid-template-columns:repeat(3,1fr);margin-top:22px}
 .mcard{overflow:hidden;display:flex;flex-direction:column}
-.mcard-top{height:210px;background:#eee}
-.mcard-top img{width:100%;height:100%;object-fit:cover}
+.mcard-top{height:210px;background:#eee;position:relative;overflow:hidden}
+.mcard-top img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.mcard-top.product-photo{cursor:zoom-in}
+.mcard-top.product-photo:hover img{transform:scale(1.035)}
+.product-photo-hint{position:absolute;right:10px;bottom:10px;background:rgba(21,18,14,.82);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:.38rem .62rem;font-size:.7rem;font-weight:800;backdrop-filter:blur(6px);pointer-events:none}
 .mcard-body{padding:17px;flex:1}
 .mcard-foot{padding:14px 17px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
 .price{font-weight:900;color:var(--gold)}
@@ -172,7 +175,12 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:120;align-items:center;justify-content:center;padding:25px}
 .lightbox.active{display:flex}
-.lightbox img{max-width:94vw;max-height:88vh;object-fit:contain;border-radius:8px}
+.lightbox-content{display:flex;flex-direction:column;align-items:center;gap:12px;max-width:96vw;max-height:94vh}
+.lightbox img{max-width:94vw;max-height:78vh;object-fit:contain;border-radius:8px}
+.lightbox-meta{width:min(900px,94vw);display:flex;align-items:center;justify-content:space-between;gap:12px;color:#fff}
+.lightbox-title{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-download{border:1px solid rgba(255,255,255,.25);background:var(--gold);color:#fff;padding:.7rem 1rem;border-radius:9px;font-weight:800;white-space:nowrap}
+.lb-download:hover{background:#9c7309}
 .lb-close{position:absolute;top:15px;right:22px;color:#fff;background:none;border:0;font-size:2.5rem}
 
 .status-box{padding:15px;border:1px solid var(--line);background:var(--cream);border-radius:10px;margin:14px 0}
@@ -245,9 +253,7 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 <button class="menu-tab" onclick="menuTab('drinks',this)">🥤 Drinks</button>
 </div>
 
-<div id="menuDataNotice" class="menu-data-notice" role="status" aria-live="polite">
-  Connecting to Sila's live menu...
-</div>
+<div id="menuDataNotice" class="menu-data-notice" role="status" aria-live="polite" style="display:none"></div>
 
 <div id="panel-rtf" class="menu-panel active">
 <div class="menu-cat-h">🧊 Signature Ready-to-Fry Small Chops</div>
@@ -339,7 +345,7 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 <div class="contact-card"><h3>Delivery & Pickup</h3><p>We offer pickup and delivery within <strong style="color:#fff">Ibadan.</strong><br><br>Events such as naming ceremonies, weddings and other celebrations can be served across Nigeria.<br><br>Minimum 4 days advance notice is required.</p></div>
 </div><div class="notice">📍 <strong>Service area:</strong> No 8, Sobaloju Street, Adepeji Villa, Ajobo, Arulogun, Ibadan, Oyo State. Delivery is available within Ibadan.</div></div></section>
 
-<footer><div class="footer-left"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></div><p>© 2024 Sila's Kitchen and More · Quality Service Is Our Benchmark · All rights reserved.</p><div class="footer-links"><a href="#menu">Menu</a><a href="#about">About</a><a href="#payment">Payment</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a></div></footer>
+<footer><div class="footer-left"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></div><p>© <span id="copyrightYear"></span> Sila's Kitchen and More · Quality Service Is Our Benchmark · All rights reserved.</p><div class="footer-links"><a href="#menu">Menu</a><a href="#about">About</a><a href="#payment">Payment</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a></div></footer>
 
 <button class="cart-fab" onclick="toggleCart()" aria-label="Open shopping cart">🛒<span class="cart-count" id="cartCount">0</span></button>
 <aside class="cart-drawer" id="cartDrawer"><div class="cart-head"><h2>Your Cart</h2><button class="cart-close" onclick="toggleCart()">×</button></div><div id="cartItems"></div><div id="cartBottom"></div></aside>
@@ -383,7 +389,16 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 <div class="fg"><label>Order Code</label><input id="statusOrderCode" placeholder="e.g. SILA-12345678"></div><div class="fg"><label>Phone / WhatsApp used for the order</label><input id="statusPaymentCode" type="tel" placeholder="+234..."></div>
 <button class="btn-gold" style="width:100%" onclick="lookupOrderStatus()">Check Status</button><div id="statusResult"></div></div></div>
 
-<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()"><button class="lb-close" onclick="closeLightbox()">×</button><img id="lightboxImg" src="" alt=""></div>
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
+<button class="lb-close" onclick="closeLightbox()" aria-label="Close image preview">×</button>
+<div class="lightbox-content">
+  <img id="lightboxImg" src="" alt="">
+  <div class="lightbox-meta">
+    <div class="lightbox-title" id="lightboxTitle"></div>
+    <button class="lb-download" id="lightboxDownloadBtn" type="button" onclick="downloadLightboxImage()">⬇ Download Image</button>
+  </div>
+</div>
+</div>
 
 <script>
 /* ============================================================
@@ -548,15 +563,58 @@ async function loadDatabaseGallery(){
   renderDatabaseGallery();
 }
 
+let currentLightboxImage={src:"",title:""};
+
 function openLightbox(src,alt){
-  document.getElementById("lightboxImg").src=src;
-  document.getElementById("lightboxImg").alt=alt;
+  currentLightboxImage={src:String(src||""),title:String(alt||"Sila's Kitchen product")};
+  document.getElementById("lightboxImg").src=currentLightboxImage.src;
+  document.getElementById("lightboxImg").alt=currentLightboxImage.title;
+  document.getElementById("lightboxTitle").textContent=currentLightboxImage.title;
+  document.getElementById("lightboxDownloadBtn").style.display=currentLightboxImage.src?"inline-block":"none";
   document.getElementById("lightbox").classList.add("active");
 }
 
 function closeLightbox(){
   document.getElementById("lightbox").classList.remove("active");
   document.getElementById("lightboxImg").src="";
+  document.getElementById("lightboxTitle").textContent="";
+  currentLightboxImage={src:"",title:""};
+}
+
+function safeDownloadName(title,src){
+  const clean=String(title||"sila-product").trim().toLowerCase()
+    .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"") || "sila-product";
+  let ext="jpg";
+  try{
+    const pathname=new URL(src,window.location.href).pathname;
+    const match=pathname.match(/\.([a-zA-Z0-9]{2,5})$/);
+    if(match)ext=match[1].toLowerCase();
+  }catch(_){}
+  if(!["jpg","jpeg","png","webp","gif","avif"].includes(ext))ext="jpg";
+  return `${clean}.${ext}`;
+}
+
+async function downloadImage(src,title){
+  if(!src)return;
+  try{
+    const response=await fetch(src,{mode:"cors"});
+    if(!response.ok)throw new Error("Image download failed.");
+    const blob=await response.blob();
+    const objectUrl=URL.createObjectURL(blob);
+    const anchor=document.createElement("a");
+    anchor.href=objectUrl;
+    anchor.download=safeDownloadName(title,src);
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(()=>URL.revokeObjectURL(objectUrl),1500);
+  }catch(error){
+    window.open(src,"_blank","noopener");
+  }
+}
+
+function downloadLightboxImage(){
+  downloadImage(currentLightboxImage.src,currentLightboxImage.title);
 }
 
 /* ============================================================
@@ -577,6 +635,21 @@ function formatProductPrice(product){
 
 function productImage(product){
   return product.image_url || SILA_LOGO;
+}
+
+function normalizePackageName(name){
+  return String(name||"")
+    .trim()
+    .toLowerCase()
+    .replace(/[–—_]/g,"-")
+    .replace(/\s+/g,"");
+}
+
+function signaturePackageName(product){
+  const normalized=normalizePackageName(product?.name);
+  if(normalized==="deluxe-mix" || normalized==="deluxemix") return "Deluxe-Mix";
+  if(normalized==="classic-mix" || normalized==="classicmix") return "Classic-Mix";
+  return null;
 }
 
 function renderDatabaseMenu(){
@@ -604,17 +677,53 @@ function renderDatabaseMenu(){
     }
 
     container.innerHTML=products.map(product=>{
+      const packageName=signaturePackageName(product);
+
+      if(packageName){
+        const basePrice=PACKAGE_DATA[packageName].base;
+        return `
+          <article class="mcard">
+            <div class="mcard-top product-photo"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Open ${escapeHtml(product.name)} image"
+                 onclick="openProductImage('${String(product.id).replace(/'/g,"\\'")}')"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProductImage('${String(product.id).replace(/'/g,"\\'")}')}">
+              <img src="${escapeHtml(productImage(product))}"
+                   loading="lazy"
+                   alt="${escapeHtml(product.name)}"
+                   onerror="this.onerror=null;this.src='${SILA_LOGO}'">
+              <span class="product-photo-hint">🔍 View</span>
+            </div>
+            <div class="mcard-body">
+              <h3>${escapeHtml(product.name)}</h3>
+              ${product.description?`<p>${escapeHtml(product.description)}</p>`:""}
+              <div class="small-muted">Choose your protein before the final price is calculated.</div>
+            </div>
+            <div class="mcard-foot">
+              <span class="price">From ${money(basePrice)}</span>
+              <button class="obtn" onclick="openPackage('${packageName}')">Customize</button>
+            </div>
+          </article>`;
+      }
+
       const price=Number(product.price||0);
       const label=formatProductPrice(product);
       const canOrder=price>0;
 
       return `
         <article class="mcard">
-          <div class="mcard-top">
+          <div class="mcard-top product-photo"
+             role="button"
+             tabindex="0"
+             aria-label="Open ${escapeHtml(product.name)} image"
+             onclick="openProductImage('${String(product.id).replace(/'/g,"\\'")}')"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openProductImage('${String(product.id).replace(/'/g,"\\'")}')}">
             <img src="${escapeHtml(productImage(product))}"
                  loading="lazy"
                  alt="${escapeHtml(product.name)}"
                  onerror="this.onerror=null;this.src='${SILA_LOGO}'">
+            <span class="product-photo-hint">🔍 View</span>
           </div>
           <div class="mcard-body">
             <h3>${escapeHtml(product.name)}</h3>
@@ -623,9 +732,7 @@ function renderDatabaseMenu(){
           </div>
           <div class="mcard-foot">
             <span class="price">${escapeHtml(label)}</span>
-            <button class="obtn"
-              ${canOrder?"":"disabled"}
-              onclick="addDatabaseProduct('${String(product.id).replace(/'/g,"\\'")}')">
+            <button class="obtn" onclick="addDatabaseProduct('${String(product.id).replace(/'/g,"\\'")}')">
               ${canOrder?"Add":"Request"}
             </button>
           </div>
@@ -634,12 +741,23 @@ function renderDatabaseMenu(){
   });
 }
 
+function openProductImage(productId){
+  const product=databaseProducts.find(p=>String(p.id)===String(productId));
+  if(!product)return;
+  openLightbox(productImage(product),product.name||"Sila's Kitchen product");
+}
+
 function addDatabaseProduct(productId){
   const product=databaseProducts.find(p=>String(p.id)===String(productId));
   if(!product)return;
 
-  const price=Number(product.price||0);
+  const packageName=signaturePackageName(product);
+  if(packageName){
+    openPackage(packageName);
+    return;
+  }
 
+  const price=Number(product.price||0);
   if(price<=0){
     openDrinkRequest(product.name);
     return;
@@ -658,13 +776,14 @@ async function loadDatabaseMenu(){
       const el=document.getElementById("db-menu-"+category);
       if(el)el.innerHTML='<div class="empty">The live menu is temporarily unavailable.</div>';
     });
+    notice.style.display="block";
     notice.className="menu-data-notice error";
-    notice.textContent="The live menu could not connect to Supabase. Please refresh the page or contact Sila.";
+    notice.textContent="The menu is temporarily unavailable. Please refresh the page or contact Sila.";
     return;
   }
 
-  notice.className="menu-data-notice";
-  notice.textContent="Loading Sila's live menu...";
+  notice.style.display="none";
+  notice.textContent="";
 
   const {data,error}=await sb
     .from("products")
@@ -690,8 +809,9 @@ async function loadDatabaseMenu(){
       }
     });
 
+    notice.style.display="block";
     notice.className="menu-data-notice error";
-    notice.textContent="Sila's live menu could not be loaded. Supabase returned: "+error.message;
+    notice.textContent="The menu is temporarily unavailable. Please refresh the page or contact Sila.";
     return;
   }
 
@@ -699,11 +819,8 @@ async function loadDatabaseMenu(){
 
   renderDatabaseMenu();
 
-  const activeCount=databaseProducts.length;
-  notice.className="menu-data-notice success";
-  notice.textContent=activeCount
-    ? `Live menu updated from Sila's admin dashboard — ${activeCount} available product${activeCount===1?"":"s"} currently listed.`
-    : "No products are currently marked as available in the admin dashboard.";
+  notice.style.display="none";
+  notice.textContent="";
 }
 
 /* ---------- Custom builder ---------- */
@@ -758,48 +875,66 @@ function addPuffMixToCart(){
 const PACKAGE_DATA={
   "Classic-Mix":{
     description:"1 samosa + 1 spring roll + 3 puff-puff + protein of choice. Optional drink.",
-    base:1100
+    base:2500
   },
   "Deluxe-Mix":{
     description:"1 samosa + 1 spring roll + 3 puff-puff + 3 banana balls + protein of choice. Optional drink.",
-    base:1400
+    base:3000
   }
 };
 
-const PROTEINS={Beef:1000,Chicken:1200,Gizzard:500,Turkey:2500};
+const PROTEINS={
+  Beef:1000,
+  Chicken:1200,
+  Gizzard:500,
+  Turkey:2500
+};
 
 function openPackage(name){
   currentPackage=name;
   const p=PACKAGE_DATA[name];
+
+  if(!p){
+    alert("This package could not be opened. Please refresh the page.");
+    return;
+  }
 
   document.getElementById("packageTitle").textContent=name;
   document.getElementById("packageDescription").textContent=p.description;
 
   document.getElementById("packageOptions").innerHTML=`
     <div class="package-option">
-      <strong>Included</strong>
+      <strong>Package base price: ${money(p.base)}</strong>
       <p class="small-muted">${escapeHtml(p.description)}</p>
+      <p class="small-muted">Your selected protein is added to the package base price to determine the final price.</p>
     </div>
+
     <div class="fg">
-      <label>Protein of choice</label>
-      <select id="packageProtein" onchange="updatePackageTotal()">
-        ${Object.keys(PROTEINS).map(k=>`<option value="${k}">${k} — ${money(PROTEINS[k])}</option>`).join("")}
+      <label>Protein of choice *</label>
+      <select id="packageProtein" onchange="updatePackageTotal()" required>
+        <option value="">Choose your protein</option>
+        ${Object.keys(PROTEINS).map(k=>`<option value="${k}">${k} — +${money(PROTEINS[k])}</option>`).join("")}
       </select>
     </div>
+
     <div class="fg">
       <label>Optional drink</label>
       <select id="packageDrink">
-        <option>None</option>
-        <option>Sobo — price to be announced</option>
-        <option>Yoghurt — price to be announced</option>
-        <option>Tigernut — price to be announced</option>
+        <option value="None">None</option>
+        <option value="Sobo">Sobo</option>
+        <option value="Yoghurt">Yoghurt</option>
+        <option value="Tigernut">Tigernut</option>
       </select>
     </div>
+
     <div class="fg">
       <label>Quantity</label>
-      <input id="packageQty" type="number" min="1" value="1" onchange="updatePackageTotal()">
+      <input id="packageQty" type="number" min="1" value="1" oninput="updatePackageTotal()">
     </div>
-    <p class="small-muted">Drink prices are currently to be announced, so a selected drink is recorded as a request and is not added to the estimated total.</p>`;
+
+    <p class="small-muted">
+      Optional drink pricing is confirmed according to the selected size/request and is not included in this package estimate.
+    </p>`;
 
   updatePackageTotal();
   document.getElementById("packageModal").classList.add("active");
@@ -812,10 +947,24 @@ function closePackage(){
 
 function updatePackageTotal(){
   if(!currentPackage)return;
+
   const protein=document.getElementById("packageProtein").value;
   const qty=Math.max(1,Number(document.getElementById("packageQty").value||1));
-  const total=(PACKAGE_DATA[currentPackage].base+PROTEINS[protein])*qty;
-  document.getElementById("packageTotal").textContent=`Estimated Total: ${money(total)}`;
+  const base=PACKAGE_DATA[currentPackage].base;
+
+  if(!protein){
+    document.getElementById("packageTotal").textContent=
+      `Base price: ${money(base)} · Choose a protein to calculate the final price`;
+    return;
+  }
+
+  const unitPrice=base+PROTEINS[protein];
+  const total=unitPrice*qty;
+
+  document.getElementById("packageTotal").textContent=
+    qty===1
+      ? `Final package price: ${money(unitPrice)}`
+      : `Final total: ${money(total)} (${qty} × ${money(unitPrice)})`;
 }
 
 function addPackageToCart(){
@@ -824,10 +973,28 @@ function addPackageToCart(){
   const protein=document.getElementById("packageProtein").value;
   const drink=document.getElementById("packageDrink").value;
   const qty=Math.max(1,Number(document.getElementById("packageQty").value||1));
-  const price=PACKAGE_DATA[currentPackage].base+PROTEINS[protein];
-  const meta=`Protein: ${protein}${drink!=="None"?" · Optional drink: "+drink:""} · Quantity: ${qty}`;
 
-  for(let i=0;i<qty;i++)addToCart(currentPackage,price,meta);
+  if(!protein){
+    alert("Please choose a protein before adding this package to your cart.");
+    document.getElementById("packageProtein").focus();
+    return;
+  }
+
+  const base=PACKAGE_DATA[currentPackage].base;
+  const proteinPrice=PROTEINS[protein];
+  const finalUnitPrice=base+proteinPrice;
+
+  const meta=[
+    `Package base: ${money(base)}`,
+    `Protein: ${protein} (+${money(proteinPrice)})`,
+    drink!=="None"?`Optional drink: ${drink}`:"",
+    `Final unit price: ${money(finalUnitPrice)}`
+  ].filter(Boolean).join(" · ");
+
+  for(let i=0;i<qty;i++){
+    addToCart(currentPackage,finalUnitPrice,meta);
+  }
+
   closePackage();
 }
 
@@ -1296,9 +1463,19 @@ document.getElementById("statusModal").addEventListener("click",e=>{
   if(e.target===document.getElementById("statusModal"))closeStatus();
 });
 
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape" && document.getElementById("lightbox").classList.contains("active")){
+    closeLightbox();
+  }
+});
+
 /* Load the live customer menu after the page DOM exists. */
 loadDatabaseMenu();
 loadDatabaseGallery();
+</script>
+
+<script>
+document.getElementById("copyrightYear").textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
