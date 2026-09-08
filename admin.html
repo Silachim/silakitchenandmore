@@ -20,7 +20,7 @@
 .training-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;padding-top:5px}
 .training-empty{padding:45px 15px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;grid-column:1/-1}
 .training-preview{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.training-preview img{width:100%;max-height:180px;object-fit:cover;border:1px solid var(--line);border-radius:10px;display:none}
+.training-preview img,.training-preview video{width:100%;max-height:220px;object-fit:contain;border:1px solid var(--line);border-radius:10px;display:none;background:#15120e}
 .list-editor{min-height:125px}
 .training-note{font-size:.75rem;color:var(--muted);margin-top:5px}
 @media(max-width:1100px){.training-grid{grid-template-columns:1fr 1fr}}
@@ -254,9 +254,23 @@
         </div>
 
         <div class="field full">
+          <label>Promotional training video</label>
+          <input id="tVideo" type="file" accept="video/mp4,video/webm,video/quicktime">
+          <div class="media-help">Optional promotional video for the public Training section. MP4, WEBM or MOV. Maximum 100MB.</div>
+        </div>
+
+        <div class="field full">
+          <label>Video poster / thumbnail (optional)</label>
+          <input id="tVideoPoster" type="file" accept="image/jpeg,image/png,image/webp,image/avif">
+          <div class="media-help">Shown before the promotional video starts. Maximum 15MB.</div>
+        </div>
+
+        <div class="field full">
           <div class="training-preview">
             <img id="tFlyerPreview" alt="Flyer preview">
             <img id="tHeroPreview" alt="Hero image preview">
+            <video id="tVideoPreview" controls preload="metadata"></video>
+            <img id="tVideoPosterPreview" alt="Video poster preview">
           </div>
         </div>
 
@@ -545,6 +559,11 @@ function resetTrainingPreview(){
   $("tFlyerPreview").style.display="none";
   $("tHeroPreview").src="";
   $("tHeroPreview").style.display="none";
+  $("tVideoPreview").removeAttribute("src");
+  $("tVideoPreview").load();
+  $("tVideoPreview").style.display="none";
+  $("tVideoPosterPreview").src="";
+  $("tVideoPosterPreview").style.display="none";
 }
 
 function openTrainingModal(item=null){
@@ -583,6 +602,8 @@ function openTrainingModal(item=null){
   $("tActive").checked=item?.is_active??true;
   $("tFlyer").value="";
   $("tHero").value="";
+  $("tVideo").value="";
+  $("tVideoPoster").value="";
 
   resetTrainingPreview();
 
@@ -594,6 +615,17 @@ function openTrainingModal(item=null){
   if(item?.hero_image_url){
     $("tHeroPreview").src=item.hero_image_url;
     $("tHeroPreview").style.display="block";
+  }
+
+  if(item?.promo_video_url){
+    $("tVideoPreview").src=item.promo_video_url;
+    $("tVideoPreview").poster=item.promo_video_poster_url||"";
+    $("tVideoPreview").style.display="block";
+  }
+
+  if(item?.promo_video_poster_url){
+    $("tVideoPosterPreview").src=item.promo_video_poster_url;
+    $("tVideoPosterPreview").style.display="block";
   }
 
   $("trainingModal").classList.add("open");
@@ -609,6 +641,26 @@ async function uploadTrainingImage(file,programId,kind){
   const r=await sb.storage
     .from(TRAINING_BUCKET)
     .upload(path,file,{upsert:false,contentType:file.type});
+
+  if(r.error)throw r.error;
+
+  const pub=sb.storage.from(TRAINING_BUCKET).getPublicUrl(path);
+  return {path,url:pub.data.publicUrl};
+}
+
+async function uploadTrainingVideo(file,programId){
+  if(!file)return null;
+  if(file.size>100*1024*1024)throw Error("Training video must not exceed 100MB.");
+
+  const allowed=["video/mp4","video/webm","video/quicktime"];
+  if(file.type && !allowed.includes(file.type))throw Error("Training video must be MP4, WEBM or MOV.");
+
+  const ext=(file.name.split(".").pop()||"mp4").toLowerCase().replace(/[^a-z0-9]/g,"")||"mp4";
+  const path=`${programId}/promo-video-${crypto.randomUUID()}.${ext}`;
+
+  const r=await sb.storage
+    .from(TRAINING_BUCKET)
+    .upload(path,file,{upsert:false,contentType:file.type||undefined});
 
   if(r.error)throw r.error;
 
@@ -706,6 +758,21 @@ $("tHero").onchange=()=>{
   $("tHeroPreview").style.display="block";
 };
 
+$("tVideo").onchange=()=>{
+  const file=$("tVideo").files[0];
+  if(!file)return;
+  $("tVideoPreview").src=URL.createObjectURL(file);
+  $("tVideoPreview").style.display="block";
+};
+
+$("tVideoPoster").onchange=()=>{
+  const file=$("tVideoPoster").files[0];
+  if(!file)return;
+  $("tVideoPosterPreview").src=URL.createObjectURL(file);
+  $("tVideoPosterPreview").style.display="block";
+  $("tVideoPreview").poster=URL.createObjectURL(file);
+};
+
 $("trainingSearch").oninput=renderTraining;
 $("trainingStatus").onchange=renderTraining;
 $("trainingActive").onchange=renderTraining;
@@ -763,6 +830,8 @@ $("trainingForm").onsubmit=async e=>{
 
     const flyerFile=$("tFlyer").files[0];
     const heroFile=$("tHero").files[0];
+    const videoFile=$("tVideo").files[0];
+    const videoPosterFile=$("tVideoPoster").files[0];
 
     if(flyerFile){
       const up=await uploadTrainingImage(flyerFile,programId,"flyer");
@@ -772,6 +841,18 @@ $("trainingForm").onsubmit=async e=>{
     if(heroFile){
       const up=await uploadTrainingImage(heroFile,programId,"hero");
       payload.hero_image_url=up.url;
+    }
+
+    if(videoFile){
+      const up=await uploadTrainingVideo(videoFile,programId);
+      payload.promo_video_url=up.url;
+      payload.promo_video_storage_path=up.path;
+    }
+
+    if(videoPosterFile){
+      const up=await uploadTrainingImage(videoPosterFile,programId,"video-poster");
+      payload.promo_video_poster_url=up.url;
+      payload.promo_video_poster_path=up.path;
     }
 
     const session=(await sb.auth.getSession()).data.session;
