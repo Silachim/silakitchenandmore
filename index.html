@@ -516,7 +516,7 @@ function escapeHtml(s){
   }[c]));
 }
 
-function addToCart(name,price,meta=""){
+function addToCartOriginal(name,price,meta=""){
   const numericPrice=Number(price||0);
   const index=cart.findIndex(item=>item.name===name&&item.meta===meta);
   if(index>=0) cart[index].qty++;
@@ -910,7 +910,7 @@ function addCustomToCart(){
 
   const packaging=selectedPackaging("builderPackaging");
   if(packaging){parts.push(`Packaging: ${packaging.name} (+${money(packaging.price)})`);total+=Number(packaging.price||0)}
-  const requiredPackaging=packagingFor("custom").some(x=>x.is_required);
+  const requiredPackaging=packagingFor().some(x=>x.is_required);
   if(requiredPackaging&&!packaging){alert("Please choose a packaging option.");return}
   const notes=document.getElementById("builderNotes").value.trim();
   if(notes)parts.push("Notes: "+notes);
@@ -1053,7 +1053,7 @@ function addPackageToCart(){
   }
 
   const packaging=selectedPackaging("packagePackaging");
-  const requiredPackaging=packagingFor(currentPackage).some(x=>x.is_required);
+  const requiredPackaging=packagingFor().some(x=>x.is_required);
   if(requiredPackaging&&!packaging){alert("Please choose a packaging option before adding this package to your cart.");return}
   const base=PACKAGE_DATA[currentPackage].base;
   const proteinPrice=PROTEINS[protein];
@@ -1520,13 +1520,69 @@ Notes: ${document.getElementById("cNotes").value}`;
 
 
 
+
+let pendingFriedProduct=null;
+
+function isFriedProductByName(name){
+  const product=databaseProducts.find(x=>String(x.name||"").toLowerCase()===String(name||"").toLowerCase());
+  const category=String(product?.category||"").toLowerCase().replace(/[^a-z]/g,"");
+  return category.includes("fried");
+}
+
+function addToCart(name,price,image){
+  if(isFriedProductByName(name)){
+    const rows=packagingFor();
+    if(rows.length){
+      pendingFriedProduct={name,price:Number(price||0),image};
+      openFriedPackagingChooser();
+      return;
+    }
+  }
+  return addToCartOriginal(name,price,image);
+}
+
+function openFriedPackagingChooser(){
+  const old=document.getElementById("friedPackagingChooser");
+  if(old)old.remove();
+  const required=packagingFor().some(x=>x.is_required);
+  const wrap=document.createElement("div");
+  wrap.id="friedPackagingChooser";
+  wrap.className="modal open";
+  wrap.innerHTML=`<div class="modalbox" style="max-width:520px">
+    <button class="modal-close" onclick="closeFriedPackagingChooser()">×</button>
+    <h3 style="margin-top:0">Choose Packaging</h3>
+    <p class="modal-sub">${escapeHtml(pendingFriedProduct?.name||"Fried item")}</p>
+    ${packagingHtml("fried","friedItemPackaging")}
+    ${!required?'<div class="small-muted" style="margin:8px 0">Packaging is optional for this item.</div>':""}
+    <button class="btn-gold" style="width:100%;margin-top:12px" onclick="confirmFriedPackaging()">Add to Cart</button>
+    <button class="btn-ghost" style="width:100%;margin-top:8px" onclick="closeFriedPackagingChooser()">Cancel</button>
+  </div>`;
+  document.body.appendChild(wrap);
+}
+
+function closeFriedPackagingChooser(){
+  document.getElementById("friedPackagingChooser")?.remove();
+  pendingFriedProduct=null;
+}
+
+function confirmFriedPackaging(){
+  if(!pendingFriedProduct)return;
+  const packaging=selectedPackaging("friedItemPackaging");
+  const required=packagingFor().some(x=>x.is_required);
+  if(required&&!packaging){alert("Please choose a packaging option.");return}
+  const finalPrice=pendingFriedProduct.price+Number(packaging?.price||0);
+  const finalName=packaging?`${pendingFriedProduct.name} — Packaging: ${packaging.name}`:pendingFriedProduct.name;
+  addToCartOriginal(finalName,finalPrice,pendingFriedProduct.image);
+  closeFriedPackagingChooser();
+}
+
 /* Packaging */
 async function loadPackagingOptions(){
  try{const {data,error}=await sb.from("packaging_options").select("*").eq("is_active",true).order("sort_order").order("created_at");if(error)throw error;packagingOptions=data||[]}catch(e){console.error("Packaging load failed:",e);packagingOptions=[]}renderBuilderPackaging();
 }
-function packagingFor(context){const f=context==="Deluxe-Mix"?"applies_deluxe_mix":context==="Classic-Mix"?"applies_classic_mix":"applies_custom_builder";return packagingOptions.filter(x=>x[f])}
+function packagingFor(){return packagingOptions.filter(x=>x.applies_fried_category)}
 function packagingHtml(context,name){
- const rows=packagingFor(context);if(!rows.length)return '<div class="packaging-selector"><strong>Packaging</strong><div class="packaging-coming">Packaging options and prices will be announced soon. No packaging charge is added at this time.</div></div>';
+ const rows=packagingFor();if(!rows.length)return '<div class="packaging-selector"><strong>Packaging</strong><div class="packaging-coming">Packaging options and prices will be announced soon. No packaging charge is added at this time.</div></div>';
  const req=rows.some(x=>x.is_required);return `<div class="packaging-selector"><strong>Packaging${req?" *":""}</strong>${rows.map(x=>`<div class="packaging-choice"><label><input type="radio" name="${name}" value="${x.id}" onchange="${name==="builderPackaging"?"builderTotal()":"updatePackageTotal()"}"> ${escapeHtml(x.name)}${x.description?`<br><span class="small-muted">${escapeHtml(x.description)}</span>`:""}</label><strong>${money(x.price)}</strong></div>`).join("")}</div>`;
 }
 function selectedPackaging(name){const e=document.querySelector(`input[name="${name}"]:checked`);return e?packagingOptions.find(x=>String(x.id)===e.value):null}
