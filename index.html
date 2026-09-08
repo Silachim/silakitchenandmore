@@ -187,10 +187,15 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 .training-shell{display:grid;gap:22px}
 .training-loading,.training-empty,.training-error{border:1px dashed var(--line);border-radius:16px;padding:36px 20px;text-align:center;color:var(--muted);background:#fff}
 .training-program{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);gap:26px;background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
-.training-media{min-height:420px;background:linear-gradient(135deg,#211b14,#3a2a18);position:relative;overflow:hidden}
-.training-media img{width:100%;height:100%;min-height:420px;object-fit:cover;display:block}
+.training-media{background:#211b14;position:relative;overflow:hidden;align-self:start;display:block;padding:0;border-radius:0}
+.training-media>img{width:100%;height:auto;max-height:none;object-fit:contain;display:block;border-radius:0}
 .training-media-fallback{height:100%;min-height:420px;display:grid;place-items:center;padding:30px;text-align:center;color:#fff;background:radial-gradient(circle at 30% 25%,rgba(214,170,69,.28),transparent 38%),linear-gradient(135deg,#211b14,#15120e)}
 .training-media-fallback img{width:160px;height:160px;min-height:0;object-fit:contain;border-radius:50%;background:#fff;padding:8px}
+
+.training-media video{width:100%;height:auto;max-height:760px;display:block;background:#000;object-fit:contain}
+.training-media.has-video{background:#000}
+.training-media-label{position:absolute;right:12px;top:12px;padding:.42rem .65rem;border-radius:999px;background:rgba(21,18,14,.84);color:#fff;font-size:.7rem;font-weight:900}
+
 .training-media-hint{position:absolute;left:16px;bottom:16px;background:rgba(21,18,14,.84);color:#fff;padding:.55rem .75rem;border-radius:999px;font-size:.74rem;font-weight:800}
 .training-content{padding:30px 30px 30px 4px;display:flex;flex-direction:column}
 .training-topline{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-bottom:8px}
@@ -221,13 +226,13 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 .training-small-note{font-size:.78rem;color:var(--muted);margin-top:10px}
 @media(max-width:900px){
   .training-program{grid-template-columns:1fr}
-  .training-media,.training-media img,.training-media-fallback{min-height:340px}
+  .training-media-fallback{min-height:340px}
   .training-content{padding:24px}
 }
 @media(max-width:640px){
   .training-facts,.training-columns{grid-template-columns:1fr}
   .training-content{padding:20px}
-  .training-media,.training-media img,.training-media-fallback{min-height:300px}
+  .training-media-fallback{min-height:300px}
   .training-actions>*{width:100%}
 }
 .status-box{padding:15px;border:1px solid var(--line);background:var(--cream);border-radius:10px;margin:14px 0}
@@ -1529,16 +1534,16 @@ function isFriedProductByName(name){
   return category.includes("fried");
 }
 
-function addToCart(name,price,image){
+function addToCart(name,price,meta=""){
   if(isFriedProductByName(name)){
     const rows=packagingFor();
     if(rows.length){
-      pendingFriedProduct={name,price:Number(price||0),image};
+      pendingFriedProduct={name,price:Number(price||0),meta};
       openFriedPackagingChooser();
       return;
     }
   }
-  return addToCartOriginal(name,price,image);
+  return addToCartOriginal(name,price,meta);
 }
 
 function openFriedPackagingChooser(){
@@ -1547,8 +1552,8 @@ function openFriedPackagingChooser(){
   const required=packagingFor().some(x=>x.is_required);
   const wrap=document.createElement("div");
   wrap.id="friedPackagingChooser";
-  wrap.className="modal open";
-  wrap.innerHTML=`<div class="modalbox" style="max-width:520px">
+  wrap.className="modal-overlay active";
+  wrap.innerHTML=`<div class="modal" style="max-width:520px">
     <button class="modal-close" onclick="closeFriedPackagingChooser()">×</button>
     <h3 style="margin-top:0">Choose Packaging</h3>
     <p class="modal-sub">${escapeHtml(pendingFriedProduct?.name||"Fried item")}</p>
@@ -1572,7 +1577,7 @@ function confirmFriedPackaging(){
   if(required&&!packaging){alert("Please choose a packaging option.");return}
   const finalPrice=pendingFriedProduct.price+Number(packaging?.price||0);
   const finalName=packaging?`${pendingFriedProduct.name} — Packaging: ${packaging.name}`:pendingFriedProduct.name;
-  addToCartOriginal(finalName,finalPrice,pendingFriedProduct.image);
+  addToCartOriginal(finalName,finalPrice,pendingFriedProduct.meta);
   closeFriedPackagingChooser();
 }
 
@@ -1673,12 +1678,14 @@ function renderTrainingPrograms(){
 
     return `
       <article class="training-program">
-        <div class="training-media"
-             ${image?`role="button" tabindex="0" aria-label="Open training flyer for ${escapeHtml(program.title||"training")}" onclick="openTrainingFlyer('${String(program.id).replace(/'/g,"\\'")}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTrainingFlyer('${String(program.id).replace(/'/g,"\\'")}')}"`:""}>
-          ${image
-            ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(program.title||"Sila training programme")}" loading="lazy">`
-            : `<div class="training-media-fallback"><div><img src="${SILA_LOGO}" alt="Sila's Kitchen and More"><div style="margin-top:14px;font-weight:900">Sila Culinary Training</div></div></div>`}
-          ${image?'<span class="training-media-hint">🔍 View flyer</span>':""}
+        <div class="training-media ${program.promo_video_url?"has-video":""}"
+             ${(!program.promo_video_url&&image)?`role="button" tabindex="0" aria-label="Open training flyer for ${escapeHtml(program.title||"training")}" onclick="openTrainingFlyer('${String(program.id).replace(/'/g,"\\'")}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTrainingFlyer('${String(program.id).replace(/'/g,"\\'")}')}"`:""}>
+          ${program.promo_video_url
+            ? `<video src="${escapeHtml(program.promo_video_url)}" ${program.promo_video_poster_url?`poster="${escapeHtml(program.promo_video_poster_url)}"`:""} controls playsinline preload="metadata" aria-label="${escapeHtml(program.title||"Training")} promotional video"></video><span class="training-media-label">▶ Training Video</span>`
+            : image
+              ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(program.title||"Sila training programme")}" loading="lazy">`
+              : `<div class="training-media-fallback"><div><img src="${SILA_LOGO}" alt="Sila's Kitchen and More"><div style="margin-top:14px;font-weight:900">Sila Culinary Training</div></div></div>`}
+          ${(!program.promo_video_url&&image)?'<span class="training-media-hint">🔍 View flyer</span>':""}
         </div>
 
         <div class="training-content">
