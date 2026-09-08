@@ -406,7 +406,7 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 <div class="contact-card"><h3>Delivery & Pickup</h3><p>We offer pickup and delivery within <strong style="color:#fff">Ibadan.</strong><br><br>Events such as naming ceremonies, weddings and other celebrations can be served across Nigeria.<br><br>Minimum 4 days advance notice is required.</p></div>
 </div><div class="notice">📍 <strong>Service area:</strong> No 8, Sobaloju Street, Adepeji Villa, Ajobo, Arulogun, Ibadan, Oyo State. Delivery is available within Ibadan.</div></div></section>
 
-<footer><div class="footer-left"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></div><p>© 2024 Sila's Kitchen and More · Quality Service Is Our Benchmark · All rights reserved.</p><div class="footer-links"><a href="#menu">Menu</a><a href="#about">About</a><a href="#payment">Payment</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a></div></footer>
+<footer><div class="footer-left"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></div><p>© <span id="footerYear"></span> Sila's Kitchen and More · Quality Service Is Our Benchmark · All rights reserved.</p><div class="footer-links"><a href="#menu">Menu</a><a href="#about">About</a><a href="#payment">Payment</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a></div></footer>
 
 <button class="cart-fab" onclick="toggleCart()" aria-label="Open shopping cart">🛒<span class="cart-count" id="cartCount">0</span></button>
 <aside class="cart-drawer" id="cartDrawer"><div class="cart-head"><h2>Your Cart</h2><button class="cart-close" onclick="toggleCart()">×</button></div><div id="cartItems"></div><div id="cartBottom"></div></aside>
@@ -1767,6 +1767,8 @@ loadDatabaseMenu();
 loadDatabaseGallery();
 loadTrainingPrograms();
 loadPackagingOptions();
+
+document.getElementById("footerYear").textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
