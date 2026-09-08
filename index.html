@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Sila's Kitchen and More — Nigerian small chops, pastries, drinks and custom event catering in Ibadan and across Nigeria.">
+<meta name="description" content="Sila's Kitchen and More — Nigerian small chops, pastries, drinks, event catering and practical culinary training in Ibadan, Nigeria.">
 <meta name="theme-color" content="#11100d">
 
 <!-- Sila's public favicon -->
@@ -183,6 +183,53 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 .lb-download:hover{background:#9c7309}
 .lb-close{position:absolute;top:15px;right:22px;color:#fff;background:none;border:0;font-size:2.5rem}
 
+
+.training-shell{display:grid;gap:22px}
+.training-loading,.training-empty,.training-error{border:1px dashed var(--line);border-radius:16px;padding:36px 20px;text-align:center;color:var(--muted);background:#fff}
+.training-program{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);gap:26px;background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+.training-media{min-height:420px;background:linear-gradient(135deg,#211b14,#3a2a18);position:relative;overflow:hidden}
+.training-media img{width:100%;height:100%;min-height:420px;object-fit:cover;display:block}
+.training-media-fallback{height:100%;min-height:420px;display:grid;place-items:center;padding:30px;text-align:center;color:#fff;background:radial-gradient(circle at 30% 25%,rgba(214,170,69,.28),transparent 38%),linear-gradient(135deg,#211b14,#15120e)}
+.training-media-fallback img{width:160px;height:160px;min-height:0;object-fit:contain;border-radius:50%;background:#fff;padding:8px}
+.training-media-hint{position:absolute;left:16px;bottom:16px;background:rgba(21,18,14,.84);color:#fff;padding:.55rem .75rem;border-radius:999px;font-size:.74rem;font-weight:800}
+.training-content{padding:30px 30px 30px 4px;display:flex;flex-direction:column}
+.training-topline{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-bottom:8px}
+.training-edition{font-size:.75rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--gold)}
+.training-status-chip{display:inline-flex;align-items:center;padding:.36rem .65rem;border-radius:999px;font-size:.7rem;font-weight:900;background:#f5f0e5;color:#685a3e}
+.training-status-chip.open{background:#e9f7ee;color:var(--success)}
+.training-status-chip.closed{background:#fff1dc;color:#855c00}
+.training-status-chip.completed{background:#eee;color:#5b5b5b}
+.training-title{font:700 clamp(2rem,4.5vw,3.2rem) Georgia,serif;line-height:1.05;margin:.2rem 0 .6rem}
+.training-tagline{font:italic 700 1.15rem Georgia,serif;color:var(--gold);margin-bottom:12px}
+.training-description{color:var(--muted);font-size:.98rem;margin:0 0 18px}
+.training-facts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:4px 0 20px}
+.training-fact{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:12px}
+.training-fact small{display:block;color:var(--muted);font-size:.67rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.training-fact strong{display:block}
+.training-columns{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:4px 0 20px}
+.training-panel{border:1px solid var(--line);border-radius:14px;padding:17px;background:#fffdf8}
+.training-panel h3{margin:0 0 9px;font:700 1.18rem Georgia,serif}
+.training-list{margin:0;padding-left:19px;color:#423b32}
+.training-list li{margin:6px 0}
+.training-policy{border-left:4px solid var(--gold);background:#fff8e8;padding:13px 15px;border-radius:0 10px 10px 0;margin:0 0 17px}
+.training-venue{background:#f7f3ea;border:1px solid var(--line);padding:14px;border-radius:12px;margin-bottom:18px}
+.training-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto}
+.training-register{display:inline-flex;align-items:center;justify-content:center;background:#198754;color:#fff;border:0;border-radius:10px;padding:.85rem 1.15rem;font-weight:900}
+.training-register:hover{background:#157347}
+.training-flyer-btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:.85rem 1.15rem;font-weight:900}
+.training-closed-note{padding:12px 14px;background:#fff3dc;border:1px solid #ecd39a;border-radius:10px;font-size:.86rem;color:#6d5317}
+.training-small-note{font-size:.78rem;color:var(--muted);margin-top:10px}
+@media(max-width:900px){
+  .training-program{grid-template-columns:1fr}
+  .training-media,.training-media img,.training-media-fallback{min-height:340px}
+  .training-content{padding:24px}
+}
+@media(max-width:640px){
+  .training-facts,.training-columns{grid-template-columns:1fr}
+  .training-content{padding:20px}
+  .training-media,.training-media img,.training-media-fallback{min-height:300px}
+  .training-actions>*{width:100%}
+}
 .status-box{padding:15px;border:1px solid var(--line);background:var(--cream);border-radius:10px;margin:14px 0}
 .status-pill{display:inline-block;padding:.35rem .65rem;border-radius:999px;font-size:.75rem;font-weight:900;background:#eee}
 .status-pill.success{background:#e8f6ed;color:var(--success)}
@@ -195,6 +242,7 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 .small-muted{font-size:.76rem;color:var(--muted)}
 .error-text{color:var(--danger);font-size:.82rem;margin-top:7px}
 .success-text{color:var(--success);font-size:.82rem;margin-top:7px}
+.packaging-selector{border:1px solid var(--line);padding:13px;border-radius:10px;margin:12px 0;background:#fffdf8}.packaging-choice{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #f0eadf}.packaging-choice:last-child{border-bottom:0}.packaging-coming{font-size:.82rem;color:var(--muted)}
 .package-option{border:1px solid var(--line);padding:12px;border-radius:10px;margin:8px 0}
 .package-option label{display:flex;gap:10px;align-items:flex-start}
 .package-total{font-weight:900;color:var(--gold);font-size:1.15rem;margin-top:15px}
@@ -220,7 +268,7 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 <nav>
 <a href="#hero" class="nav-logo"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></a>
 <ul class="nav-links">
-<li><a href="#how">How It Works</a></li><li><a href="#menu">Menu</a></li><li><a href="#about">About</a></li><li><a href="#payment">Payment</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#consultation">Consult</a></li><li><a href="#contact">Contact</a></li>
+<li><a href="#how">How It Works</a></li><li><a href="#menu">Menu</a></li><li><a href="#training">Training</a></li><li><a href="#about">About</a></li><li><a href="#payment">Payment</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#consultation">Consult</a></li><li><a href="#contact">Contact</a></li>
 </ul>
 <a href="#menu" class="nav-cta">Order Now</a>
 </nav>
@@ -289,7 +337,7 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 </div>
 <div class="builder-box"><h4>Order Notes</h4><div class="fg"><textarea id="builderNotes" placeholder="Special request, quantities, event details..."></textarea></div><p class="menu-cat-p">Drink sizes: 25cl, 50cl, 75cl and 100cl. Other sizes are priced on request.</p></div>
 </div>
-<div class="builder-total"><span>Estimated Total</span><span id="builderTotal">₦0</span></div>
+<div id="builderPackagingHost"></div><div class="builder-total"><span>Estimated Total</span><span id="builderTotal">₦0</span></div>
 <button class="btn-gold" style="width:100%;margin-top:15px" onclick="addCustomToCart()">Add Custom Order to Cart</button>
 </div>
 <div class="menu-note">✨ <strong>Special custom-made orders are available based on request.</strong> For large events, contact us for tailored quantities and requirements.</div>
@@ -307,6 +355,19 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 </div>
 
 </div></section>
+
+
+<section id="training">
+  <div class="container">
+    <span class="sec-eye">Sila Culinary Training</span>
+    <h2 class="sec-h2">Learn. Create. Earn.</h2>
+    <p class="sec-p">Build practical culinary skills through Sila's hands-on training programmes. Current programmes and registration information are updated directly by Sila.</p>
+
+    <div id="trainingPrograms" class="training-shell" aria-live="polite">
+      <div class="training-loading">Loading current training programme…</div>
+    </div>
+  </div>
+</section>
 
 <section id="about"><div class="container about-grid"><div class="about-logo-col"><div class="about-logo-ring"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></div><p class="about-quote">"Quality Service Is Our Benchmark"</p></div>
 <div><span class="sec-eye">Our Story</span><h2 class="sec-h2">More than food — we make moments.</h2>
@@ -345,7 +406,7 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 <div class="contact-card"><h3>Delivery & Pickup</h3><p>We offer pickup and delivery within <strong style="color:#fff">Ibadan.</strong><br><br>Events such as naming ceremonies, weddings and other celebrations can be served across Nigeria.<br><br>Minimum 4 days advance notice is required.</p></div>
 </div><div class="notice">📍 <strong>Service area:</strong> No 8, Sobaloju Street, Adepeji Villa, Ajobo, Arulogun, Ibadan, Oyo State. Delivery is available within Ibadan.</div></div></section>
 
-<footer><div class="footer-left"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></div><p>© <span id="copyrightYear"></span> Sila's Kitchen and More · Quality Service Is Our Benchmark · All rights reserved.</p><div class="footer-links"><a href="#menu">Menu</a><a href="#about">About</a><a href="#payment">Payment</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a></div></footer>
+<footer><div class="footer-left"><img src="https://raw.githubusercontent.com/Silachim/silakitchenandmore/main/Sila%20Kicthen%20logo.jpg" alt="Sila's Kitchen and More"></div><p>© 2024 Sila's Kitchen and More · Quality Service Is Our Benchmark · All rights reserved.</p><div class="footer-links"><a href="#menu">Menu</a><a href="#about">About</a><a href="#payment">Payment</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a></div></footer>
 
 <button class="cart-fab" onclick="toggleCart()" aria-label="Open shopping cart">🛒<span class="cart-count" id="cartCount">0</span></button>
 <aside class="cart-drawer" id="cartDrawer"><div class="cart-head"><h2>Your Cart</h2><button class="cart-close" onclick="toggleCart()">×</button></div><div id="cartItems"></div><div id="cartBottom"></div></aside>
@@ -437,6 +498,8 @@ let currentPackage=null;
 let currentOrder=null;
 let databaseProducts=[];
 let databaseGallery=[];
+let databaseTrainingPrograms=[];
+let packagingOptions=[];
 
 function money(n){
   return "₦"+Number(n||0).toLocaleString("en-NG",{maximumFractionDigits:2});
@@ -829,6 +892,8 @@ function builderTotal(){
   document.querySelectorAll("[data-builder]").forEach(x=>{
     total+=Number(x.value||0)*Number(x.dataset.price||0);
   });
+  const packaging=selectedPackaging("builderPackaging");
+  if(packaging)total+=Number(packaging.price||0);
   document.getElementById("builderTotal").textContent=money(total);
 }
 
@@ -843,6 +908,10 @@ function addCustomToCart(){
     }
   });
 
+  const packaging=selectedPackaging("builderPackaging");
+  if(packaging){parts.push(`Packaging: ${packaging.name} (+${money(packaging.price)})`);total+=Number(packaging.price||0)}
+  const requiredPackaging=packagingFor("custom").some(x=>x.is_required);
+  if(requiredPackaging&&!packaging){alert("Please choose a packaging option.");return}
   const notes=document.getElementById("builderNotes").value.trim();
   if(notes)parts.push("Notes: "+notes);
 
@@ -917,6 +986,8 @@ function openPackage(name){
       </select>
     </div>
 
+    ${packagingHtml(name,"packagePackaging")}
+
     <div class="fg">
       <label>Optional drink</label>
       <select id="packageDrink">
@@ -958,7 +1029,8 @@ function updatePackageTotal(){
     return;
   }
 
-  const unitPrice=base+PROTEINS[protein];
+  const packaging=selectedPackaging("packagePackaging");
+  const unitPrice=base+PROTEINS[protein]+Number(packaging?.price||0);
   const total=unitPrice*qty;
 
   document.getElementById("packageTotal").textContent=
@@ -980,13 +1052,18 @@ function addPackageToCart(){
     return;
   }
 
+  const packaging=selectedPackaging("packagePackaging");
+  const requiredPackaging=packagingFor(currentPackage).some(x=>x.is_required);
+  if(requiredPackaging&&!packaging){alert("Please choose a packaging option before adding this package to your cart.");return}
   const base=PACKAGE_DATA[currentPackage].base;
   const proteinPrice=PROTEINS[protein];
-  const finalUnitPrice=base+proteinPrice;
+  const packagingPrice=Number(packaging?.price||0);
+  const finalUnitPrice=base+proteinPrice+packagingPrice;
 
   const meta=[
     `Package base: ${money(base)}`,
     `Protein: ${protein} (+${money(proteinPrice)})`,
+    packaging?`Packaging: ${packaging.name} (+${money(packagingPrice)})`:"Packaging: options/prices pending",
     drink!=="None"?`Optional drink: ${drink}`:"",
     `Final unit price: ${money(finalUnitPrice)}`
   ].filter(Boolean).join(" · ");
@@ -1441,6 +1518,222 @@ Notes: ${document.getElementById("cNotes").value}`;
   window.open(`https://wa.me/${SILA_WHATSAPP}?text=${encodeURIComponent(text)}`,"_blank","noopener");
 }
 
+
+
+/* Packaging */
+async function loadPackagingOptions(){
+ try{const {data,error}=await sb.from("packaging_options").select("*").eq("is_active",true).order("sort_order").order("created_at");if(error)throw error;packagingOptions=data||[]}catch(e){console.error("Packaging load failed:",e);packagingOptions=[]}renderBuilderPackaging();
+}
+function packagingFor(context){const f=context==="Deluxe-Mix"?"applies_deluxe_mix":context==="Classic-Mix"?"applies_classic_mix":"applies_custom_builder";return packagingOptions.filter(x=>x[f])}
+function packagingHtml(context,name){
+ const rows=packagingFor(context);if(!rows.length)return '<div class="packaging-selector"><strong>Packaging</strong><div class="packaging-coming">Packaging options and prices will be announced soon. No packaging charge is added at this time.</div></div>';
+ const req=rows.some(x=>x.is_required);return `<div class="packaging-selector"><strong>Packaging${req?" *":""}</strong>${rows.map(x=>`<div class="packaging-choice"><label><input type="radio" name="${name}" value="${x.id}" onchange="${name==="builderPackaging"?"builderTotal()":"updatePackageTotal()"}"> ${escapeHtml(x.name)}${x.description?`<br><span class="small-muted">${escapeHtml(x.description)}</span>`:""}</label><strong>${money(x.price)}</strong></div>`).join("")}</div>`;
+}
+function selectedPackaging(name){const e=document.querySelector(`input[name="${name}"]:checked`);return e?packagingOptions.find(x=>String(x.id)===e.value):null}
+function renderBuilderPackaging(){const h=document.getElementById("builderPackagingHost");if(h)h.innerHTML=packagingHtml("custom","builderPackaging")}
+
+/* ---------- Customer Training Experience ---------- */
+function trainingStatusLabel(status){
+  return ({
+    registration_open:"Registration Open",
+    registration_closed:"Registration Closed",
+    upcoming:"Upcoming",
+    ongoing:"Ongoing",
+    completed:"Completed"
+  })[status] || String(status||"").replaceAll("_"," ");
+}
+
+function trainingStatusClass(status){
+  if(status==="registration_open")return "open";
+  if(status==="registration_closed")return "closed";
+  if(status==="completed")return "completed";
+  return "";
+}
+
+function trainingDate(value){
+  if(!value)return "";
+  const d=new Date(value+"T12:00:00");
+  if(Number.isNaN(d.getTime()))return "";
+  return d.toLocaleDateString("en-NG",{day:"numeric",month:"long",year:"numeric"});
+}
+
+function trainingLocation(program){
+  return [
+    program.venue_address,
+    program.city,
+    program.state_region,
+    program.country
+  ].filter(Boolean).join(", ");
+}
+
+function trainingImage(program){
+  return program.flyer_url || program.hero_image_url || "";
+}
+
+function openTrainingFlyer(programId){
+  const program=databaseTrainingPrograms.find(x=>String(x.id)===String(programId));
+  if(!program)return;
+  const image=trainingImage(program);
+  if(!image)return;
+  openLightbox(image,`${program.title||"Training"}${program.edition_label?` — ${program.edition_label}`:""}`);
+}
+
+function registerForTraining(programId){
+  const program=databaseTrainingPrograms.find(x=>String(x.id)===String(programId));
+  if(!program)return;
+
+  if(program.status!=="registration_open"){
+    alert("Registration is not currently open for this programme.");
+    return;
+  }
+
+  const number=String(program.whatsapp_number||SILA_WHATSAPP).replace(/\D/g,"") || SILA_WHATSAPP;
+  const fallback=`Hello Sila's Kitchen and More, I would like to register for ${program.edition_label?program.edition_label+" ":""}${program.title||"your training programme"}. Please send me the registration details.`;
+  const message=program.whatsapp_message || fallback;
+
+  window.open(`https://wa.me/${number}?text=${encodeURIComponent(message)}`,"_blank","noopener");
+}
+
+function renderTrainingPrograms(){
+  const root=document.getElementById("trainingPrograms");
+  if(!root)return;
+
+  if(!databaseTrainingPrograms.length){
+    root.innerHTML=`
+      <div class="training-empty">
+        <strong>No current training programme is published at the moment.</strong>
+        <div class="training-small-note">Please check back later or contact Sila on WhatsApp for upcoming training opportunities.</div>
+      </div>`;
+    return;
+  }
+
+  root.innerHTML=databaseTrainingPrograms.map(program=>{
+    const image=trainingImage(program);
+    const highlights=Array.isArray(program.learning_highlights)?program.learning_highlights:[];
+    const menu=Array.isArray(program.practical_menu)?program.practical_menu:[];
+    const deadline=trainingDate(program.registration_deadline);
+    const location=trainingLocation(program);
+    const open=program.status==="registration_open";
+
+    return `
+      <article class="training-program">
+        <div class="training-media"
+             ${image?`role="button" tabindex="0" aria-label="Open training flyer for ${escapeHtml(program.title||"training")}" onclick="openTrainingFlyer('${String(program.id).replace(/'/g,"\\'")}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTrainingFlyer('${String(program.id).replace(/'/g,"\\'")}')}"`:""}>
+          ${image
+            ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(program.title||"Sila training programme")}" loading="lazy">`
+            : `<div class="training-media-fallback"><div><img src="${SILA_LOGO}" alt="Sila's Kitchen and More"><div style="margin-top:14px;font-weight:900">Sila Culinary Training</div></div></div>`}
+          ${image?'<span class="training-media-hint">🔍 View flyer</span>':""}
+        </div>
+
+        <div class="training-content">
+          <div class="training-topline">
+            ${program.edition_label?`<span class="training-edition">${escapeHtml(program.edition_label)}</span>`:""}
+            <span class="training-status-chip ${trainingStatusClass(program.status)}">${escapeHtml(trainingStatusLabel(program.status))}</span>
+            ${program.limited_slots?'<span class="training-status-chip">Limited Slots</span>':""}
+          </div>
+
+          <h3 class="training-title">${escapeHtml(program.title||"Training Programme")}</h3>
+          <div class="training-tagline">Learn. Create. Earn.</div>
+
+          <p class="training-description">
+            ${escapeHtml(program.short_description||program.full_description||"Hands-on practical culinary training from Sila's Kitchen and More.")}
+          </p>
+
+          <div class="training-facts">
+            <div class="training-fact">
+              <small>Investment Fee</small>
+              <strong>${money(program.investment_fee||0)}</strong>
+            </div>
+            <div class="training-fact">
+              <small>Duration</small>
+              <strong>${escapeHtml(program.duration_label||"To be communicated")}</strong>
+            </div>
+            <div class="training-fact">
+              <small>Training Schedule</small>
+              <strong>${escapeHtml(program.schedule_text||"To be communicated")}</strong>
+            </div>
+            <div class="training-fact">
+              <small>Registration Deadline</small>
+              <strong>${escapeHtml(deadline||"To be communicated")}</strong>
+            </div>
+          </div>
+
+          ${(highlights.length||menu.length)?`
+            <div class="training-columns">
+              ${highlights.length?`
+                <div class="training-panel">
+                  <h3>What You'll Learn</h3>
+                  <ul class="training-list">${highlights.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>
+                </div>`:""}
+              ${menu.length?`
+                <div class="training-panel">
+                  <h3>Practical Menu</h3>
+                  <ul class="training-list">${menu.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>
+                </div>`:""}
+            </div>`:""}
+
+          ${program.certificate_included?`
+            <div class="training-policy"><strong>Certificate Included:</strong> A certificate is included upon successful completion of the programme.</div>`:""}
+
+          ${program.materials_policy?`
+            <div class="training-policy"><strong>Participant Materials:</strong> ${escapeHtml(program.materials_policy)}</div>`:""}
+
+          ${location?`
+            <div class="training-venue">
+              <strong>📍 Training Venue</strong><br>
+              ${escapeHtml(location)}
+            </div>`:""}
+
+          ${program.audience_note?`<p class="training-small-note">${escapeHtml(program.audience_note)}</p>`:""}
+
+          <div class="training-actions">
+            ${open
+              ? `<button class="training-register" onclick="registerForTraining('${String(program.id).replace(/'/g,"\\'")}')">💬 Register via WhatsApp</button>`
+              : `<div class="training-closed-note">${program.status==="completed"?"This programme has been completed.":"Registration is not currently open for this programme."}</div>`}
+            ${image?`<button class="training-flyer-btn" onclick="openTrainingFlyer('${String(program.id).replace(/'/g,"\\'")}')">View Flyer</button>`:""}
+          </div>
+
+          ${open?'<div class="training-small-note">Send us a WhatsApp message to secure your spot today.</div>':""}
+        </div>
+      </article>`;
+  }).join("");
+}
+
+async function loadTrainingPrograms(){
+  const root=document.getElementById("trainingPrograms");
+  if(!root)return;
+
+  if(!sb){
+    root.innerHTML='<div class="training-error">Training information is temporarily unavailable.</div>';
+    return;
+  }
+
+  root.innerHTML='<div class="training-loading">Loading current training programme…</div>';
+
+  try{
+    const {data,error}=await sb
+      .from("training_programs")
+      .select("*")
+      .eq("is_active",true)
+      .in("status",["registration_open","registration_closed","upcoming","ongoing","completed"])
+      .order("is_featured",{ascending:false})
+      .order("sort_order",{ascending:true})
+      .order("created_at",{ascending:false});
+
+    if(error)throw error;
+
+    databaseTrainingPrograms=data||[];
+    renderTrainingPrograms();
+  }catch(err){
+    console.error("Training load failed:",err);
+    root.innerHTML=`
+      <div class="training-error">
+        <strong>Training information could not be loaded right now.</strong>
+        <div class="training-small-note">Please refresh the page or contact Sila on WhatsApp.</div>
+      </div>`;
+  }
+}
+
 /* ---------- Initialization ---------- */
 renderDatabaseGallery();
 renderCart();
@@ -1472,10 +1765,8 @@ document.addEventListener("keydown",e=>{
 /* Load the live customer menu after the page DOM exists. */
 loadDatabaseMenu();
 loadDatabaseGallery();
-</script>
-
-<script>
-document.getElementById("copyrightYear").textContent = new Date().getFullYear();
+loadTrainingPrograms();
+loadPackagingOptions();
 </script>
 </body>
 </html>
