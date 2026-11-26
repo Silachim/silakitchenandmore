@@ -15,8 +15,30 @@ The staged SQL:
 - Adds versioned `submit_payment_v2`, `verify_payment_v2` and `reject_payment_v2` with appropriate customer/admin access.
 - Restricts all privileged RPCs to authenticated roles, with server-side `auth.uid()` + `admin_users` checks.
 
+## Legacy payment security review (completed from seller-provided SQL)
+
+The old `verify_payment` and `reject_payment` are `SECURITY DEFINER`,
+executable by `anon` and `authenticated`, and have **no admin check**.
+They also reference obsolete columns such as `orders.order_status`.
+Their execution grants must be revoked immediately using
+`supabase/security/20261126_revoke_unsafe_legacy_admin_payment_functions.sql`.
+The canonical coordinated migration revokes these grants again defensively.
+This intentionally disables current legacy admin payment verification/rejection
+until the v2 functions are installed and tested.
+
+The old `submit_payment` and `get_order_status` also have public execution
+grants, use obsolete order columns and lack the new status guards.
+They remain temporarily accessible for compatibility with the current
+production customer frontend. After the revised frontend is deployed and
+confirmed to use the versioned functions, revoke these using
+`supabase/security/20261126_post_cutover_revoke_legacy_customer_rpcs.sql`.
+
+**Important:** The old customer RPCs might be callable from copies, bookmarks
+or other clients, so review API logs/dependencies before removal.
+Do not treat a SQL schema error as a security control.
+
 ## Prerequisite inspections still required
-1. Get definitions, `SECURITY DEFINER` flags, and grants for `submit_payment`, `verify_payment`, `reject_payment`, and `get_order_status`. Verify legacy payment and customer-status RPCs cannot bypass cancelled-order or verified-payment guards. Do not assume they are safe.
+1. Legacy definitions and permissions inspected: all four were executable by `anon`; old verification/rejection are **unsafe**. Verify hotfix revocations and test safe legacy cutover; review other executable definer functions as a separate security audit.
 2. Inspect RLS privileges for `orders`, `payments`, `order_status_history`, `admin_users`, and receipt storage policies.
 3. Confirm pricing trust boundary: the current public checkout sends calculated unit prices, and both old submission RPC and staged v2 trust submitted prices. The seller must check each item, customization and subtotal before approval; the frontend now requires that confirmation. Server-side catalog/configurable-product price verification remains a prerequisite for fully automated payment approval.
 4. Verify amount-due business rule: currently 85% of product subtotal above ₦50,000, otherwise 100%, **plus 100% of delivery fee**. Confirm with seller, especially whether a deposit may be applied to delivery charges.
@@ -37,7 +59,7 @@ The staged SQL:
 12. Test admin dashboard tabs, item customization, orders/history, buyer/recipient details, fee quote, WhatsApp message link (manual send), payments and Gallery/Training unaffected.
 13. Verify responsive/mobile checkout; test unexpected network errors and duplicate clicks.
 14. Only after all tests pass: apply the coordinated SQL to production first, verify permissions and functions, change the frontend feature flag `ORDER_DECLINE_BACKEND_READY` to `true` on the reviewed branch, then merge frontend to main and verify GitHub Pages.
-15. Do not remove `admin-orders.html` or `admin-payments.html` before their remaining functions have been checked. Monitor after release.
+15. After frontend cutover tests, revoke legacy `submit_payment` and `get_order_status` with the separate post-cutover SQL, then verify permissions. Do not remove `admin-orders.html` or `admin-payments.html` before their remaining functions have been checked. Monitor after release.
 
 ## Invariant
 No order is considered paid merely because `payment_type='full'` or `payment_percent=100`; only a verified payment record counts as received. WhatsApp messages are prepared, **not automatically delivered**.
@@ -47,3 +69,5 @@ No order is considered paid merely because `payment_type='full'` or `payment_per
 - Supabase staging execution tests: **NOT RUN**.
 - Production rollout: **NOT RUN**.
 - Existing production approval function remains revoked from anonymous and authenticated clients, as reported by seller.
+- Legacy `verify_payment` / `reject_payment` privileged-function revocation: **SCRIPT PREPARED, NOT VERIFIED IN SUPABASE**.
+- Four legacy payment/status RPC definitions inspected from seller-provided SQL.
