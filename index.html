@@ -1487,7 +1487,7 @@ async function submitReceiptPayment(){
       `Customer order code: ${orderCode}`
     ].join("\n");
 
-    const {data,error}=await sb.rpc("submit_payment",{
+    const {data,error}=await sb.rpc("submit_payment_v2",{
       p_payment_code:document.getElementById("paymentCodeInput").value.trim(),
       p_amount_paid:amount,
       p_payment_method:method,
