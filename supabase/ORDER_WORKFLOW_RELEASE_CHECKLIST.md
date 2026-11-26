@@ -37,6 +37,30 @@ confirmed to use the versioned functions, revoke these using
 or other clients, so review API logs/dependencies before removal.
 Do not treat a SQL schema error as a security control.
 
+## Immediate security verification (seller confirmed)
+
+On November 26, 2026, the seller ran the privilege verification query and
+confirmed both `reject_payment` and `verify_payment` return
+`anonymous_can_execute=false`, `authenticated_can_execute=false`.
+This follows the earlier confirmed restriction on the obsolete
+`approve_order_for_payment` function.
+
+## Staging preflight (next action)
+
+Read-only file:
+`supabase/security/20261126_staging_readonly_preflight.sql`
+
+Run in the Supabase SQL Editor on the target schema **before** testing or
+applying the migration, then inspect the JSON output for missing columns,
+current RLS settings, triggers, constraints and EXECUTE grants.
+This query reads schema metadata only, not customer records.
+
+During source review, the unified admin Payments view was found to use a
+nonexistent `payments.status` field. It now uses the real
+`payments.payment_status` enum and shows verification/rejection actions
+only for submitted payments. This correction has not been tested against
+staging yet.
+
 ## Prerequisite inspections still required
 1. Legacy definitions and permissions inspected: all four were executable by `anon`; old verification/rejection are **unsafe**. Verify hotfix revocations and test safe legacy cutover; review other executable definer functions as a separate security audit.
 2. Inspect RLS privileges for `orders`, `payments`, `order_status_history`, `admin_users`, and receipt storage policies.
@@ -69,5 +93,5 @@ No order is considered paid merely because `payment_type='full'` or `payment_per
 - Supabase staging execution tests: **NOT RUN**.
 - Production rollout: **NOT RUN**.
 - Existing production approval function remains revoked from anonymous and authenticated clients, as reported by seller.
-- Legacy `verify_payment` / `reject_payment` privileged-function revocation: **SCRIPT PREPARED, NOT VERIFIED IN SUPABASE**.
+- Legacy `verify_payment` / `reject_payment` privileged-function revocation: **VERIFIED** by seller: both `anon` and `authenticated` now return false.
 - Four legacy payment/status RPC definitions inspected from seller-provided SQL.
