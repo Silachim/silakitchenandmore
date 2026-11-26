@@ -620,6 +620,17 @@ REVOKE ALL ON FUNCTION public.get_order_review_history(uuid)
 GRANT EXECUTE ON FUNCTION public.get_order_review_history(uuid)
   TO authenticated;
 
+-- The old verify_payment and reject_payment functions have no active-admin
+-- authorization and reference obsolete order columns. Do not leave executable
+-- legacy paths in place after this migration.
+REVOKE ALL ON FUNCTION public.verify_payment(uuid,text)
+  FROM PUBLIC,anon,authenticated;
+REVOKE ALL ON FUNCTION public.reject_payment(uuid,text)
+  FROM PUBLIC,anon,authenticated;
+
+-- The current production customer website still calls submit_payment and
+-- get_order_status until the new frontend is deployed. Do not revoke those
+-- in this backend-first migration; cut them over in a separate verified step.
 COMMIT;
 
 -- SECURITY REVIEW CHECKS (READ ONLY)
