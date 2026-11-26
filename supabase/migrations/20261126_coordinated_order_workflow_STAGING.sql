@@ -169,6 +169,58 @@ REVOKE ALL ON FUNCTION public.submit_customer_order_v2(
 GRANT EXECUTE ON FUNCTION public.submit_customer_order_v2(
   text,text,text,date,text,text,text,jsonb,jsonb) TO anon,authenticated;
 
+-- Legacy pending orders can be classified explicitly by an active seller.
+-- Existing notes are preserved; address must be confirmed before delivery.
+CREATE OR REPLACE FUNCTION public.set_order_fulfillment(
+  p_order_id uuid,p_method text,p_address text
+)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=''
+AS $function$
+DECLARE v_order public.orders%rowtype;
+  v_address text := nullif(btrim(coalesce(p_address,'')),'');
+BEGIN
+  IF auth.uid() IS NULL OR NOT EXISTS (
+    SELECT 1 FROM public.admin_users
+    WHERE user_id=auth.uid() AND is_active IS TRUE
+  ) THEN RAISE EXCEPTION 'Not authorized'; END IF;
+  IF p_method IS NULL OR p_method NOT IN ('delivery','pickup') THEN
+    RAISE EXCEPTION 'Select delivery or pickup';
+  END IF;
+  IF p_method='delivery' AND v_address IS NULL THEN
+    RAISE EXCEPTION 'Confirm the delivery address first';
+  END IF;
+  IF length(coalesce(v_address,''))>800 THEN
+    RAISE EXCEPTION 'Delivery address exceeds maximum length';
+  END IF;
+  SELECT * INTO v_order FROM public.orders WHERE id=p_order_id FOR UPDATE;
+  IF NOT FOUND OR v_order.status<>'pending_review' THEN
+    RAISE EXCEPTION 'Only pending-review orders may be classified';
+  END IF;
+  IF EXISTS (SELECT 1 FROM public.payments WHERE order_id=p_order_id) THEN
+    RAISE EXCEPTION 'Order has payment activity';
+  END IF;
+  IF v_order.fulfillment_method IS NOT NULL THEN
+    RAISE EXCEPTION 'Fulfillment already selected; use a separate change-review process';
+  END IF;
+  UPDATE public.orders
+  SET fulfillment_method=p_method,
+    delivery_address=CASE WHEN p_method='delivery' THEN v_address ELSE NULL END,
+    delivery_fee=CASE WHEN p_method='pickup' THEN 0 ELSE NULL END
+  WHERE id=p_order_id;
+  INSERT INTO public.order_status_history
+    (order_id,old_status,new_status,note,changed_by)
+  VALUES (p_order_id,'pending_review','pending_review',
+    'Seller confirmed legacy fulfillment: '||p_method||
+    CASE WHEN p_method='delivery' THEN '; address: '||v_address ELSE '' END,
+    auth.uid()::text);
+  RETURN jsonb_build_object('success',true,'fulfillment_method',p_method);
+END;
+$function$;
+REVOKE ALL ON FUNCTION public.set_order_fulfillment(uuid,text,text)
+  FROM PUBLIC,anon,authenticated;
+GRANT EXECUTE ON FUNCTION public.set_order_fulfillment(uuid,text,text)
+  TO authenticated;
+
 -- Active admins may quote (or revise) fees only on unapproved unpaid orders.
 CREATE OR REPLACE FUNCTION public.set_order_delivery_fee(
   p_order_id uuid, p_delivery_fee numeric
@@ -239,6 +291,9 @@ BEGIN
   SELECT * INTO v_order FROM public.orders WHERE id=p_order_id FOR UPDATE;
   IF NOT FOUND OR v_order.status<>'pending_review' THEN
     RAISE EXCEPTION 'Only pending-review orders can be approved';
+  END IF;
+  IF v_order.fulfillment_method IS NULL THEN
+    RAISE EXCEPTION 'Confirm pickup or delivery before approval';
   END IF;
   IF v_order.fulfillment_method='delivery' AND
      v_order.delivery_fee IS NULL THEN
