@@ -22,11 +22,11 @@ test("customer and administrator inline JavaScript compiles",()=>{
 });
 test("frontend RPC contract matches rollback or staged deployment mode",()=>{
  for(const id of ["oFulfillment","oRecipientType","oRecipientName","oRecipientPhone","oDeliveryState","oDeliveryCity","oDeliveryStreet","oDeliveryLandmark","oDeliveryInstructions","oSurprise"]){
-  assert.match(index,new RegExp("id=[\\\x22']"+id+"[\\\x22']"));
+  assert.ok(index.includes('id="'+id+'"'),"missing "+id);
  }
  const v2=index.includes('sb.rpc("submit_customer_order_v2",{');
  if(v2){
-  for(const name of ["submit_customer_order_v2","get_order_status_v2","submit_payment_v2"])assert.ok(index.includes('sb.rpc(" '.trim()+'"'+name+'"'),"missing "+name);
+  for(const name of ["submit_customer_order_v2","get_order_status_v2","submit_payment_v2"])assert.ok(index.includes('sb.rpc("'+name+'"'),"missing "+name);
  }else{
   assert.ok(index.includes('sb.rpc("submit_customer_order",{'),"rollback must use pre-v2 checkout");
   assert.ok(index.includes('sb.rpc("get_order_status",{'),"rollback must use pre-v2 tracker");
