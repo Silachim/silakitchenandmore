@@ -1483,8 +1483,8 @@ async function submitReceiptPayment(){
        String(orderStatus.payment_code||"").toUpperCase()!==providedCode){
       throw new Error("This order is not awaiting payment with that code. Contact Sila before uploading a receipt.");
     }
-    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-    const path=`${orderCode}/${crypto.randomUUID()}-${safeName}`;
+    const safeName=(file.name.replace(/[^a-zA-Z0-9._-]/g,"_").slice(0,80)||"receipt");
+    const path=`${orderCode}/${providedCode}/${crypto.randomUUID()}-${safeName}`;
 
     const {error:uploadError}=await sb.storage.from(RECEIPT_BUCKET).upload(
       path,file,{upsert:false,contentType:file.type}
