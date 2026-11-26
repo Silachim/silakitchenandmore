@@ -544,6 +544,16 @@ textarea{
   border-top:1px solid var(--line);
 }
 
+.item-customization {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 /* ---------------------------------------------------------
    HISTORY
 --------------------------------------------------------- */
@@ -1809,11 +1819,23 @@ function renderOrderDetail(
 
           <tr>
 
-            <td>
-              <strong>
-                ${esc(item.item_name)}
-              </strong>
-            </td>
+            
+<td>
+  <strong>
+    ${esc(item.item_name)}
+  </strong>
+
+  ${item.metadata?.note
+    ? `
+      <div class="item-customization">
+        <strong>Details:</strong>
+        ${esc(item.metadata.note)}
+      </div>
+    `
+    : ""
+  }
+</td>
+
 
             <td>
               ${esc(item.quantity)}
