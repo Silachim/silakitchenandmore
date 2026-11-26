@@ -17,6 +17,11 @@ BEGIN
 END $policies$;
 GRANT SELECT ON public.payments TO authenticated;
 
+-- No current checkout workflow queries public.payment_receipts directly;
+-- all ordinary API grants on this legacy receipt table are unnecessary.
+-- RLS already denies access, but revoke privileges for defense in depth.
+REVOKE ALL ON TABLE public.payment_receipts FROM anon, authenticated;
+
 -- Customer receipt path must include BOTH the order code and its
 -- valid payment code, and only an awaiting-payment order may accept uploads.
 -- Storage bucket enforces maximum file size and allowed content types.
