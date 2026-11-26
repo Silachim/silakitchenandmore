@@ -258,6 +258,9 @@ BEGIN
     'delivery_fee_status',CASE WHEN v_order.fulfillment_method='delivery' AND
        v_order.delivery_fee IS NULL THEN 'pending_quote' ELSE 'confirmed' END,
     'amount_paid',CASE WHEN v_payment_status='verified' THEN v_paid ELSE NULL END,
+    'balance_remaining',CASE WHEN v_payment_status='verified' THEN
+       greatest(0,v_order.subtotal+coalesce(v_order.delivery_fee,0)-
+         coalesce(v_paid,0)) ELSE NULL END,
     'payment_due_at',v_order.payment_due_at
   );
 END;
@@ -549,6 +552,44 @@ $function$;
 REVOKE ALL ON FUNCTION public.decline_order_request(uuid,text)
   FROM PUBLIC,anon,authenticated;
 GRANT EXECUTE ON FUNCTION public.decline_order_request(uuid,text)
+  TO authenticated;
+
+-- A verified payment is money received; payment terms are never receipt.
+-- The total can exceed the required deposit, leaving a balance after
+-- verification that the seller must still collect and account for.
+CREATE OR REPLACE FUNCTION public.get_order_payment_summary(p_order_id uuid)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=''
+AS $function$
+DECLARE v_order public.orders%rowtype; v_verified numeric(12,2);
+BEGIN
+  IF auth.uid() IS NULL OR NOT EXISTS (
+    SELECT 1 FROM public.admin_users
+    WHERE user_id=auth.uid() AND is_active IS TRUE
+  ) THEN RAISE EXCEPTION 'Not authorized'; END IF;
+  SELECT * INTO v_order FROM public.orders WHERE id=p_order_id;
+  IF NOT FOUND THEN RAISE EXCEPTION 'Order not found'; END IF;
+  SELECT coalesce(sum(amount_paid),0) INTO v_verified
+  FROM public.payments
+  WHERE order_id=p_order_id AND payment_status='verified';
+  RETURN jsonb_build_object(
+    'product_subtotal',v_order.subtotal,
+    'delivery_fee',v_order.delivery_fee,
+    'delivery_quote_pending',v_order.fulfillment_method='delivery' AND
+      v_order.delivery_fee IS NULL,
+    'total_quoted',CASE WHEN v_order.fulfillment_method='delivery' AND
+       v_order.delivery_fee IS NULL THEN NULL
+       ELSE v_order.subtotal+coalesce(v_order.delivery_fee,0) END,
+    'required_payment',v_order.amount_due,
+    'verified_received',v_verified,
+    'balance_remaining',CASE WHEN v_order.fulfillment_method='delivery'
+       AND v_order.delivery_fee IS NULL THEN NULL
+       ELSE greatest(0,v_order.subtotal+coalesce(v_order.delivery_fee,0)-v_verified) END
+  );
+END;
+$function$;
+REVOKE ALL ON FUNCTION public.get_order_payment_summary(uuid)
+  FROM PUBLIC,anon,authenticated;
+GRANT EXECUTE ON FUNCTION public.get_order_payment_summary(uuid)
   TO authenticated;
 
 -- Read-only history endpoint for active administrators; avoids giving general
