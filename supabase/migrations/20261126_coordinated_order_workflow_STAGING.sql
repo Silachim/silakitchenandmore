@@ -267,6 +267,147 @@ REVOKE ALL ON FUNCTION public.get_order_status_v2(text,text)
 GRANT EXECUTE ON FUNCTION public.get_order_status_v2(text,text)
   TO anon,authenticated;
 
+-- Payment submission and verification using the ACTUAL current tables.
+-- New names preserve old APIs during staged rollout.
+CREATE OR REPLACE FUNCTION public.submit_payment_v2(
+  p_payment_code text,
+  p_amount_paid numeric,
+  p_payment_method text,
+  p_transaction_reference text,
+  p_customer_note text
+)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=''
+AS $function$
+DECLARE v_id uuid; v_order public.orders%rowtype;
+  v_pay public.payments%rowtype;
+BEGIN
+  IF nullif(btrim(coalesce(p_payment_code,'')),'') IS NULL OR
+     nullif(btrim(coalesce(p_transaction_reference,'')),'') IS NULL OR
+     nullif(btrim(coalesce(p_payment_method,'')),'') IS NULL THEN
+    RAISE EXCEPTION 'Payment code, method and transaction reference are required';
+  END IF;
+  IF p_amount_paid IS NULL OR p_amount_paid<=0 OR p_amount_paid>100000000 THEN
+    RAISE EXCEPTION 'Invalid payment amount';
+  END IF;
+  IF length(p_payment_code)>100 OR length(p_transaction_reference)>160 OR
+     length(p_payment_method)>80 OR length(coalesce(p_customer_note,''))>2000 THEN
+    RAISE EXCEPTION 'Payment details exceed allowed length';
+  END IF;
+  -- Lock parent before payment record, matching admin verification ordering.
+  SELECT p.order_id INTO v_id FROM public.payments p
+    WHERE p.payment_code=btrim(p_payment_code);
+  IF NOT FOUND THEN RAISE EXCEPTION 'Payment code not found'; END IF;
+  SELECT * INTO v_order FROM public.orders WHERE id=v_id FOR UPDATE;
+  SELECT * INTO v_pay FROM public.payments
+    WHERE order_id=v_id AND payment_code=btrim(p_payment_code) FOR UPDATE;
+  IF NOT FOUND OR v_order.status<>'awaiting_payment' OR
+     v_pay.payment_status::text NOT IN ('awaiting_payment','rejected') THEN
+    RAISE EXCEPTION 'Order is not currently accepting this payment';
+  END IF;
+  IF p_amount_paid<v_pay.amount_expected THEN
+    RAISE EXCEPTION 'Payment must meet the amount required';
+  END IF;
+  UPDATE public.payments SET
+    amount_paid=p_amount_paid,
+    payment_method=btrim(p_payment_method),
+    transaction_reference=btrim(p_transaction_reference),
+    payment_date=now(),customer_note=p_customer_note,
+    admin_note=NULL,payment_status='payment_submitted'
+  WHERE id=v_pay.id;
+  UPDATE public.orders SET status='payment_submitted' WHERE id=v_id;
+  INSERT INTO public.order_status_history
+    (order_id,old_status,new_status,note,changed_by)
+  VALUES (v_id,'awaiting_payment','payment_submitted',
+    'Payment receipt submitted for verification. Transaction reference: '||
+     btrim(p_transaction_reference),'customer');
+  RETURN jsonb_build_object('success',true,'order_code',v_order.order_code,
+    'status','payment_submitted','payment_id',v_pay.id);
+END;
+$function$;
+REVOKE ALL ON FUNCTION public.submit_payment_v2(text,numeric,text,text,text)
+  FROM PUBLIC,anon,authenticated;
+GRANT EXECUTE ON FUNCTION public.submit_payment_v2(text,numeric,text,text,text)
+  TO anon,authenticated;
+
+CREATE OR REPLACE FUNCTION public.verify_payment_v2(
+  p_payment_id uuid,p_admin_note text
+)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=''
+AS $function$
+DECLARE v_order_id uuid;v_order public.orders%rowtype;v_pay public.payments%rowtype;
+BEGIN
+  IF auth.uid() IS NULL OR NOT EXISTS(
+    SELECT 1 FROM public.admin_users
+    WHERE user_id=auth.uid() AND is_active IS TRUE) THEN
+    RAISE EXCEPTION 'Not authorized';
+  END IF;
+  SELECT order_id INTO v_order_id FROM public.payments WHERE id=p_payment_id;
+  IF NOT FOUND THEN RAISE EXCEPTION 'Payment not found'; END IF;
+  SELECT * INTO v_order FROM public.orders WHERE id=v_order_id FOR UPDATE;
+  SELECT * INTO v_pay FROM public.payments WHERE id=p_payment_id FOR UPDATE;
+  IF v_order.status<>'payment_submitted' OR
+     v_pay.payment_status::text<>'payment_submitted' THEN
+    RAISE EXCEPTION 'Only submitted payments may be verified';
+  END IF;
+  IF v_pay.amount_paid IS NULL OR v_pay.amount_paid<v_pay.amount_expected THEN
+    RAISE EXCEPTION 'Payment amount is below the required amount';
+  END IF;
+  UPDATE public.payments SET payment_status='verified',
+    admin_note=nullif(btrim(coalesce(p_admin_note,'')),'')
+  WHERE id=p_payment_id;
+  UPDATE public.orders SET status='payment_verified' WHERE id=v_order_id;
+  INSERT INTO public.order_status_history
+    (order_id,old_status,new_status,note,changed_by)
+  VALUES (v_order_id,'payment_submitted','payment_verified',
+    'Payment verified by administrator. '||coalesce(p_admin_note,''),
+    auth.uid()::text);
+  RETURN jsonb_build_object('success',true,'status','payment_verified');
+END;
+$function$;
+REVOKE ALL ON FUNCTION public.verify_payment_v2(uuid,text)
+  FROM PUBLIC,anon,authenticated;
+GRANT EXECUTE ON FUNCTION public.verify_payment_v2(uuid,text)
+  TO authenticated;
+
+CREATE OR REPLACE FUNCTION public.reject_payment_v2(
+  p_payment_id uuid,p_reason text
+)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=''
+AS $function$
+DECLARE v_order_id uuid;v_order public.orders%rowtype;v_pay public.payments%rowtype;
+  v_reason text:=nullif(btrim(coalesce(p_reason,'')),'');
+BEGIN
+  IF auth.uid() IS NULL OR NOT EXISTS(
+    SELECT 1 FROM public.admin_users
+    WHERE user_id=auth.uid() AND is_active IS TRUE) THEN
+    RAISE EXCEPTION 'Not authorized';
+  END IF;
+  IF v_reason IS NULL OR length(v_reason)<5 OR length(v_reason)>1000 THEN
+    RAISE EXCEPTION 'A reason of 5 to 1000 characters is required';
+  END IF;
+  SELECT order_id INTO v_order_id FROM public.payments WHERE id=p_payment_id;
+  IF NOT FOUND THEN RAISE EXCEPTION 'Payment not found'; END IF;
+  SELECT * INTO v_order FROM public.orders WHERE id=v_order_id FOR UPDATE;
+  SELECT * INTO v_pay FROM public.payments WHERE id=p_payment_id FOR UPDATE;
+  IF v_order.status<>'payment_submitted' OR
+     v_pay.payment_status::text<>'payment_submitted' THEN
+    RAISE EXCEPTION 'Only submitted payments may be rejected';
+  END IF;
+  UPDATE public.payments SET payment_status='rejected',
+    admin_note=v_reason WHERE id=p_payment_id;
+  UPDATE public.orders SET status='awaiting_payment' WHERE id=v_order_id;
+  INSERT INTO public.order_status_history
+    (order_id,old_status,new_status,note,changed_by)
+  VALUES (v_order_id,'payment_submitted','awaiting_payment',
+    'Payment rejected by administrator: '||v_reason,auth.uid()::text);
+  RETURN jsonb_build_object('success',true,'status','awaiting_payment');
+END;
+$function$;
+REVOKE ALL ON FUNCTION public.reject_payment_v2(uuid,text)
+  FROM PUBLIC,anon,authenticated;
+GRANT EXECUTE ON FUNCTION public.reject_payment_v2(uuid,text)
+  TO authenticated;
+
 -- Active admins may quote (or revise) fees only on unapproved unpaid orders.
 CREATE OR REPLACE FUNCTION public.set_order_delivery_fee(
   p_order_id uuid, p_delivery_fee numeric
