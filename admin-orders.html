@@ -1826,21 +1826,22 @@ function renderOrderDetail(
           <tr>
 
             
-<td>
-  <strong>
-    ${esc(item.item_name)}
-  </strong>
 
-  ${item.metadata?.note
-    ? `
-      <div class="item-customization">
-        <strong>Details:</strong>
-        ${esc(item.metadata.note)}
-      </div>
-    `
-    : ""
+<td>
+  <strong>${esc(item.item_name)}</strong>
+
+  ${
+    item.metadata?.note
+      ? `
+        <div class="item-customization">
+          <strong>Details:</strong>
+          ${esc(item.metadata.note)}
+        </div>
+      `
+      : ""
   }
 </td>
+
 
 
             <td>
