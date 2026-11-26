@@ -90,7 +90,12 @@
 </main></div></div>
 <div id="productModal" class="modal"><div class="box"><button class="close" data-close="productModal">×</button><h2 id="productTitle">Add Product</h2><form id="productForm"><div class="formgrid"><div class="field"><label>Product name *</label><input id="pName" required></div><div class="field"><label>Category *</label><select id="pCat"><option value="rtf">Ready-to-Fry</option><option value="fried">Fried Packages</option><option value="pastry">Pastries</option><option value="drinks">Drinks</option></select></div><div class="field"><label>Price (₦) *</label><input id="pPrice" type="number" min="0" step=".01" required></div><div class="field"><label>Customer-facing price label</label><input id="pLabel" placeholder="e.g. ₦2,500 / box"></div><div class="field full"><label>Description</label><textarea id="pDesc" rows="3"></textarea></div><div class="field"><label>Unit / package label</label><input id="pUnit" placeholder="e.g. Box of 3"></div><div class="field"><label>Display order</label><input id="pSort" type="number" value="10"></div><div class="field full"><label>Product image</label><input id="pImage" type="file" accept="image/*"></div><div class="field full"><label><input id="pAvail" type="checkbox" checked style="width:auto"> Available for customers</label><label><input id="pActive" type="checkbox" checked style="width:auto"> Visible on website</label></div></div><div class="actions2"><button type="button" class="btn" data-close="productModal">Cancel</button><button id="saveProduct" class="btn primary">Save Product</button></div></form></div></div>
 <div id="orderModal" class="modal"><div class="box"><button class="close" data-close="orderModal">×</button><h2>Order Details</h2><div id="orderDetail"></div></div></div>
-<div id="approveModal" class="modal"><div class="box"><button class="close" data-close="approveModal">×</button><h2>Approve Order for Payment</h2><p style="color:var(--muted)">Choose the number of hours allowed for payment.</p><div class="field"><label>Payment due hours</label><input id="dueHours" type="number" min="1" max="720" value="48"></div><div class="field" id="deliveryQuoteField"><label>Confirmed delivery fee (₦)</label><input id="deliveryQuote" type="number" min="0" max="100000000" step=".01" placeholder="Enter fee, including 0 for free delivery"><small>Required before approval for delivery orders.</small></div><p id="approvalSummary" style="color:var(--muted)"></p><div class="actions2"><button class="btn" data-close="approveModal">Cancel</button><button id="doApprove" class="btn primary">Approve</button></div></div></div>
+<div id="approveModal" class="modal"><div class="box"><button class="close" data-close="approveModal">×</button><h2>Approve Order for Payment</h2><p style="color:var(--muted)">Choose the number of hours allowed for payment.</p><div class="field"><label>Payment due hours</label><input id="dueHours" type="number" min="1" max="720" value="48"></div><div class="field" id="legacyFulfillmentField" style="display:none"><label>Confirm fulfillment for this older order</label>
+<select id="legacyFulfillmentMethod" onchange="silaLegacyFulfillmentChanged()">
+<option value="">Select method</option><option value="delivery">Delivery</option><option value="pickup">Pickup</option>
+</select>
+<div id="legacyDeliveryAddressField" style="display:none"><label>Confirmed delivery address</label><textarea id="legacyDeliveryAddress" rows="2" maxlength="800" placeholder="Verify the address with the buyer before approval"></textarea></div></div>
+<div class="field" id="deliveryQuoteField"><label>Confirmed delivery fee (₦)</label><input id="deliveryQuote" type="number" min="0" max="100000000" step=".01" placeholder="Enter fee, including 0 for free delivery"><small>Required before approval for delivery orders.</small></div><p id="approvalSummary" style="color:var(--muted)"></p><div class="actions2"><button class="btn" data-close="approveModal">Cancel</button><button id="doApprove" class="btn primary">Approve</button></div></div></div>
 <div id="declineModal" class="modal"><div class="box">
 <button class="close" type="button" data-close="declineModal">×</button>
 <h2>Decline Order Request</h2>
@@ -431,9 +436,18 @@ window.messageCustomer=(id,kind,reason="")=>{
  box.innerHTML=`<strong>Message not yet sent.</strong> Review and press Send in WhatsApp: <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Open customer message</a>`;
  box.scrollIntoView({block:"nearest"});
 };
+function silaLegacyFulfillmentChanged(){
+ const delivery=$("legacyFulfillmentMethod").value==="delivery";
+ $("legacyDeliveryAddressField").style.display=delivery?"block":"none";
+ $("deliveryQuoteField").style.display=delivery?"block":"none";
+}
 window.approve=id=>{
  const o=orders.find(x=>x.id===id);if(!o||o.status!=="pending_review"){toast("Only pending orders can be approved.",true);return}
  chosenOrder=o;$("dueHours").value=48;
+ $("legacyFulfillmentField").style.display=o.fulfillment_method==null?"block":"none";
+ $("legacyFulfillmentMethod").value="";
+ $("legacyDeliveryAddress").value="";
+ $("legacyDeliveryAddressField").style.display="none";
  $("deliveryQuoteField").style.display=o.fulfillment_method==="delivery"?"block":"none";
  $("deliveryQuote").value=o.delivery_fee==null?"":o.delivery_fee;
  $("approvalSummary").textContent=`Products: ${money(o.subtotal)}; required payment: ${o.payment_percent}% of products plus full delivery fee.`;
@@ -443,12 +457,22 @@ $("doApprove").onclick=async()=>{
  const o=chosenOrder,btn=$("doApprove");if(!o||o.status!=="pending_review")return;
  if(!ORDER_DECLINE_BACKEND_READY){toast("Order workflow awaits secure backend staging validation.",true);return}
  const h=Number($("dueHours").value);if(!Number.isInteger(h)||h<1||h>720){toast("Due hours must be 1–720.",true);return}
- const delivery=o.fulfillment_method==="delivery";
+ const legacy=o.fulfillment_method==null;
+ const method=legacy?$("legacyFulfillmentMethod").value:o.fulfillment_method;
+ if(legacy&&method!=="delivery"&&method!=="pickup"){toast("Confirm delivery or pickup for this older order.",true);return}
+ const delivery=method==="delivery";
  const feeText=$("deliveryQuote").value.trim();
  if(delivery&&(feeText===""||!Number.isFinite(Number(feeText))||Number(feeText)<0)){toast("Quote the delivery fee first (0 if free).",true);return}
  if(!confirm(`Approve order ${o.order_code} and generate payment instructions?`))return;
  btn.disabled=true;
  try{
+  if(legacy){
+   let x=await sb.rpc("set_order_fulfillment",{
+     p_order_id:o.id,p_method:method,
+     p_address:delivery?$("legacyDeliveryAddress").value.trim():null
+   });
+   if(x.error)throw x.error;
+  }
   if(delivery){let q=await sb.rpc("set_order_delivery_fee",{p_order_id:o.id,p_delivery_fee:Number(feeText)});if(q.error)throw q.error}
   const r=await sb.rpc("approve_order_for_payment",{p_order_id:o.id,p_payment_due_hours:h});if(r.error)throw r.error;
   $("approveModal").classList.remove("open");toast("Order approved. Send the payment instructions.");
