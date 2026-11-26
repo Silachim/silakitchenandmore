@@ -65,6 +65,16 @@ duplicate payment rows, storage receipt policies, or end-to-end function tests.
 Do not execute the coordinated migration until this report is reviewed and
 potential payment-integrity issues resolved.
 
+## Payments and receipt viewing
+
+The unified Payments section has been corrected to filter by `payment_status`
+and expose Verify / Reject only when `payment_status='payment_submitted'`.
+The payment detail modal now offers a signed receipt link for payments whose
+`customer_note` contains the checkout-generated `Receipt storage path:` entry.
+The signed URL is valid for 60 seconds and is opened only on seller action.
+The `payment-receipts` bucket policies must explicitly support authorized
+admin receipt viewing before this is considered complete.
+
 ## Staging preflight (next action)
 
 Read-only file:
