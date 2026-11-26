@@ -46,9 +46,25 @@ test("admin has guarded payment and order workflows",()=>{
    "unrestricted client orders update remains");
  assert.ok(admin.includes("pricingReviewed"),"seller pricing confirmation missing");
 });
+test("private receipts require payment-code upload path and admin policy",()=>{
+ const policies=readFileSync(new URL("../supabase/migrations/20261126_receipt_storage_and_admin_payment_access_STAGING.sql",import.meta.url),"utf8");
+ assert.ok(index.includes("const path=`${orderCode}/${providedCode}/${crypto.randomUUID()}-${safeName}`;"));
+ assert.match(policies,/CREATE POLICY "Sila active admins can view payments"/);
+ assert.match(policies,/CREATE POLICY "Sila customers can upload pending payment receipts"/);
+ assert.match(policies,/CREATE POLICY "Sila active admins can view payment receipts"/);
+ assert.match(policies,/o\.status=\x27awaiting_payment\x27/);
+ assert.match(policies,/p\.payment_status=\x27awaiting_payment\x27/);
+ assert.match(policies,/REVOKE ALL ON TABLE public\.payment_receipts/);
+ assert.equal((policies.match(/^BEGIN;$/gm)||[]).length,1);
+ assert.equal((policies.match(/^COMMIT;$/gm)||[]).length,1);
+});
 test("database script is a single explicit transaction with secure guards",()=>{
  assert.ok(sql.startsWith("-- Sila's Kitchen and More:"));
  assert.match(sql,/BEGIN;[\s\S]+COMMIT;/);
+ assert.equal((sql.match(/^BEGIN;$/gm)||[]).length,1);
+ assert.equal((sql.match(/^COMMIT;$/gm)||[]).length,1);
+ assert.equal((sql.match(/CREATE OR REPLACE FUNCTION public\./g)||[]).length,11);
+ assert.ok(!sql.includes("sila_valid_payment_receipt_upload_path"));
  for(const name of ["submit_customer_order_v2","get_order_status_v2",
   "submit_payment_v2","verify_payment_v2","reject_payment_v2",
   "set_order_fulfillment","set_order_delivery_fee",
