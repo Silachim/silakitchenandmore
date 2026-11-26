@@ -31,38 +31,7 @@ BEGIN
   END IF;
 END $block$;
 
--- The initial security report found no payment SELECT policy.
--- A directly queried Payments dashboard needs active-admin SELECT access.
-DO $policies$
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_policies
-    WHERE schemaname='public' AND tablename='payments'
-      AND policyname='Sila active admins can view payments'
-  ) THEN
-    CREATE POLICY "Sila active admins can view payments"
-    ON public.payments FOR SELECT TO authenticated
-    USING (EXISTS (
-      SELECT 1 FROM public.admin_users a
-      WHERE a.user_id=(SELECT auth.uid()) AND a.is_active IS TRUE
-    ));
-  END IF;
-END $policies$;
-GRANT SELECT ON public.payments TO authenticated;
-
--- The private payment-receipts bucket has no RLS object policies in the
--- inspected database. Keep the bucket private: no public object SELECT.
--- Uploads are permitted only to an approved order and payment-code path.
--- Format: SILA-YYYYMMDD-XXXXXX/PAY-XXXXXXXX/<uuid>-filename.ext
--- This is not a substitute for Storage API rate limits or abuse monitoring.
-CREATE OR REPLACE FUNCTION public.sila_valid_payment_receipt_upload_path(
-  p_path text
-) RETURNS boolean
-LANGUAGE sql STABLE SECURITY DEFINER SET search_path=''
-AS $uploadcheck$
-  SELECT
-    p_path IS NOT NULL AND length(p_path) BETWEEN 30 AND 450
-    AND split_part(p_path,'/',1) ~ '^SILA-[0-9]{8}-[A-Z0-9]{6}
+-- A versioned checkout RPC leaves the existing 8-argument endpoint untouched.
 -- It accepts structured fulfillment and no longer duplicates the address
 -- within free-text notes. Existing checkout clients continue to work.
 CREATE OR REPLACE FUNCTION public.submit_customer_order_v2(
