@@ -221,6 +221,52 @@ REVOKE ALL ON FUNCTION public.set_order_fulfillment(uuid,text,text)
 GRANT EXECUTE ON FUNCTION public.set_order_fulfillment(uuid,text,text)
   TO authenticated;
 
+-- Phone-and-order-code-scoped customer status endpoint. This avoids relying
+-- on the legacy function, whose implementation must be reviewed separately.
+CREATE OR REPLACE FUNCTION public.get_order_status_v2(
+  p_order_number text,p_customer_phone text
+)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=''
+AS $function$
+DECLARE v_order public.orders%rowtype; v_payment_status text; v_paid numeric;
+BEGIN
+  IF nullif(btrim(coalesce(p_order_number,'')),'') IS NULL OR
+     nullif(btrim(coalesce(p_customer_phone,'')),'') IS NULL THEN
+    RETURN NULL;
+  END IF;
+  SELECT * INTO v_order FROM public.orders
+  WHERE order_code=btrim(p_order_number)
+    AND regexp_replace(customer_phone,'\D','','g') =
+        regexp_replace(btrim(p_customer_phone),'\D','','g');
+  IF NOT FOUND THEN RETURN NULL; END IF;
+  SELECT p.payment_status::text,p.amount_paid
+    INTO v_payment_status,v_paid
+  FROM public.payments p WHERE p.order_id=v_order.id
+  ORDER BY p.created_at DESC LIMIT 1;
+  RETURN jsonb_build_object(
+    'order_code',v_order.order_code,'order_number',v_order.order_code,
+    'status',v_order.status,
+    'payment_status',coalesce(v_payment_status,'not_required'),
+    'payment_code',CASE WHEN v_order.status IN
+       ('awaiting_payment','payment_submitted','payment_verified','confirmed',
+        'preparing','ready','completed')
+       THEN v_order.confirmation_code ELSE NULL END,
+    'amount_due',CASE WHEN v_order.status IN ('awaiting_payment','payment_submitted')
+      THEN v_order.amount_due ELSE NULL END,
+    'payment_percent',v_order.payment_percent,
+    'delivery_fee',v_order.delivery_fee,
+    'delivery_fee_status',CASE WHEN v_order.fulfillment_method='delivery' AND
+       v_order.delivery_fee IS NULL THEN 'pending_quote' ELSE 'confirmed' END,
+    'amount_paid',CASE WHEN v_payment_status='verified' THEN v_paid ELSE NULL END,
+    'payment_due_at',v_order.payment_due_at
+  );
+END;
+$function$;
+REVOKE ALL ON FUNCTION public.get_order_status_v2(text,text)
+  FROM PUBLIC,anon,authenticated;
+GRANT EXECUTE ON FUNCTION public.get_order_status_v2(text,text)
+  TO anon,authenticated;
+
 -- Active admins may quote (or revise) fees only on unapproved unpaid orders.
 CREATE OR REPLACE FUNCTION public.set_order_delivery_fee(
   p_order_id uuid, p_delivery_fee numeric
