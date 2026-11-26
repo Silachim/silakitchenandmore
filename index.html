@@ -1472,6 +1472,17 @@ async function submitReceiptPayment(){
 
   try{
     const orderCode=order.order_code||order.orderCode;
+    const providedCode=document.getElementById("paymentCodeInput").value.trim().toUpperCase();
+    if(!providedCode)throw new Error("Please enter the payment code provided after order approval.");
+    const {data:orderStatus,error:statusError}=await sb.rpc("get_order_status_v2",{
+      p_order_number:orderCode,
+      p_customer_phone:order.customer_phone
+    });
+    if(statusError)throw statusError;
+    if(!orderStatus||orderStatus.status!=="awaiting_payment"||
+       String(orderStatus.payment_code||"").toUpperCase()!==providedCode){
+      throw new Error("This order is not awaiting payment with that code. Contact Sila before uploading a receipt.");
+    }
     const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
     const path=`${orderCode}/${crypto.randomUUID()}-${safeName}`;
 
