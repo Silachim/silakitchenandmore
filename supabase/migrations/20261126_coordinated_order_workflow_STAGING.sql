@@ -14,7 +14,8 @@ ALTER TABLE public.orders
   ADD COLUMN IF NOT EXISTS recipient_name text,
   ADD COLUMN IF NOT EXISTS recipient_phone text,
   ADD COLUMN IF NOT EXISTS is_surprise_order boolean,
-  ADD COLUMN IF NOT EXISTS delivery_fee numeric(12,2);
+  ADD COLUMN IF NOT EXISTS delivery_fee numeric(12,2),
+  ADD COLUMN IF NOT EXISTS payment_due_at timestamptz;
 
 DO $block$
 BEGIN
@@ -77,13 +78,14 @@ BEGIN
     RAISE EXCEPTION 'Orders require at least 4 days advance notice';
   END IF;
   IF p_fulfillment IS NULL OR jsonb_typeof(p_fulfillment)<>'object' OR
-     v_method NOT IN ('delivery','pickup') THEN
+     (v_method IS NULL OR v_method NOT IN ('delivery','pickup')) THEN
     RAISE EXCEPTION 'Select delivery or pickup';
   END IF;
   IF v_method='delivery' AND v_address IS NULL THEN
     RAISE EXCEPTION 'Delivery address is required';
   END IF;
   IF v_method='pickup' THEN v_address := NULL; END IF;
+  IF v_recipient IS NULL THEN v_surprise := false; END IF;
   IF (v_recipient IS NULL) <> (v_recipient_phone IS NULL) THEN
     RAISE EXCEPTION 'Recipient name and phone must be provided together';
   END IF;
@@ -199,6 +201,11 @@ BEGIN
   v_due := round(v_order.subtotal*v_order.payment_percent/100,2)+p_delivery_fee;
   UPDATE public.orders SET delivery_fee=p_delivery_fee,amount_due=v_due
   WHERE id=p_order_id;
+  INSERT INTO public.order_status_history
+    (order_id,old_status,new_status,note,changed_by)
+  VALUES (p_order_id,'pending_review','pending_review',
+    'Seller confirmed delivery fee: '||p_delivery_fee::text,
+    auth.uid()::text);
   RETURN jsonb_build_object('success',true,'delivery_fee',p_delivery_fee,
     'amount_due',v_due);
 END;
@@ -242,7 +249,8 @@ BEGIN
   END IF;
   v_code := public.generate_payment_code();
   UPDATE public.orders
-  SET status='awaiting_payment',confirmation_code=v_code
+  SET status='awaiting_payment',confirmation_code=v_code,
+      payment_due_at=now()+make_interval(hours=>p_payment_due_hours)
   WHERE id=p_order_id;
   INSERT INTO public.payments
     (order_id,payment_code,amount_expected,payment_status)
@@ -300,6 +308,35 @@ REVOKE ALL ON FUNCTION public.decline_order_request(uuid,text)
   FROM PUBLIC,anon,authenticated;
 GRANT EXECUTE ON FUNCTION public.decline_order_request(uuid,text)
   TO authenticated;
+
+-- Read-only history endpoint for active administrators; avoids giving general
+-- authenticated users direct access to the history table.
+CREATE OR REPLACE FUNCTION public.get_order_review_history(p_order_id uuid)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=''
+AS $function$
+DECLARE v_result jsonb;
+BEGIN
+  IF auth.uid() IS NULL OR NOT EXISTS (
+    SELECT 1 FROM public.admin_users
+    WHERE user_id=auth.uid() AND is_active IS TRUE
+  ) THEN RAISE EXCEPTION 'Not authorized'; END IF;
+  IF NOT EXISTS(SELECT 1 FROM public.orders WHERE id=p_order_id) THEN
+    RAISE EXCEPTION 'Order not found';
+  END IF;
+  SELECT coalesce(jsonb_agg(jsonb_build_object(
+    'old_status',h.old_status,'new_status',h.new_status,'note',h.note,
+    'changed_by',h.changed_by,'created_at',h.created_at)
+    ORDER BY h.created_at DESC),'[]'::jsonb)
+  INTO v_result
+  FROM public.order_status_history h WHERE h.order_id=p_order_id;
+  RETURN v_result;
+END;
+$function$;
+REVOKE ALL ON FUNCTION public.get_order_review_history(uuid)
+  FROM PUBLIC,anon,authenticated;
+GRANT EXECUTE ON FUNCTION public.get_order_review_history(uuid)
+  TO authenticated;
+
 COMMIT;
 
 -- SECURITY REVIEW CHECKS (READ ONLY)
