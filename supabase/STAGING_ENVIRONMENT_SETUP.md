@@ -2,7 +2,11 @@
 
 **Status: Preparation only.** This repository branch is not a Supabase database branch. GitHub staging code must never be mistaken for an isolated database.
 
-## Preferred isolation
+## Free-tier recommended path
+
+On the Supabase Free Plan, hosted Branching is not included and additional free projects are limited. **Use the local Windows staging guide instead:** [LOCAL_STAGING_FREE_TIER_WINDOWS.md](LOCAL_STAGING_FREE_TIER_WINDOWS.md). The hosted branch/project instructions below are alternatives only if the account has available capacity or a paid plan. Never attempt to bypass account limits with production SQL.
+
+## Preferred isolation (only when hosted branching is available)
 Use **Supabase Dashboard → Branches → Create branch** on the Sila production Supabase project, selecting a persistent staging branch if supported by the plan. Name it `sila-order-workflow-staging`. Ensure **production data is NOT included**. Supabase documents that branches have isolated credentials and can copy schema without production data. If branching is not available, create a **separate Supabase project** and import only a reviewed schema-only baseline, never production customer data.
 
 **Verify the project/branch identity twice** before any SQL. Do not run the staging migrations in production or from an SQL editor attached to the production branch.
