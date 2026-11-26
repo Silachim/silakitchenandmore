@@ -1402,9 +1402,7 @@ async function lookupOrderStatus(){
         <span class="status-pill ${String(status).toLowerCase().includes("paid")||String(status).toLowerCase().includes("verified")?"success":"warn"}">
           ${escapeHtml(status)}
         </span>
-        ${code?`<br><br><strong>Payment code:</strong> <strong>${escapeHtml(code)}</strong>`:""}
-        ${row.amount_due!=null?`<br><strong>Amount due:</strong> ${money(row.amount_due)}`:""}
-        ${row.payment_percent!=null?`<br><strong>Payment percentage:</strong> ${escapeHtml(row.payment_percent)}%`:""}
+        ${status==="cancelled"?`<br><strong>This order was declined or cancelled. No payment should be sent for this request.</strong>`:status==="pending_review"?`<br>Awaiting seller review and any delivery quote. Please do not pay yet.`:`${code?`<br><br><strong>Payment code:</strong> <strong>${escapeHtml(code)}</strong>`:""}${row.amount_due!=null?`<br><strong>Required payment amount:</strong> ${money(row.amount_due)}`:""}${row.payment_percent!=null?`<br><strong>Required payment percentage:</strong> ${escapeHtml(row.payment_percent)}%`:""}`}
       </div>
       <div class="whatsapp-box">
         <strong>Need to communicate with Sila?</strong>
