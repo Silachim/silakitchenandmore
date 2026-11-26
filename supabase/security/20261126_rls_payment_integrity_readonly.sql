@@ -6,6 +6,10 @@ WITH policy_rows AS (
  WHERE schemaname='public' AND tablename IN
   ('admin_users','orders','order_items','payments','payment_receipts','order_status_history')
 ),
+storage_policies AS (
+ SELECT schemaname,tablename,policyname,roles,cmd,qual,with_check
+ FROM pg_policies WHERE schemaname='storage' AND tablename='objects'
+),
 table_grants AS (
  SELECT table_name,grantee,privilege_type
  FROM information_schema.role_table_grants
@@ -41,6 +45,7 @@ receipt_buckets AS (
 )
 SELECT jsonb_pretty(jsonb_build_object(
  'policies',(SELECT coalesce(jsonb_agg(to_jsonb(p)),'[]'::jsonb) FROM policy_rows p),
+ 'storage_object_policies',(SELECT coalesce(jsonb_agg(to_jsonb(p)),'[]'::jsonb) FROM storage_policies p),
  'api_table_grants',(SELECT coalesce(jsonb_agg(to_jsonb(g)),'[]'::jsonb) FROM table_grants g),
  'payment_integrity',(SELECT to_jsonb(d) FROM payment_duplicates d),
  'definer_owners',(SELECT coalesce(jsonb_agg(to_jsonb(f)),'[]'::jsonb) FROM function_owners f),
