@@ -1812,6 +1812,24 @@ window.openOrder =
   };
 
 
+function renderFulfillmentCard(notes){
+  const text=String(notes||"");
+  const match=text.match(/\[FULFILLMENT DETAILS\]([\s\S]*?)\[\/FULFILLMENT DETAILS\]/);
+  if(!match)return "";
+  const entries=match[1].trim().split("\n").map(line=>{
+    const idx=line.indexOf(":");
+    return idx<0?null:[line.slice(0,idx).trim(),line.slice(idx+1).trim()];
+  }).filter(Boolean);
+  return `<div class="detail-box" style="margin-top:14px">
+    <div class="detail-label">Delivery &amp; Recipient Details</div>
+    ${entries.map(([label,value])=>`<div style="margin-top:8px;overflow-wrap:anywhere"><strong>${esc(label)}:</strong> ${esc(value)}</div>`).join("")}
+  </div>`;
+}
+function renderGeneralOrderNotes(notes){
+  const cleaned=String(notes||"").replace(/\[FULFILLMENT DETAILS\][\s\S]*?\[\/FULFILLMENT DETAILS\]/,"").trim();
+  return cleaned||"No other customer notes.";
+}
+
 function renderOrderDetail(
   order,
   items,
@@ -2052,6 +2070,8 @@ function renderOrderDetail(
     </div>
 
 
+    ${renderFulfillmentCard(order.notes)}
+
     <div class="detail-box">
 
       <div class="detail-label">
@@ -2064,7 +2084,7 @@ function renderOrderDetail(
           white-space:pre-wrap;
         "
       >
-        ${esc(order.notes || "No customer notes.")}
+        ${esc(renderGeneralOrderNotes(order.notes))}
       </div>
 
     </div>

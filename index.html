@@ -235,6 +235,9 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
   .training-media-fallback{min-height:300px}
   .training-actions>*{width:100%}
 }
+.sila-extra{padding:12px;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+.sila-extra[hidden]{display:none!important}
+.sila-extra input[type=checkbox]{width:auto}
 .status-box{padding:15px;border:1px solid var(--line);background:var(--cream);border-radius:10px;margin:14px 0}
 .status-pill{display:inline-block;padding:.35rem .65rem;border-radius:999px;font-size:.75rem;font-weight:900;background:#eee}
 .status-pill.success{background:#e8f6ed;color:var(--success)}
@@ -420,7 +423,11 @@ footer{background:#0d0b09;color:#aaa;padding:25px max(20px,calc((100% - 1180px)/
 <div class="modal-steps-bar"><span class="modal-step-lbl active" id="slbl1">1. Details</span><span class="modal-step-lbl" id="slbl2">2. Review</span><span class="modal-step-lbl" id="slbl3">3. Payment</span><span class="modal-step-lbl" id="slbl4">4. Confirmation</span></div>
 
 <div class="pay-step active" id="step1"><h3>Complete Your Order Request</h3><p class="modal-sub">Your cart will be reviewed before payment. Minimum 4 days notice required.</p>
-<div class="fg"><label>Full Name</label><input id="oName" placeholder="Full name"></div><div class="fg"><label>WhatsApp / Phone</label><input id="oPhone" type="tel" placeholder="+234..."></div><div class="fg"><label>Desired Date</label><input id="oDate" type="date"></div><div class="fg"><label>Order Notes</label><textarea id="oNotes" placeholder="Event details, delivery request, special instructions..."></textarea></div>
+<div class="fg"><label>Buyer Full Name</label><input id="oName" placeholder="Full name"></div><div class="fg"><label>WhatsApp / Phone</label><input id="oPhone" type="tel" placeholder="+234..."></div><div class="fg"><label>Who is receiving the order?</label><select id="oRecipientType" onchange="silaToggleDelivery()"><option value="self">I am receiving it</option><option value="other">Someone else</option></select></div>
+<div id="oRecipientFields" class="sila-extra" hidden><div class="fg"><label>Recipient Name</label><input id="oRecipientName" maxlength="160"></div><div class="fg"><label>Recipient Phone</label><input id="oRecipientPhone" type="tel" maxlength="40"></div><label><input type="checkbox" id="oSurprise"> Surprise: contact the buyer first</label></div>
+<div class="fg"><label>Fulfillment</label><select id="oFulfillment" onchange="silaToggleDelivery()"><option value="delivery">Delivery (fee confirmed by Sila)</option><option value="pickup">Pickup</option></select></div>
+<div id="oDeliveryFields" class="sila-extra"><div class="fg"><label>State</label><input id="oDeliveryState" maxlength="100" placeholder="e.g. Oyo"></div><div class="fg"><label>City / Area</label><input id="oDeliveryCity" maxlength="160" placeholder="e.g. Ibadan"></div><div class="fg"><label>Street / Building Address</label><textarea id="oDeliveryStreet" maxlength="400"></textarea></div><div class="fg"><label>Nearest Landmark (optional)</label><input id="oDeliveryLandmark" maxlength="200"></div><div class="fg"><label>Delivery Instructions (optional)</label><textarea id="oDeliveryInstructions" maxlength="500"></textarea></div><p class="small-muted">Delivery fee is confirmed before payment instructions. Product subtotal excludes delivery.</p></div>
+<div class="fg"><label>Desired Date</label><input id="oDate" type="date"></div><div class="fg"><label>Order Notes</label><textarea id="oNotes" placeholder="Event details, delivery request, special instructions..."></textarea></div>
 <button class="btn-gold" style="width:100%" onclick="goToReview()">Continue →</button></div>
 
 <div class="pay-step" id="step2"><h3>Review Your Request</h3><div id="reviewBox"></div><p class="modal-sub">Sila will review the request and, when approved, generate a payment code and provide payment instructions.</p>
@@ -1103,6 +1110,28 @@ function openCartCheckout(){
   openModal();
 }
 
+function silaToggleDelivery(){
+ document.getElementById("oRecipientFields").hidden=document.getElementById("oRecipientType").value!=="other";
+ document.getElementById("oDeliveryFields").hidden=document.getElementById("oFulfillment").value!=="delivery";
+}
+function silaFulfillmentInfo(){
+ const val=id=>document.getElementById(id).value.trim();
+ const other=val("oRecipientType")==="other",delivery=val("oFulfillment")==="delivery";
+ const recipientName=other?val("oRecipientName"):"",recipientPhone=other?val("oRecipientPhone"):"";
+ const state=delivery?val("oDeliveryState"):"",city=delivery?val("oDeliveryCity"):"",street=delivery?val("oDeliveryStreet"):"";
+ if(other&&(!recipientName||!recipientPhone))throw Error("Enter the recipient's name and phone number.");
+ if(delivery&&(!state||!city||!street))throw Error("Enter the delivery state, city/area, and street address.");
+ const address=delivery?[street,city,state].join(", "):null;
+ const details=[
+ "[FULFILLMENT DETAILS]",
+ "Method: "+(delivery?"Delivery":"Pickup"),
+ "Order for: "+(other?"Someone else":"Buyer"),
+ ...(other?["Recipient name: "+recipientName,"Recipient phone: "+recipientPhone,"Surprise: "+(document.getElementById("oSurprise").checked?"Yes, contact buyer first":"No")]:[]),
+ ...(delivery?["Delivery address: "+address,"Landmark: "+(val("oDeliveryLandmark")||"None"),"Delivery instructions: "+(val("oDeliveryInstructions")||"None"),"Delivery fee: To be confirmed"]:[]),
+ "[/FULFILLMENT DETAILS]"
+ ].join("\n");
+ return {address,details,other,recipientName,delivery};
+}
 function goToReview(){
   const name=document.getElementById("oName").value.trim();
   const phone=document.getElementById("oPhone").value.trim();
@@ -1113,6 +1142,8 @@ function goToReview(){
     return;
   }
 
+  let fulfillment;
+  try{fulfillment=silaFulfillmentInfo()}catch(err){alert(err.message);return}
   const date=new Date(desiredDate+"T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
   const total=cart.reduce((a,x)=>a+x.price*x.qty,0);
 
@@ -1126,6 +1157,8 @@ function goToReview(){
       <hr>
       <p><strong>Total: ${money(total)}</strong></p>
       <p>👤 ${escapeHtml(name)} · 📞 ${escapeHtml(phone)} · 📅 ${date}</p>
+      <p>${escapeHtml(fulfillment.details).replaceAll("\n","<br>")}</p>
+      <p class="small-muted">Delivery fee is not included in the product subtotal.</p>
     </div>`;
 
   showStep("step2");
@@ -1141,6 +1174,9 @@ async function submitOrderRequest(){
   const phone=document.getElementById("oPhone").value.trim();
   const desiredDate=document.getElementById("oDate").value;
   const notes=document.getElementById("oNotes").value.trim();
+  let fulfillment;
+  try{fulfillment=silaFulfillmentInfo()}catch(err){alert(err.message);return}
+  const savedNotes=[notes,fulfillment.details].filter(Boolean).join("\n\n");
   const total=cart.reduce((a,x)=>a+x.price*x.qty,0);
 
   if(!name||!phone||!desiredDate){
@@ -1166,9 +1202,9 @@ async function submitOrderRequest(){
       p_customer_phone:phone,
       p_customer_email:null,
       p_desired_date:desiredDate,
-      p_delivery_address:null,
+      p_delivery_address:fulfillment.address,
       p_event_type:null,
-      p_customer_notes:notes,
+      p_customer_notes:savedNotes,
       p_items:items
     });
 
@@ -1183,6 +1219,8 @@ async function submitOrderRequest(){
       customer_phone:phone,
       desired_date:desiredDate,
       notes,
+      fulfillment_details:fulfillment.details,
+      delivery_address:fulfillment.address,
       items,
       estimated_total:Number(result?.total_amount??result?.subtotal??total),
       backend:result
@@ -1225,7 +1263,6 @@ function sendOrderToWhatsApp(){
     return;
   }
 
-  c
 const items = Array.isArray(o.items) ? o.items : [];
 
 const itemLines = items.map((x, i) => {
@@ -1251,6 +1288,7 @@ Order code: ${o.order_code||o.order_number||"Not supplied"}
 Customer name: ${o.customer_name||"Not supplied"}
 Phone / WhatsApp: ${o.customer_phone||"Not supplied"}
 Desired date: ${o.desired_date||"Not supplied"}
+${o.fulfillment_details||"Fulfillment details: Not provided"}
 
 ITEMS
 ${itemLines||"No item details available"}
