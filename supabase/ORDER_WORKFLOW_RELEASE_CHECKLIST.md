@@ -75,6 +75,42 @@ The signed URL is valid for 60 seconds and is opened only on seller action.
 The `payment-receipts` bucket policies must explicitly support authorized
 admin receipt viewing before this is considered complete.
 
+## RLS and payment-integrity report (seller supplied)
+
+**Payment integrity: PASS.** No duplicated payment codes, payments with
+missing orders, multiple payment records on one order, or cancelled orders
+with confirmation codes were found. All legacy definer functions inspected
+are owned by `postgres`. The private `payment-receipts` Storage bucket
+permits JPG, PNG, WebP and PDF up to 10 MiB.
+
+**Blocking RLS gaps identified:**
+- `payments` has no active-admin SELECT policy, so the unified Payments
+  table cannot rely on direct reads until the policy is deployed.
+- `storage.objects` has no policies for the private `payment-receipts`
+  bucket: the customer receipt uploader and seller signed receipt viewer
+  would be denied, even though gallery/product/training storage works.
+- `payment_receipts` has broad legacy table grants but no public RLS
+  policies. Restrict those grants as defense in depth; do not loosen RLS.
+
+**Staged corrections (not applied):**
+`supabase/migrations/20261126_receipt_storage_and_admin_payment_access_STAGING.sql`
+creates active-admin payment SELECT and protected receipt-view policies,
+plus an upload-only policy requiring matching order and payment codes
+while the order is awaiting payment. It also removes redundant client
+grants on `payment_receipts`. The public checkout now stores new receipts
+in `order-code/payment-code/uuid-filename` paths. Uploads do not grant
+public receipt viewing.
+
+**Security limits:** Possession of a valid payment code permits an upload
+attempt for that order; apply bucket and API rate limits, monitor abuse,
+verify file content types, and test unauthorized access. For stronger
+assurance, move receipt uploads behind a rate-limited server-issued
+single-use signed-upload mechanism before broadly accepting uploads.
+
+**Order for staging:** Apply the canonical coordinated order workflow SQL,
+then the receipt/storage RLS SQL, then test all customer/admin RPCs and
+Storage operations. Neither SQL file has been executed in Supabase.
+
 ## Staging preflight (next action)
 
 Read-only file:
@@ -121,7 +157,7 @@ No order is considered paid merely because `payment_type='full'` or `payment_per
 ## Status checks
 - JavaScript syntax validation: passed for `index.html` and `admin.html` in this branch.
 - Initial schema compatibility preflight: **PASSED** (seller-supplied report).
-- RLS/payment-integrity release gate: **WAITING FOR REPORT**.
+- RLS/payment-integrity report: **REVIEWED**; no payment anomalies, missing payment/receipt policies identified and staged.
 - Supabase staging execution tests: **NOT RUN**.
 - Production rollout: **NOT RUN**.
 - Existing production approval function remains revoked from anonymous and authenticated clients, as reported by seller.
