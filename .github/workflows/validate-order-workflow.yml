@@ -1,0 +1,22 @@
+name: Validate Sila order workflow
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'admin.html'
+      - 'supabase/migrations/**'
+      - 'tests/order-workflow-contracts.test.mjs'
+      - '.github/workflows/validate-order-workflow.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate JavaScript and RPC integration contracts
+        run: node --test tests/order-workflow-contracts.test.mjs

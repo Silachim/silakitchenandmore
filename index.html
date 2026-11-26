@@ -1130,7 +1130,11 @@ function silaFulfillmentInfo(){
  ...(delivery?["Delivery address: "+address,"Landmark: "+(val("oDeliveryLandmark")||"None"),"Delivery instructions: "+(val("oDeliveryInstructions")||"None"),"Delivery fee: To be confirmed"]:[]),
  "[/FULFILLMENT DETAILS]"
  ].join("\n");
- return {address,details,other,recipientName,delivery};
+ return {address,details,other,recipientName,recipientPhone,delivery,
+    landmark:delivery?val("oDeliveryLandmark"):"",
+    instructions:delivery?val("oDeliveryInstructions"):"",
+    surprise:other&&document.getElementById("oSurprise").checked,
+    method:delivery?"delivery":"pickup"};
 }
 function goToReview(){
   const name=document.getElementById("oName").value.trim();
@@ -1176,7 +1180,6 @@ async function submitOrderRequest(){
   const notes=document.getElementById("oNotes").value.trim();
   let fulfillment;
   try{fulfillment=silaFulfillmentInfo()}catch(err){alert(err.message);return}
-  const savedNotes=[notes,fulfillment.details].filter(Boolean).join("\n\n");
   const total=cart.reduce((a,x)=>a+x.price*x.qty,0);
 
   if(!name||!phone||!desiredDate){
@@ -1197,15 +1200,24 @@ async function submitOrderRequest(){
   try{
     if(!sb)throw new Error("Supabase is not configured in this index yet.");
 
-    const {data,error}=await sb.rpc("submit_customer_order",{
+    const {data,error}=await sb.rpc("submit_customer_order_v2",{
       p_customer_name:name,
       p_customer_phone:phone,
       p_customer_email:null,
       p_desired_date:desiredDate,
       p_delivery_address:fulfillment.address,
       p_event_type:null,
-      p_customer_notes:savedNotes,
-      p_items:items
+      p_customer_notes:notes,
+      p_items:items,
+      p_fulfillment:{
+        method:fulfillment.method,
+        delivery_address:fulfillment.address,
+        delivery_landmark:fulfillment.landmark,
+        delivery_instructions:fulfillment.instructions,
+        recipient_name:fulfillment.recipientName||null,
+        recipient_phone:fulfillment.recipientPhone||null,
+        is_surprise_order:fulfillment.surprise
+      }
     });
 
     if(error)throw error;
@@ -1237,7 +1249,8 @@ async function submitOrderRequest(){
     msg.innerHTML=`
       <div class="status-box">
         <strong>Order code:</strong> ${escapeHtml(currentOrder.order_code)}<br>
-        <strong>Estimated total:</strong> ${money(currentOrder.estimated_total)}<br><br>
+        <strong>Product subtotal:</strong> ${money(currentOrder.estimated_total)}<br>
+        <strong>Delivery fee:</strong> ${fulfillment.delivery?"Pending seller confirmation":"Not applicable (pickup)"}<br><br>
         <strong>Status:</strong> <span class="status-pill warn">Pending review</span><br><br>
         Sila will review your request. Please send the complete order summary to Sila on WhatsApp so the request can also be handled through the current communication channel.
       </div>
@@ -1293,7 +1306,9 @@ ${o.fulfillment_details||"Fulfillment details: Not provided"}
 ITEMS
 ${itemLines||"No item details available"}
 
-TOTAL: ${money(o.estimated_total||o.total_amount||o.subtotal||0)}
+PRODUCT SUBTOTAL: ${money(o.estimated_total||o.total_amount||o.subtotal||0)}
+Delivery fee: ${o.backend?.delivery_fee_status==="not_required"?"Not applicable":"Pending seller confirmation"}
+Final payment amount: To be confirmed by Sila
 
 Notes: ${o.notes||"None"}
 
@@ -1363,7 +1378,7 @@ async function lookupOrderStatus(){
   result.innerHTML='<p class="small-muted">Checking...</p>';
 
   try{
-    const {data,error}=await sb.rpc("get_order_status",{
+    const {data,error}=await sb.rpc("get_order_status_v2",{
       p_order_number:orderCode,
       p_customer_phone:phone
     });
@@ -1387,9 +1402,7 @@ async function lookupOrderStatus(){
         <span class="status-pill ${String(status).toLowerCase().includes("paid")||String(status).toLowerCase().includes("verified")?"success":"warn"}">
           ${escapeHtml(status)}
         </span>
-        ${code?`<br><br><strong>Payment code:</strong> <strong>${escapeHtml(code)}</strong>`:""}
-        ${row.amount_due!=null?`<br><strong>Amount due:</strong> ${money(row.amount_due)}`:""}
-        ${row.payment_percent!=null?`<br><strong>Payment percentage:</strong> ${escapeHtml(row.payment_percent)}%`:""}
+        ${status==="cancelled"?`<br><strong>This order was declined or cancelled. No payment should be sent for this request.</strong>`:status==="pending_review"?`<br>Awaiting seller review and any delivery quote. Please do not pay yet.`:`${code?`<br><br><strong>Payment code:</strong> <strong>${escapeHtml(code)}</strong>`:""}${row.amount_due!=null?`<br><strong>Required payment amount:</strong> ${money(row.amount_due)}`:""}${row.payment_percent!=null?`<br><strong>Required payment percentage:</strong> ${escapeHtml(row.payment_percent)}%`:""}${row.payment_status==="verified"?`<br><strong>Verified amount received:</strong> ${money(row.amount_paid||0)}${row.balance_remaining!=null?`<br><strong>Remaining order balance:</strong> ${money(row.balance_remaining)}`:""}`:""}`}
       </div>
       <div class="whatsapp-box">
         <strong>Need to communicate with Sila?</strong>
@@ -1459,8 +1472,19 @@ async function submitReceiptPayment(){
 
   try{
     const orderCode=order.order_code||order.orderCode;
-    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-    const path=`${orderCode}/${crypto.randomUUID()}-${safeName}`;
+    const providedCode=document.getElementById("paymentCodeInput").value.trim().toUpperCase();
+    if(!providedCode)throw new Error("Please enter the payment code provided after order approval.");
+    const {data:orderStatus,error:statusError}=await sb.rpc("get_order_status_v2",{
+      p_order_number:orderCode,
+      p_customer_phone:order.customer_phone
+    });
+    if(statusError)throw statusError;
+    if(!orderStatus||orderStatus.status!=="awaiting_payment"||
+       String(orderStatus.payment_code||"").toUpperCase()!==providedCode){
+      throw new Error("This order is not awaiting payment with that code. Contact Sila before uploading a receipt.");
+    }
+    const safeName=(file.name.replace(/[^a-zA-Z0-9._-]/g,"_").slice(0,80)||"receipt");
+    const path=`${orderCode}/${providedCode}/${crypto.randomUUID()}-${safeName}`;
 
     const {error:uploadError}=await sb.storage.from(RECEIPT_BUCKET).upload(
       path,file,{upsert:false,contentType:file.type}
@@ -1474,7 +1498,7 @@ async function submitReceiptPayment(){
       `Customer order code: ${orderCode}`
     ].join("\n");
 
-    const {data,error}=await sb.rpc("submit_payment",{
+    const {data,error}=await sb.rpc("submit_payment_v2",{
       p_payment_code:document.getElementById("paymentCodeInput").value.trim(),
       p_amount_paid:amount,
       p_payment_method:method,
