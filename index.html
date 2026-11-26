@@ -1225,14 +1225,22 @@ function sendOrderToWhatsApp(){
     return;
   }
 
-  const items=Array.isArray(o.items)?o.items:[];
-  const itemLines=items.map((x,i)=>{
-    const name=x.item_name||x.name||x.product_name||"Item";
-    const qty=Number(x.quantity??x.qty??1);
-    const price=Number(x.unit_price??x.price??0);
-    const meta=x.metadata?.note||x.meta||"";
-    return `${i+1}. ${name}\n   Quantity: ${qty}\n   Unit price: ${money(price)}\n   Line total: ${money(price*qty)}${meta?`\n   Details: ${meta}`:""}`;
-  }).join("\n\n");
+  c
+const items = Array.isArray(o.items) ? o.items : [];
+
+const itemLines = items.map((x, i) => {
+  const name = x.item_name || x.name || x.product_name || "Item";
+  const qty = Number(x.quantity ?? x.qty ?? 1);
+  const price = Number(x.unit_price ?? x.price ?? 0);
+  const meta = x.metadata?.note || x.meta || "";
+
+  return `${i + 1}. ${name}
+   Quantity: ${qty}
+   Total price: ${money(price * qty)}${
+     meta ? `\n   Details: ${meta}` : ""
+   }`;
+}).join("\n\n");
+
 
   const text=`Hello Sila's Kitchen and More,
 
