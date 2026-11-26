@@ -45,6 +45,26 @@ confirmed both `reject_payment` and `verify_payment` return
 This follows the earlier confirmed restriction on the obsolete
 `approve_order_for_payment` function.
 
+## Schema preflight results (seller-provided)
+
+**PASS for basic schema compatibility:** no required columns missing. Six
+business tables have RLS enabled: `admin_users`, `orders`, `order_items`,
+`payments`, `payment_receipts`, and `order_status_history`. Orders status
+constraint permits all the staged transitions. Existing `orders` and
+`payments` triggers only update timestamps. Payment enum supports
+`not_required`, `awaiting_payment`, `payment_submitted`, `verified`,
+`rejected`, and `refunded`. Previously unsafe admin functions
+`approve_order_for_payment`, `verify_payment` and `reject_payment`
+remain revoked for `anon` and `authenticated`.
+
+**Not established by this preflight:** RLS policy conditions, API table grants,
+function owner privileges, the existence of duplicate payment codes or
+duplicate payment rows, storage receipt policies, or end-to-end function tests.
+
+**Next read-only gate:** `supabase/security/20261126_rls_payment_integrity_readonly.sql`.
+Do not execute the coordinated migration until this report is reviewed and
+potential payment-integrity issues resolved.
+
 ## Staging preflight (next action)
 
 Read-only file:
@@ -90,6 +110,8 @@ No order is considered paid merely because `payment_type='full'` or `payment_per
 
 ## Status checks
 - JavaScript syntax validation: passed for `index.html` and `admin.html` in this branch.
+- Initial schema compatibility preflight: **PASSED** (seller-supplied report).
+- RLS/payment-integrity release gate: **WAITING FOR REPORT**.
 - Supabase staging execution tests: **NOT RUN**.
 - Production rollout: **NOT RUN**.
 - Existing production approval function remains revoked from anonymous and authenticated clients, as reported by seller.
