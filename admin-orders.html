@@ -760,7 +760,7 @@ textarea{
      LOGIN
 ======================================================= -->
 
-<div id="loginView" class="login">
+<div id="loginView" class="login" style="display:none">
 
   <div class="login-box">
 
@@ -1364,8 +1364,13 @@ async function requireAdmin(){
     await supabaseClient.auth.getSession();
 
 
-  if(!session)
-    return false;
+  
+if (!session) {
+  $("appView").style.display = "none";
+  $("loginView").style.display = "block";
+  return false;
+}
+
 
 
   const {
@@ -1387,7 +1392,8 @@ async function requireAdmin(){
 
 
   if(error || !data){
-
+$("appView").style.display = "none";
+$("loginView").style.display = "block";
     await supabaseClient.auth.signOut();
 
     $("loginError").textContent =
